@@ -1,0 +1,4 @@
+.imageWrapper {
+    position: absolute;
+    pointer-events: auto;
+}

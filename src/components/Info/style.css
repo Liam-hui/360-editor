@@ -1,0 +1,74 @@
+.infoWrapper {
+    position: absolute;
+    pointer-events: auto;
+}
+
+.infoWrapper:hover {
+    z-index: 99;
+}
+
+.infoContainer {
+    position: absolute;
+    background-color: white;
+    width: 40px;
+    height: 40px;
+    top: -20px;
+    left: -20px;
+    border-radius: 20px;
+    transition: width 0.5s ease-in-out, height 0.5s ease-in-out;
+    overflow: hidden;
+    box-shadow: 1px 2px 5px 2px rgba(0, 0, 0, 0.1);
+}
+
+.infoContainer:hover {
+    width: 300px;
+    height: var(--inner-height);
+}
+
+.infoInner {
+    width: 300px;
+    padding: 15px 15px 10px;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.infoContainer:hover .infoInner{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.infoIcon {
+    width: 40px;
+    height: 40px;
+    transition: opacity 0.2s ease-in-out;
+    position: absolute;
+}
+
+.infoContainer:hover .infoIcon{
+    opacity: 0;
+}
+
+.infoText {
+    min-height: 80px;
+    color: #222222;
+    white-space: pre-wrap;
+}
+
+.infoButtonWrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 5px;
+}
+
+.infoButton {
+    cursor: pointer;
+    display: inline;
+    margin: 0 5px;
+    color: #5793fb;
+    font-size: 26px;
+}

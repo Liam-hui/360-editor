@@ -1,0 +1,78 @@
+{
+  "threeDImages": [
+    {
+      "url": "https://media.comicbook.com/2018/03/avengers-infinity-war-poster-1093756.jpeg",
+      "width": 900,
+      "height": 1333,
+      "position": {
+        "x": -1304.08671844635,
+        "y": 692.9302778438291,
+        "z": -4400
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": 1
+    },
+    {
+      "url": "https://hatrabbits.com/wp-content/uploads/2018/10/risky-assumptions.jpg",
+      "width": 787,
+      "height": 444,
+      "position": {
+        "x": 1196.5140460544285,
+        "y": 81.59799448471944,
+        "z": 3587.623978729298
+      },
+      "rotation": {
+        "x": -0.16979778138140408,
+        "y": 0.3335811614208031,
+        "z": -0.01910694934100459
+      },
+      "scale": 1.18
+    },
+    {
+      "url": "https://media.comicbook.com/2018/03/avengers-infinity-war-poster-1093756.jpeg",
+      "width": 900,
+      "height": 1333,
+      "position": {
+        "x": -4400,
+        "y": 1393.492548266715,
+        "z": -2437.5801160366136
+      },
+      "rotation": {
+        "x": -1.5707963267948963,
+        "y": 1.5707963267948966,
+        "z": 0
+      },
+      "scale": 0.72
+    },
+    {
+      "url": "https://media.comicbook.com/2018/03/avengers-infinity-war-poster-1093756.jpeg",
+      "width": 400,
+      "height": 600,
+      "position": {
+        "x": -1257.6732314417761,
+        "y": -3557.6648911218554,
+        "z": -2917.50082155223
+      },
+      "rotation": {
+        "x": -1.6336281798666923,
+        "y": 0,
+        "z": 0
+      },
+      "scale": 3.83
+    }
+  ],
+  "infos": [
+    {
+      "position": {
+        "x": -5000,
+        "y": -447.40902536305987,
+        "z": 165.81016794788363
+      },
+      "text": "text"
+    }
+  ]
+}
