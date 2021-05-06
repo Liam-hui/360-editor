@@ -54,19 +54,15 @@ const Menu = React.forwardRef( (props, ref) => {
       'info': 'ADD INFO',
     }[type]
 
-    const uploadId = {
-      '3dImage': 'upload-3d-image',
-      'image': 'upload-image',
-    }[type] || ''
-
     const onClick = () => {
 
       switch( type ) {
         case 'image':
           store.dispatch({
             type: 'SHOW_POPUP' ,
+            mode: 'uploadImage',
             data: {
-              mode: 'uploadImage',
+              action: 'addImage', 
               position: object.position,
             }
           }) 
@@ -74,8 +70,9 @@ const Menu = React.forwardRef( (props, ref) => {
         case '3dImage':
           store.dispatch({
             type: 'SHOW_POPUP' ,
+            mode: 'uploadImage',
             data: {
-              mode: 'upload3dImage',
+              action: 'add3dImage', 
               position: object.position,
             }
           }) 

@@ -19,6 +19,14 @@ const updateMouseReducer = ( state = 0, action ) => {
   }
 }
 
+const cameraDirectionReducer = ( state = 'front', action ) => {
+  switch( action.type ) {
+    case 'UPDATE_CAMERA_DIRECTION':
+      return action.direction ;
+    default: return state;
+  }
+}
+
 const menuReducer = ( state = { isShown: false, object: null }, action ) => {
   switch( action.type ) {
     case 'SHOW_MENU':
@@ -35,11 +43,12 @@ const menuReducer = ( state = { isShown: false, object: null }, action ) => {
   }
 }
 
-const popupReducer = ( state = { isShown: false, data: null}, action ) => {
+const popupReducer = ( state = { isShown: false, mode: null, data: null}, action ) => {
   switch( action.type ) {
     case 'SHOW_POPUP':
       return {
         isShown: true,
+        mode: action.mode,
         data: action.data,
       };
     case 'HIDE_POPUP':
@@ -55,6 +64,7 @@ export default () =>
   combineReducers({
     updateScene: updateSceneReducer,
     updateMouse: updateMouseReducer,
+    cameraDirection: cameraDirectionReducer,
     menu: menuReducer,
     popup: popupReducer,
     threeDImages,

@@ -29,6 +29,7 @@ const Save = () => {
           z: x.object.rotation.z
         },
         scale: x.object.scale.x,
+        slides: x.slides,
       };
     })
 

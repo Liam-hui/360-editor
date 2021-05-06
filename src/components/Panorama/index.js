@@ -27,6 +27,7 @@ PANOLENS.Viewer.prototype.getPosition = function () {
 export let panorama = null;
 export let viewer = null;
 export let camera = null;
+export const roomSize = 3500;
 
 const mouse = new THREE.Vector2();
 const frustum = new THREE.Frustum();
@@ -53,6 +54,9 @@ export const getElementStyle = (object) => {
 }
 
 const updateScene = () => {
+
+  store.dispatch({type: 'UPDATE_CAMERA_DIRECTION', direction:'front'})
+
   camera.updateMatrix();
   camera.updateMatrixWorld();
   frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse)); 
@@ -104,7 +108,19 @@ export default function Panorama() {
 
       menuRef.current.hide();
   
-      if(clicked) {
+      // open image slider if click on 3d image
+      const highlightedId = store.getState().threeDImages.highlightedId;
+      if (highlightedId) {
+        store.dispatch({
+          type: 'SHOW_POPUP',
+          mode: 'imagesSlides',
+          data: {
+            type: '3dImages',
+            id: highlightedId,
+          }
+        }) 
+      }
+      else if(clicked) {
         menuRef.current.show()
       }
       else {

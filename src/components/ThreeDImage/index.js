@@ -14,7 +14,7 @@ const Slider = (props) => {
 
   const [value, setValue] = useState(0)
 
-  const { update, onMouseDown } = props;
+  const { update, onMouseDown, label } = props;
 
   const onChange = (e) => {
     setValue(e.target.value);
@@ -25,17 +25,26 @@ const Slider = (props) => {
     setValue(0);
   }
 
-
   return(
-    <input className="slider" type="range" min="-100" max="100" value={value} onMouseDown={onMouseDown} onMouseUp={onMouseUp} onChange={onChange}></input>
+    <div className='slider'>
+      <input type="range" min="-100" max="100" value={value} onMouseDown={onMouseDown} onMouseUp={onMouseUp} onChange={onChange}></input>
+      {label &&
+        <div className='sliderThumb' style={{transform: `translate(${71 * value / 100}px` }}>
+          <div>
+            {label.toUpperCase()}
+          </div>
+        </div>
+      }
+    </div>
   )
 }
 
 const ThreeDImage = (props) => {
 
   const { id, data } = props;
-  const { object } = data;
+  const { object, slides } = data;
   const isHighlighted = useSelector(state => state.threeDImages.highlightedId == id);
+  const [isHover, setIsHover] = useState(false);
 
   // update position
   const updateScene = useSelector(state => state.updateScene);
@@ -68,6 +77,7 @@ const ThreeDImage = (props) => {
   }
 
   const updateTranslate = (value, axis) => {
+
     object.position.x = tempValue.x;
     object.position.y = tempValue.y;
     object.position.z = tempValue.z;
@@ -79,7 +89,7 @@ const ThreeDImage = (props) => {
     else if (axis == 'y')
       object.translateY(amount);
     else if (axis == 'z')
-      object.translateZ(amount);
+      object.translateZ(amount);    
   }
 
   const updateRotate = (value, axis) => {
@@ -111,7 +121,12 @@ const ThreeDImage = (props) => {
 
   return (
 
-    <div className="threeDImageEditorWrapper centerFlex" style={style}>
+    <div 
+      className="threeDImageEditorWrapper centerFlex" 
+      style={style}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
+    >
 
     {isEditorShown &&
       <div className="threeDImageEditorContainer">
@@ -120,28 +135,34 @@ const ThreeDImage = (props) => {
         <Slider 
           onMouseDown={() => setTemp('translate')}
           update={(value) => updateTranslate(value, 'x')} 
+          label='x'
         />
         <Slider 
           onMouseDown={() => setTemp('translate')}
           update={(value) => updateTranslate(value, 'y')} 
+          label='y'
         />
         <Slider 
           onMouseDown={() => setTemp('translate')}
           update={(value) => updateTranslate(value, 'z')} 
+          label='z'
         />
 
         <div className="threeDImageEditorLabel">Rotate:</div>
         <Slider 
           onMouseDown={() => setTemp('rotate')}
           update={(value) => updateRotate(value, 'x')} 
+          label='x'
         />
         <Slider 
           onMouseDown={() => setTemp('rotate')}
           update={(value) => updateRotate(value, 'y')} 
+          label='y'
         />
         <Slider 
           onMouseDown={() => setTemp('rotate')}
           update={(value) => updateRotate(value, 'z')} 
+          label='z'
         />
 
         <div className="threeDImageEditorLabel">Scale:</div>
@@ -155,8 +176,9 @@ const ThreeDImage = (props) => {
           onClick={ () => 
             store.dispatch({
               type: 'SHOW_POPUP' ,
+              mode: 'uploadImage',
               data: {
-                mode: 'update3dImage',
+                action: 'update3dImage',
                 id: id,
               }
             }) 
@@ -165,15 +187,32 @@ const ThreeDImage = (props) => {
           CHANGE IMAGE
         </div>
 
-        <i onClick={ () => setIsEditorShown(false) } class="closethreeDImageEditorButton material-icons">close</i>
+        <i 
+          class="closethreeDImageEditorButton material-icons"
+          onClick={ () => {
+            setIsEditorShown(false);
+            const newStyle = getElementStyle(object);
+            if (newStyle != null) setStyle(newStyle);
+          }} 
+        >
+          close
+        </i>
 
       </div> 
     }
 
-    {isHighlighted && !isEditorShown&&
+    { (isHighlighted || isHover) && !isEditorShown &&
       <div class="threeDImageEditorButtonWrapper">
-        <i onClick={ () => setIsEditorShown(true) } class="threeDImageEditorButton material-icons">edit</i>
-        <i onClick={ () => store.dispatch({type: 'REMOVE_THREE_D_IMAGE', id: id}) } class="threeDImageEditorButton material-icons">delete</i>
+        <i 
+          class="threeDImageEditorButton material-icons"
+          onClick={ () => {
+            setIsHover(false);
+            setIsEditorShown(true);
+          }} 
+        >
+          edit
+        </i>
+        <i onClick={ () => store.dispatch({type: 'REMOVE_THREE_D_IMAGE_REQUEST', id: id}) } class="threeDImageEditorButton material-icons">delete</i>
       </div>
     }
 

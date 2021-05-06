@@ -42,9 +42,9 @@ const Info = (props) => {
             <i 
               onClick={ () => 
                 store.dispatch({
-                  type: 'SHOW_POPUP' ,
+                  type: 'SHOW_POPUP',
+                  mode: 'editInfo',
                   data: {
-                    mode: 'editInfo',
                     id: id,
                     text: text,
                   }

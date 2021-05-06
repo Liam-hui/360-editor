@@ -1,18 +1,19 @@
 import { createReducer, createActions } from 'reduxsauce';
-import { panorama } from '@/components/Panorama'
+import { panorama, roomSize } from '@/components/Panorama'
 
 const THREE = window.THREE;
 const textureLoader = new THREE.TextureLoader();
 textureLoader.crossOrigin = '*';
-const ROOM_SIZE = 3500;
 
 const { Types, Creators } = createActions({
   initThreeDImages : ['data'],
   addThreeDImage: ['image', 'position'],
   updateThreeDImage: ['id', 'image'],
+  removeThreeDImageRequest: ['id'],
   removeThreeDImage: ['id'],
   highlightThreeDImage: ['id'],
   unhighlightThreeDImage: [],
+  addThreeDImageSlides: ['id', 'images']
 });
 
 export const ThreeDImagesTypes = Types;
@@ -34,7 +35,10 @@ const initThreeDImages = (state, { data } ) => {
     const position = new THREE.Vector3(image.position.x, image.position.y, image.position.z)
     const rotation = new THREE.Vector3(image.rotation.x, image.rotation.y, image.rotation.z)
     const newImage = createThreeDImage(image, position, rotation, image.scale);
-    newData[nextId] = newImage;
+    newData[nextId] = {
+      ...newImage,
+      slides: image.slides
+    };
     nextId ++;
   }
 
@@ -88,10 +92,9 @@ const updateThreeDImage = (state, { id, image } ) => {
 
 const removeThreeDImage = (state, { id } ) => {
 
-  panorama.remove(state.data[id].object);
-
   const data_ = {...state.data}
   delete data_[id];
+
   return {
     ...state,
     data: data_
@@ -120,6 +123,20 @@ const unhighlightThreeDImage = (state) => {
   };
 }
 
+const addThreeDImageSlides = (state, {id, images} ) => {
+
+  return {
+    ...state,
+    data: {
+      ...state.data,
+      [id]: {
+        ...state.data[id],
+        slides: state.data[id].slides.concat(images),
+      }
+    },
+  };
+}
+
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.INIT_THREE_D_IMAGES]: initThreeDImages,
   [Types.ADD_THREE_D_IMAGE]: addThreeDImage,
@@ -127,6 +144,7 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.REMOVE_THREE_D_IMAGE]: removeThreeDImage,
   [Types.HIGHLIGHT_THREE_D_IMAGE]: highlightThreeDImage,
   [Types.UNHIGHLIGHT_THREE_D_IMAGE]: unhighlightThreeDImage,
+  [Types.ADD_THREE_D_IMAGE_SLIDES]: addThreeDImageSlides,
 });
 
 const createThreeDImage = (image, position, rotation, scale) => {
@@ -153,22 +171,22 @@ const createThreeDImage = (image, position, rotation, scale) => {
     object.rotation.z = rotation.z;
   }
   else {
-    if (position.y > ROOM_SIZE) {
+    if (position.y > roomSize) {
       object.rotateX( Math.PI * 0.5 )
     }
-    else if (position.y < -ROOM_SIZE) {
+    else if (position.y < -roomSize) {
       object.rotateX( - Math.PI * 0.5 )
     }
-    else if (position.x < -ROOM_SIZE) {
+    else if (position.x < -roomSize) {
       object.rotateY( Math.PI * 0.5 )
     }
-    else if (position.x > ROOM_SIZE) {
+    else if (position.x > roomSize) {
       object.rotateY( - Math.PI * 0.5 )
     }
-    else if (position.z > ROOM_SIZE) {
+    else if (position.z > roomSize) {
       object.rotateY( Math.PI )
     }
-    // else if (position.z < -ROOM_SIZE) {
+    // else if (position.z < -roomSize) {
     //   space = 'front';
     // }
   }
@@ -187,6 +205,7 @@ const createThreeDImage = (image, position, rotation, scale) => {
     width: image.width,
     height: image.height,
     object: object,
+    slides: [],
   }
 
   return newImage;

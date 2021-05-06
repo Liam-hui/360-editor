@@ -1,13 +1,13 @@
 import {
   all,
-  // takeLatest,
+  takeLatest,
 } from 'redux-saga/effects';
 
-// import { SessionTypes } from '../ducks/session';
-// import { getSessionRequest } from './session';
+import { ThreeDImagesTypes } from '../ducks/threeDImages';
+import { removeThreeDImageRequest } from './threeDImages';
 
 export default function* rootSaga() {
   yield all([
-    // takeLatest(SessionTypes.GET_SESSION_REQUEST, getSessionRequest),
+    takeLatest(ThreeDImagesTypes.REMOVE_THREE_D_IMAGE_REQUEST, removeThreeDImageRequest),
   ]);
 }

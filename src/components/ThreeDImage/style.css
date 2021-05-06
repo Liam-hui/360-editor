@@ -1,15 +1,17 @@
 .threeDImageEditorWrapper {
     position: absolute;
-    pointer-events: auto;
     width: 100px;
     height: 100px;
+}
+
+.threeDImageEditorWrapper:hover {
+    z-index: 99;
 }
 
 .threeDImageEditorContainer {
     position: absolute;
     top: 50px;
     left: 50px;
-    width: 160px;
     padding: 10px;
     border-radius: 13px;
     background-color: white;
@@ -34,6 +36,7 @@
     text-shadow: 0 0 5px #AAAAAA !important;
     margin: 0 10px;
     cursor: pointer;
+    pointer-events: auto;
 }
 
 .closethreeDImageEditorButton {
@@ -52,13 +55,35 @@
 
 .slider {
     display: block;
+    position: relative;
+    width: 160px;
+    height: 20px;
+    margin: 5px 0;
 }
 
+.sliderThumb {
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    /* border-radius: 7px; */
+    /* background: red; */
+    /* opacity: 0.5; */
+    top: 1.5px;
+    left: 71px;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+}
+
+
 input[type=range] {
-    height: 20px;
+    height: '100%';
     -webkit-appearance: none;
-    margin: 5px 0;
     width: 100%;
+    margin: 0;
 }
 
 input[type=range]:focus {
@@ -74,13 +99,18 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 input[type=range]::-webkit-slider-thumb {
-    height: 14px;
-    width: 14px;
-    border-radius: 7px;
+    content: "asdf";
+    height: 18px;
+    width: 18px;
+    border-radius: 9px;
     background: #5793fb;
     cursor: pointer;
     -webkit-appearance: none;
-    margin-top: -4px;
+    margin-top: -5px;
+}
+
+input[type=range]::-webkit-slider-thumb::after {
+    content: "asdf";
 }
 
 input[type=range]:focus::-webkit-slider-runnable-track {
@@ -96,13 +126,13 @@ input[type=range]::-moz-range-track {
 }
 
 input[type=range]::-moz-range-thumb {
-    height: 14px;
-    width: 14px;
-    border-radius: 7px;
+    height: 18px;
+    width: 18px;
+    border-radius: 9px;
     background: #5793fb;
     cursor: pointer;
     -webkit-appearance: none;
-    margin-top: -4px;
+    margin-top: -5px;
 }
 
 input[type=range]::-ms-track {
@@ -114,13 +144,13 @@ input[type=range]::-ms-track {
 }
 
 input[type=range]::-ms-thumb {
-    height: 14px;
-    width: 14px;
-    border-radius: 7px;
+    height: 18px;
+    width: 18px;
+    border-radius: 9px;
     background: #5793fb;
     cursor: pointer;
     -webkit-appearance: none;
-    margin-top: -4px;
+    margin-top: -5px;
 }
 
 /* input[type=range]::-ms-fill-lower {

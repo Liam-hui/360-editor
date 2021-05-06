@@ -18,7 +18,6 @@ const Slider = (props) => {
   useEffect(() => {
 
     if (mode == 'translate') {
-      console.log()
       object.position[axis] = position[axis] + direction * value/100 * TRANSLATION_MAX;
     }
     else if (mode == 'rotate') {
