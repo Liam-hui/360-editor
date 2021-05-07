@@ -134,6 +134,8 @@ export default function Panorama() {
       
     } );
 
+    addVideo();
+
   }
 
   useEffect(() => {
@@ -175,5 +177,51 @@ export default function Panorama() {
       </div>
     </>
   )
+
+}
+
+
+const addVideo = () => {
+
+  const video = document.createElement('video');
+
+  video.crossOrigin = "anonymous";
+  video.src = `https://demo.solutionforest.net/dark-test/test_video.mp4`;
+
+  video.onloadedmetadata = () => {
+
+    video.autoplay = true; 
+    video.loop = true;
+    video.muted = true;
+    video.setAttribute("muted", true);
+    video.setAttribute("playsinline", true);
+
+    video.play().then(
+      () => {
+        const videoTexture = new THREE.VideoTexture(video);
+        const videoMaterial =  new THREE.MeshBasicMaterial( {map: videoTexture, side: THREE.FrontSide, toneMapped: false} );  
+      
+        const object = new THREE.Mesh(
+          new THREE.BoxGeometry(
+            1280,
+            720,
+            1,
+          ), 
+          videoMaterial
+        );
+
+        object.scale.set(
+          1.45,
+          1.45,
+          1,
+        )
+    
+        object.position.copy( new THREE.Vector3(-1504, 400, -4400) );
+        panorama.add(object);
+      }
+    );
+  
+
+  }
 
 }

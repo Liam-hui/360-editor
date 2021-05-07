@@ -153,7 +153,7 @@ const createThreeDImage = (image, position, rotation, scale) => {
     new THREE.Vector3(-4400, -4400, -4400),
     new THREE.Vector3(4400, 4400, 4400)
   ); 
-
+   
   const object = new THREE.Mesh(
     new THREE.BoxGeometry(
       image.width,
@@ -212,7 +212,8 @@ const createThreeDImage = (image, position, rotation, scale) => {
  
 }
 
-const material = (imageUrl, lightenAmount) => new THREE.ShaderMaterial({
+
+const material = ( imageUrl, lightenAmount ) => new THREE.ShaderMaterial({
 
   uniforms: {  
     texture: { type: "t", value: textureLoader.load(imageUrl) },
