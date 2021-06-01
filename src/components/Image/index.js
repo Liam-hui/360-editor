@@ -62,7 +62,7 @@ const Image = (props) => {
 
   return (
 
-    <div className="imageWrapper" style={style}>
+    <div className="image-wrapper" style={style}>
 
       <img src={base64} style={{width: width * 0.2, height: height * 0.2}}/>
 

@@ -1,4 +1,4 @@
-.darkOverlay {
+.dark-overlay {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -14,12 +14,12 @@
     pointer-events: none;
 }
 
-.darkOverlay.isVisible {
+.dark-overlay.is-visible {
     opacity: 1;
     pointer-events: auto;
 }
 
-.darkOverlayClickArea {
+.dark-overlay-click-area {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -27,7 +27,7 @@
     left: 0;
 }
 
-.popupContainer {
+.popup-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -38,22 +38,27 @@
     transition: transform 0.4s ease-in-out,
 }
 
-.darkOverlay.isVisible .popupContainer {
+.popup-container.no-bg {
+    background-color: transparent;
+    padding: 0;
+}
+
+.dark-overlay.is-visible .popup-container {
     transform: translateY(0);
 }
 
-.popupTitle {
+.popup-title {
     color: #5793fb;
     font-size: 26px;
     margin-bottom: 18px;
 }
 
-.popupButton {
+.popup-button {
     font-size: 15px !important;
 }
 
 /* edit info */
-.infoTextInput {
+.info-textinput {
     border: 2px #5793fb solid;
     border-radius: 5px;
     resize: none;
@@ -64,65 +69,9 @@
     padding: 10px;
 }
 
-.infoTextInput:focus {
+.info-textinput:focus {
     border: 2px #5793fb solid;
     border-radius: 5px;
     outline: none;
   }
 
-/* upload image */
-.uploadImageButton {
-    /* font-size: 21px !important; */
-}
-
-#uploadImage{
-    opacity: 0;
-    position: absolute;
-    z-index: -1;
-}
-
-.imagePreview {
-    width: 400px;
-    height: 400px;
-    object-fit: contain;
-    margin-bottom: 20px;
-}
-
-/* image slider */
-
-.imageSlides {
-    width: 600px;
-}
-
-.swiper-container {
-    width: 600px;
-    height: 460px;
-}
-  
-.swiper-slide {
-    text-align: center;
-    font-size: 18px;
-    background: #fff;
-
-    /* Center slide text vertically */
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    -webkit-justify-content: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
-    align-items: center;
-}
-
-.swiper-slide img {
-    display: block;
-    width: 100%;
-    height: 400px;
-    object-fit: contain;
-}
-  

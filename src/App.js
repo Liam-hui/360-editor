@@ -5,7 +5,7 @@ import store from './store';
 
 import Panorama from '@/components/Panorama';
 import Popup from '@/components/Popup';
-import Save from '@/components/Save';
+import ControlBar from '@/components/ControlBar';
 
 import './style.css';
 import './animate.css';
@@ -15,7 +15,7 @@ function App() {
   return (
     <Provider store={store}>
       <Panorama/>
-      <Save/>
+      <ControlBar/>
       <Popup/>
     </Provider>
   );

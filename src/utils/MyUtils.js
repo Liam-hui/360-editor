@@ -1,18 +1,40 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
+import api from '@/services/api';
 
-export const useScript = url => {
-  useEffect(() => {
-    const script = document.createElement('script');
+export const uniqueId = () => {
+  return '_' + Math.random().toString(36).substr(2, 9) +  Date.now();
+}
 
-    script.src = url;
-    script.async = true;
+export const uploadFiles = async (files) => {
 
-    document.body.appendChild(script);
+  return new Promise( async (resolve, reject) => {
 
-    return () => {
-      document.body.removeChild(script);
-    }
-  }, [url]);
-};
+    const urls = await Promise.all(
+      files.map( async file => {
+        try {
+          const response = await api.get('infinityVisionList?page=1', // uploadFile 
+            // {
+    
+            // },
+            // {
+            //   headers: { 'Content-Type': 'multipart/form-data'  },
+            // }
+          )
+          return {
+            ... file,
+            base64: null,
+            url: "http://media.comicbook.com/2018/03/avengers-infinity-war-poster-1093756.jpeg"
+          }
+        } catch(error) {
+          reject();
+          throw error;
+        }
+      })
+    );
+
+    resolve(urls);
+  });
+
+}
 
 

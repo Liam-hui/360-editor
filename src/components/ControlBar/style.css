@@ -1,0 +1,41 @@
+.control-bar {
+    position: absolute;
+    bottom: 22px;
+    right: 22px;
+    display: flex;
+    align-items: center;
+}
+
+.control-bar-button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    color: white;
+    font-size: 30px;
+    transition: transform 0.2s ease-in-out;
+    margin: 0 7px;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
+}
+
+.control-bar-button:hover {
+    color: white;
+    transform: scale(1.2);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8) !important;
+}
+
+.control-bar-button:hover::after {
+    content: var(--tipText);
+    font-family: "Quicksand", sans-serif;
+    font-weight: normal;
+    text-align: center;
+    position: absolute;
+    background-color: white;
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 13px;
+    color:black;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translate(-50%);
+}
+

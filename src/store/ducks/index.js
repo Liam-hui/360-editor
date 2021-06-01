@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
-import { reducer as threeDImages } from './threeDImages';
-import { reducer as images } from './images';
-import { reducer as infos } from './infos';
+import { reducer as scenes } from './scenes';
+import { reducer as threeDItems} from './threeDItems';
+import { reducer as twoDItems} from './twoDItems';
+import { reducer as links } from './links';
 
 const updateSceneReducer = ( state = 0, action ) => {
   switch( action.type ) {
@@ -19,37 +20,13 @@ const updateMouseReducer = ( state = 0, action ) => {
   }
 }
 
-const cameraDirectionReducer = ( state = 'front', action ) => {
-  switch( action.type ) {
-    case 'UPDATE_CAMERA_DIRECTION':
-      return action.direction ;
-    default: return state;
-  }
-}
-
-const menuReducer = ( state = { isShown: false, object: null }, action ) => {
-  switch( action.type ) {
-    case 'SHOW_MENU':
-      return {
-        object: action.object,
-        isShown: true,
-      };
-    case 'HIDE_MENU':
-      return {
-        object: null,
-        isShown: false,
-      }
-    default: return state;
-  }
-}
-
-const popupReducer = ( state = { isShown: false, mode: null, data: null}, action ) => {
+const popupReducer = ( state = { isShown: false, mode: null, payload: null}, action ) => {
   switch( action.type ) {
     case 'SHOW_POPUP':
       return {
         isShown: true,
         mode: action.mode,
-        data: action.data,
+        payload: action.payload,
       };
     case 'HIDE_POPUP':
       return {
@@ -64,10 +41,9 @@ export default () =>
   combineReducers({
     updateScene: updateSceneReducer,
     updateMouse: updateMouseReducer,
-    cameraDirection: cameraDirectionReducer,
-    menu: menuReducer,
     popup: popupReducer,
-    threeDImages,
-    images,
-    infos
+    scenes,
+    threeDItems,
+    twoDItems,
+    links
   });

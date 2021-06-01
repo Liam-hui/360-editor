@@ -1,5 +1,4 @@
 import { createReducer, createActions } from 'reduxsauce';
-import { panorama } from '@/components/Panorama'
 
 const THREE = window.THREE;
 
@@ -43,7 +42,7 @@ const updateImage = (state, { id, image } ) => {
 
 const removeImage = (state, { id } ) => {
 
-  panorama.remove(state.data[id].object);
+  // panorama.remove(state.data[id].object);
 
   const data_ = {...state.data}
   delete data_[id];
@@ -65,7 +64,7 @@ const createImage = (image, position) => {
   const object = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
   object.position.copy( position );
 
-  panorama.add(object);
+  // panorama.add(object);
 
   const newImage = {  
     width: image.width,

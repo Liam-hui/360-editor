@@ -1,25 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import store from '@/store';
-import { useSelector } from "react-redux";
 
 import './style.css';
-import { getElementStyle } from '@/components/Panorama'
 
-const Info = (props) => {
+const Info = ({ id, data }) => {
 
-  const { id, data } = props;
-  const { object, text } = data;
-
-  // update position
-  const updateScene = useSelector(state => state.updateScene);
-  const [style, setStyle] = useState({});
-  useEffect(() => {
-    if (object != null ) {
-      const newStyle = getElementStyle(object);
-      if (newStyle != null) setStyle(newStyle);
-    }
-  }, [updateScene]);
-
+  const { text } = data;
 
   const innerRef = useRef();
   const [innerHeight, setInnerHeight] = useState(40);
@@ -28,33 +14,44 @@ const Info = (props) => {
     setInnerHeight(innerRef.current.clientHeight)
   }, [innerRef.current?.clientHeight]);
 
+  const deleteItem = () => {
+    store.dispatch({
+      type: 'SHOW_POPUP' ,
+      mode: 'showWarning',
+      payload: {
+        text: 'Are you sure you want to delete this item？',
+        confirm: () => store.dispatch({ type: 'REMOVE_TWO_D_ITEM_REQUEST', id: id })
+      }
+    }) 
+  }
+
   return (
-    <div className="infoWrapper" style={style}>
-      <div className="infoContainer" style={{"--inner-height": `${innerHeight}px`}}>
-        <div className="infoIcon centerFlex">
+    <div className="info-wrapper">
+      <div className="info-container" style={{"--inner-height": `${innerHeight}px`}}>
+        <div className="info-icon center-flex">
           <i class='fas fa-info' style={{fontSize: 22, color: '#5793fb'}}></i>
         </div>
-        <div className="infoInner" ref={innerRef}>
+        <div className="info-inner" ref={innerRef}>
      
-          <div className="infoText">{text == '' ? 'Press the edit button to add text' : text}</div>
+          <div className="info-text">{text == '' ? 'Press the edit button to add text' : text}</div>
  
-          <div class="infoButtonWrapper">
+          <div class="info-button-wrapper">
             <i 
               onClick={ () => 
                 store.dispatch({
                   type: 'SHOW_POPUP',
                   mode: 'editInfo',
-                  data: {
+                  payload: {
                     id: id,
                     text: text,
                   }
                 }) 
               }
-              class="infoButton material-icons"
+              class="info-button material-icons"
             >
               edit
             </i>
-            <i onClick={ () => store.dispatch({type: 'REMOVE_INFO', id: id}) } class="infoButton material-icons">delete</i>
+            <i onClick={deleteItem} class="info-button material-icons">delete</i>
           </div>
     
         </div>

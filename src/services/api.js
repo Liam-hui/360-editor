@@ -1,18 +1,12 @@
 import axios from 'axios';
-import storage from '@/utils/storage';
 
 const api = axios.create({
-  baseURL: 'https://api.github.com',
+  // baseURL: window.host_url,
+  baseURL: 'http://dl.media/api/v1/',
 });
 
 api.interceptors.request.use((config) => {
-  const token = storage.getToken();
-
   const headers = { ...config.headers };
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
 
   return { ...config, headers };
 });

@@ -2,95 +2,61 @@ import React, { useState, useEffect, useImperativeHandle } from 'react';
 import store from '@/store';
 import { useSelector } from "react-redux";
 
+import { viewer, getElementStyle, createObject } from '@/components/Panorama'
+
 import './style.css';
-import { panorama, viewer, getElementStyle } from '@/components/Panorama'
 
-const THREE = window.THREE;
+const Menu = React.forwardRef( ( props, ref ) => {
 
-const DATA = [
-  '3dImage',
-  'image',
-  'info',
-]
+  const [ object, setObject ] = useState( null );
+  const [ style, setStyle ] = useState( {} );
 
-const Menu = React.forwardRef( (props, ref) => {
+  const currentSceneId = useSelector( state => state.scenes.currentId );
+  const panorama = useSelector( state => state.scenes.data[ currentSceneId ]?.panorama );
 
-  const updateScene = useSelector(state => state.updateScene);
-
-  const [object, setObject] = useState(null);
-  const [style, setStyle] = useState({});
-
-  useEffect(() => {
-    if (object != null ) {
-      const newStyle = getElementStyle(object);
-      if (newStyle != null) setStyle(newStyle);
-    }
-  }, [updateScene]);
-
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle( ref, () => ( {
     show: () => {
-      const material = new THREE.MeshStandardMaterial();
-      const object = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
-      const position = viewer.getPosition();
-      object.position.copy( position );
+      const object = createObject( viewer.getPosition() );
+
       panorama.add( object );
-      const newStyle = getElementStyle(object);
-      if (newStyle != null) setStyle(newStyle)
+
+      const newStyle = getElementStyle( object );
+      if ( newStyle != null ) {
+        setStyle(newStyle)
+      }
+
       setObject(object);
     },
     hide: () => {
-      if (object != null) {
+      if ( object != null ) {
         panorama.remove( object );
-        setObject(null);
+        setObject( null );
       }
     }
-  }));
+  } ) );
 
-  const Button = ({type}) => {
-
-    const label = {
-      '3dImage': 'ADD 3D IMAGE',
-      'image': 'ADD IMAGE',
-      'info': 'ADD INFO',
-    }[type]
-
-    const onClick = () => {
-
-      switch( type ) {
-        case 'image':
-          store.dispatch({
-            type: 'SHOW_POPUP' ,
-            mode: 'uploadImage',
-            data: {
-              action: 'addImage', 
-              position: object.position,
-            }
-          }) 
-          break;
-        case '3dImage':
-          store.dispatch({
-            type: 'SHOW_POPUP' ,
-            mode: 'uploadImage',
-            data: {
-              action: 'add3dImage', 
-              position: object.position,
-            }
-          }) 
-          break;
-        case 'info':
-          store.dispatch({
-            type: 'ADD_INFO', 
-            position: object.position
-          })
-          break;
-      }
-
-      ref.current.hide();
+  // update menu position
+  const updateScene = useSelector( state => state.updateScene );
+  useEffect( () => {
+    if ( object != null ) {
+      const newStyle = getElementStyle( object );
+      if ( newStyle != null ) 
+        setStyle( newStyle );
     }
+  }, [ updateScene ] );
 
 
+  const Button = ( { label, onClick } ) => {
     return (
-      <div onClick={onClick} className="button centerFlex">{label}</div>
+      <div  
+        className="button center-flex" 
+        onClick={ () => {
+          onClick();
+          ref.current.hide();
+        } }
+      >
+        { label }
+      </div>
     )
   }
 
@@ -98,9 +64,68 @@ const Menu = React.forwardRef( (props, ref) => {
     <>
       {object != null && 
         <div id="menu" style={style}>
-          <i className='far fa-dot-circle' style={{fontSize:15, color: '#5793fb'}}></i>
-          <div id="menuContainer">
-            {DATA.map(x => <Button type={x}/>)}
+
+          <i 
+            className='far fa-dot-circle' 
+            style={{ fontSize: 15, color: '#5793fb' }}
+          />
+
+          <div id="menu-container">
+
+            <Button
+              label='ADD IMAGE'
+              onClick={() => {
+                store.dispatch({
+                  type: 'SHOW_POPUP' ,
+                  mode: 'uploadImage',
+                  payload: {
+                    action: 'add3dImage', 
+                    position: object.position,
+                  }
+                }) 
+              }}
+            />
+
+            <Button
+              label='ADD VIDEO'
+              onClick={() => {
+                store.dispatch( {
+                  type: 'SHOW_POPUP' ,
+                  mode: 'uploadVideo',
+                  payload: {
+                    action: 'add3dVideo', 
+                    position: object.position,
+                  }
+                }) 
+              }}
+            />
+
+            <Button
+              label='ADD INFO'
+              onClick={() => {
+                store.dispatch( { 
+                  type: 'ADD_TWO_D_ITEM_REQUEST', 
+                  payload: {
+                    type: 'info',
+                    position: object.position
+                  }
+                })
+              }}
+            />
+
+            <Button
+              label='ADD LINK'
+              onClick={() => {
+                store.dispatch({
+                  type: 'ADD_THREE_D_ITEM_REQUEST',
+                  payload: {
+                    type: 'link',
+                    position: object.position,
+                  }
+                })
+              }}
+            />
+
           </div>
         </div>
       }
@@ -110,5 +135,5 @@ const Menu = React.forwardRef( (props, ref) => {
 })
 
 
-export default  React.memo(Menu);
+export default React.memo(Menu);
 
