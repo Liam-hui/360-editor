@@ -1,40 +1,57 @@
-// import { useEffect } from 'react';
 import api from '@/services/api';
 
 export const uniqueId = () => {
   return '_' + Math.random().toString(36).substr(2, 9) +  Date.now();
 }
 
-export const uploadFiles = async (files) => {
-
+export const uploadFile = async (file) => {
   return new Promise( async (resolve, reject) => {
-
-    const urls = await Promise.all(
-      files.map( async file => {
-        try {
-          const response = await api.get('infinityVisionList?page=1', // uploadFile 
-            // {
+    let body = new FormData();
+    body.append('image', file);
     
-            // },
-            // {
-            //   headers: { 'Content-Type': 'multipart/form-data'  },
-            // }
-          )
-          return {
-            ... file,
-            base64: null,
-            url: "http://media.comicbook.com/2018/03/avengers-infinity-war-poster-1093756.jpeg"
-          }
-        } catch(error) {
-          reject();
-          throw error;
-        }
+    api.post(
+      'uploadFile', 
+      body
+    )
+      .then(response => {
+        if (response?.data?.data)
+          resolve(response.data.data)
+        else reject();
       })
-    );
-
-    resolve(urls);
-  });
-
+      .catch(error => {
+        console.error(error)
+        reject();
+      })
+  })
 }
 
+// export const uploadFiles = async (files) => {
 
+//   return new Promise( async (resolve, reject) => {
+
+//     const urls = await Promise.all(
+//       files.map( async file => {
+//         try {
+//           let body = new FormData();
+//           body.append('image', file);
+//           const response = await api.post(
+//             'uploadFile', 
+//             body
+//           );
+          
+//           if (response?.data?.data) {
+//             return window.cdn + response?.data?.data;
+//           }
+//           else reject();
+          
+//         } catch(error) {
+//           reject();
+//           throw error;
+//         }
+//       })
+//     );
+
+//     resolve(urls);
+//   });
+
+// }

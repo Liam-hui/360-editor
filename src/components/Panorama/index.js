@@ -27,7 +27,7 @@ PANOLENS.Viewer.prototype.getPosition = function () {
 export let viewer = null;
 export let camera = null;
 export const roomSize = 3500;
-export const roomLimit = 4900;
+export const roomLimit = 3500;
 
 const mouse = new THREE.Vector2();
 const frustum = new THREE.Frustum();
@@ -117,10 +117,7 @@ export default function Panorama() {
     if (data?.scenes) {
       store.dispatch({ type:'INIT_SCENES_REQUEST', data: data });
     }
-    else {
-      store.dispatch({ type:'ADD_SCENE' });
-    }
-
+   
   }
 
   useEffect(() => {
@@ -217,7 +214,7 @@ export default function Panorama() {
     }
   }, [scenes.isEntered]);
 
-  //check mouse point at item
+  // check mouse over item
   const raycaster = new THREE.Raycaster();
   const getIntersectId = () => {
     raycaster.setFromCamera(mouse, camera);
@@ -245,6 +242,8 @@ export default function Panorama() {
   useEffect(() => {
     const id = getIntersectId();
 
+    document.getElementById("root").style.cursor = id == null ? "unset" : "pointer";
+
     if (id != null && id != threeDItems.highlightedId) {
       store.dispatch({ type: 'HIGHLIGHT_THREE_D_ITEM_REQUEST', isHighlight: true, id: id });
     }
@@ -262,17 +261,17 @@ export default function Panorama() {
 
         <div id="loading-progress"/>
 
-        { 
+        { window.mode == 'admin' &&
           Object.entries(threeDItems.data)
             .filter(x => x[1].scene == scenes.currentId)
-            .map(x => <ThreeDItem id={x[0]} data={x[1]}/>) 
+            .map(x => <ThreeDItem key={x[0]} id={x[0]} data={x[1]}/>) 
         }
 
-        {
+        {/* {
           Object.entries(twoDItems.data)
             .filter(x => x[1].scene == scenes.currentId)
             .map(x => <TwoDItem id={x[0]} data={x[1]}/>)
-        }
+        } */}
 
         <Menu ref={menuRef}/>
 

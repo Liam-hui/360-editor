@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import store from '@/store';
 import { useSelector } from "react-redux";
-
 import { Menu, MenuItem } from '@material-ui/core';
-
-import './style.css';
 import { getElementStyle, limitPosition } from '@/components/Panorama'
 
 const THREE = window.THREE;
@@ -16,7 +13,7 @@ const Slider = (props) => {
 
   const [value, setValue] = useState(0)
 
-  const { update, onMouseDown, label } = props;
+  const { style, update, onMouseDown } = props;
 
   const onChange = (e) => {
     setValue(e.target.value);
@@ -27,16 +24,15 @@ const Slider = (props) => {
     setValue(0);
   }
 
+  const offset = style?.width? 64 : 71;
+
   return(
-    <div className='slider'>
+    <div className='three-d-editor-slider' style={style}>
+      <div className="three-d-editor-slider-track" style={{ transform: `scaleX(${value < 0 ? -1 : 1}) translateY(-50%)`}}>
+        <div className="three-d-editor-slider-progress" style={{ width: `${Math.abs(value) * 0.5}%`}}/>
+      </div>
+      <div className="three-d-editor-slider-thumb" style={{ transform: `translateX(${offset * value / 100 - 8}px) translateY(-50%)`}}/>
       <input type="range" min="-100" max="100" value={value} onMouseDown={onMouseDown} onMouseUp={onMouseUp} onChange={onChange}></input>
-      {label &&
-        <div className='slider-thumb' style={{ transform: `translate(${71 * value / 100}px` }}>
-          <div>
-            {label.toUpperCase()}
-          </div>
-        </div>
-      }
     </div>
   )
 }
@@ -44,7 +40,7 @@ const Slider = (props) => {
 const ThreeDItem = (props) => {
 
   const { id, data } = props;
-  const { object, type, slides } = data;
+  const { object, type } = data;
 
   const isHighlighted = useSelector(state => state.threeDItems.highlightedId == id);
 
@@ -136,6 +132,12 @@ const ThreeDItem = (props) => {
     }) 
   }
 
+  const closeEditor = () => {
+    setIsEditorShown(false);
+    const style = getElementStyle(object);
+    if (style != null) setStyle(style);
+  }
+
   return (
     <div 
       className="three-d-editor-wrapper center-flex" 
@@ -148,63 +150,82 @@ const ThreeDItem = (props) => {
     >
 
       {isEditorShown &&
-        <div className="three-d-editor-container">
+        <div className="three-d-editor">
 
-          <div className="three-d-editor-label">Translate:</div>
-          <Slider 
-            onMouseDown={() => setTemp('translate')}
-            update={(value) => updateTranslate(value, 'x')} 
-            label='x'
-          />
-          <Slider 
-            onMouseDown={() => setTemp('translate')}
-            update={(value) => updateTranslate(value, 'y')} 
-            label='y'
-          />
-          <Slider 
-            onMouseDown={() => setTemp('translate')}
-            update={(value) => updateTranslate(value, 'z')} 
-            label='z'
-          />
+          <span>Translate:</span>
+          <div className="row">
+            <span className="three-d-editor-slider-label">x</span>
+            <Slider 
+              onMouseDown={() => setTemp('translate')}
+              update={(value) => updateTranslate(value, 'x')} 
+            />
+          </div>
+          <div className="row">
+            <span className="three-d-editor-slider-label">y</span>
+            <Slider 
+              onMouseDown={() => setTemp('translate')}
+              update={(value) => updateTranslate(value, 'y')} 
+            />
+          </div>
+          <div className="row">
+            <span className="three-d-editor-slider-label">z</span>
+            <Slider 
+              onMouseDown={() => setTemp('translate')}
+              update={(value) => updateTranslate(value, 'z')} 
+            />
+          </div>
 
-          <div className="three-d-editor-label">Rotate:</div>
-          <Slider 
-            onMouseDown={() => setTemp('rotate')}
-            update={(value) => updateRotate(value, 'x')} 
-            label='x'
-          />
-          <Slider 
-            onMouseDown={() => setTemp('rotate')}
-            update={(value) => updateRotate(value, 'y')} 
-            label='y'
-          />
-          <Slider 
-            onMouseDown={() => setTemp('rotate') }
-            update={(value) => updateRotate(value, 'z')} 
-            label='z'
-          />
+          <span>Rotate:</span>
+          <div className="row">
+            <span className="three-d-editor-slider-label">x</span>
+            <Slider 
+              onMouseDown={() => setTemp('rotate')}
+              update={(value) => updateRotate(value, 'x')} 
+            />
+          </div>
+          <div className="row">
+            <span className="three-d-editor-slider-label">y</span>
+            <Slider 
+              onMouseDown={() => setTemp('rotate')}
+              update={(value) => updateRotate(value, 'y')} 
+            />
+          </div>
+          <div className="row">
+            <span className="three-d-editor-slider-label">z</span>
+            <Slider 
+              onMouseDown={() => setTemp('rotate') }
+              update={(value) => updateRotate(value, 'z')} 
+            />
+          </div>
 
-          <div className="three-d-editor-label">Scale:</div>
-          <Slider 
-            onMouseDown={() => setTemp('scale')}
-            update={updateScale} 
-          />
+          <span>Scale:</span>
+          <div className="row">
+            <span className="three-d-editor-slider-label" style={{ fontStyle: 'normal' }}>-</span>
+            <Slider 
+              style={{ width: 145 }}
+              onMouseDown={() => setTemp('scale')}
+              update={updateScale} 
+            />
+            <span className="three-d-editor-slider-label" style={{ fontStyle: 'normal', marginLeft: 8, marginRight: 0 }}>+</span>
+          </div>
 
-          {(type == 'image' || type == 'link') && 
+          {type == 'image' && 
             <div 
-              className="colored-button three-d-editor-large-button center-flex"
-              onClick={() => 
+              className="border-box-small pointer"
+              style={{ margin: '10px 0' }}
+              onClick={() => {
+                closeEditor();
                 store.dispatch({
                   type: 'SHOW_POPUP' ,
                   mode: 'uploadImage',
                   payload: {
-                    action: 'change3dImage', 
+                    action: 'update3dImage',
                     id: id,
                   }
                 }) 
-              } 
+              }} 
             >
-              CHANGE IMAGE
+              Edit Details
             </div>
           }
 
@@ -231,12 +252,8 @@ const ThreeDItem = (props) => {
           }
 
           <i 
-            class="closethree-d-editor-button material-icons"
-            onClick={() => {
-              setIsEditorShown(false);
-              const style = getElementStyle(object);
-              if (style != null) setStyle(style);
-            }} 
+            className="closethree-d-editor-button material-icons"
+            onClick={closeEditor} 
           >
             close
           </i>
@@ -245,10 +262,10 @@ const ThreeDItem = (props) => {
       }
 
       { (isHighlighted || isHover) && !isEditorShown &&
-        <div class="three-d-editor-buttonWrapper">
+        <div className="three-d-editor-buttonWrapper">
 
           <i 
-            class="three-d-editor-button material-icons"
+            className="three-d-editor-button material-icons"
             onClick={() => {
               setIsHover(false);
               setIsEditorShown(true);
@@ -257,8 +274,10 @@ const ThreeDItem = (props) => {
             edit
           </i>
 
+          {/* <img src={require('@/assets/icons/icon-edit.svg').default}/> */}
+
           <i
-            class="three-d-editor-button material-icons" 
+            className="three-d-editor-button material-icons" 
             onClick={deleteItem} 
           >
             delete

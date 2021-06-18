@@ -144,7 +144,9 @@ export function* setCameraAngle({ angle }) {
 }
 
 const createPanorama = (baseImage) => {
-  const panorama = new PANOLENS.ImagePanorama(baseImage);
+  const panorama = new PANOLENS.ImagePanorama(window.cdn + baseImage);
+
+  console.log(window.cdn + baseImage);
 
   const onEnter = () => {
     store.dispatch({ type: 'ENTER_SCENE', isEntered: true });

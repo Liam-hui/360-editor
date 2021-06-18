@@ -99,20 +99,30 @@ const ControlBar = () => {
       delete data.twoDItems[id].object;
     }
 
-    // api.post('scenes/save', 
-    //   {
-    //     "uuid": window.uuid,
-    //     "user": window.user,
-    //     // "name": "Scene Name Hellp",
-    //     // "base_image": "scenes/d503a9afdd02f9037b682f26a9757df1.jpg",
-    //     "scene": data
-    //   }
-    // )
-    // .then((response) => {
-    //   console.log(response);
-    // }, (error) => {
-    //   console.log(error);
-    // });
+    let body = new FormData();
+    body.append('uuid', window.uuid);
+    body.append('user', window.user);
+    body.append('name', window.name);
+    body.append('data', JSON.stringify(data) );
+    for (var pair of body.entries()) {
+      console.log(pair[0]+ ', ' + pair[1]); 
+    }
+    api.post(
+      'scenes/save', 
+      body
+    )
+      .then( (response) => {
+        console.log(response.data);
+        store.dispatch({
+          type: 'SHOW_POPUP' ,
+          mode: 'showMessage',
+          payload: {
+            text: 'Save Success!', 
+          }
+        }) 
+      }, (error) => {
+        console.error(error);
+      });
 
     // console.log(data);
     saveToLocalText(data);

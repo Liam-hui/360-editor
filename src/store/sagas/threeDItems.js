@@ -2,14 +2,13 @@ import { call, put, select } from 'redux-saga/effects';
 import store from '@/store';
 import { roomSize, limitPosition } from '@/components/Panorama'
 import { uniqueId } from '@/utils/MyUtils';
-
 import ThreeDItemsActions from '@/store/ducks/threeDItems';
 
 const THREE = window.THREE;
 const textureLoader = new THREE.TextureLoader();
 textureLoader.crossOrigin = '*';
 
-const DEFAULT_LINK_IMAGE_URL = 'http://www.freeiconspng.com/uploads/white-arrow-transparent-png-21.png';
+const LINK_IMAGE = require('@/assets/images/arrow.png').default
 
 export function* initThreeDItemsRequest({ data, scenes }) {
 
@@ -22,15 +21,14 @@ export function* initThreeDItemsRequest({ data, scenes }) {
 
     let video;
     if (item.type == 'video') {
-      console.log('here')
-      video = yield call(createVideoElement, item.url);
+      video = yield call(createVideoElement, window.cdn + item.url);
     }
 
     const ThreeDItem = createThreeDItem( 
       {
         init: true,
         type: item.type,
-        url: item.url,
+        url: item.type == 'image' ? item.images[0].url : item.url,
         position,
         rotation,
         scale: item.scale,
@@ -43,9 +41,14 @@ export function* initThreeDItemsRequest({ data, scenes }) {
     );
 
     ThreeDItems[id] = {
-      ...ThreeDItem,
-      ... item.target && { target : item.target},
-      ... item.slides && { slides: item.slides }
+      ... ThreeDItem,
+      ... item.type == 'link' && { target : item.target},
+      ... item.type == 'image' && { 
+        images: item.images,
+        title: item.title,
+        description: item.description,
+        link: item.link,
+      }
     };
 
   }
@@ -56,14 +59,13 @@ export function* initThreeDItemsRequest({ data, scenes }) {
 export function* addThreeDItemRequest({ payload }) {
   try {
 
-
     const { type, position } = payload;
 
     const id = uniqueId();
 
     let video;
     if (type == 'video') {
-      video = yield call(createVideoElement, payload.videoUrl);
+      video = yield call(createVideoElement, window.cdn + payload.videoUrl);
     }
 
     const threeDItem = createThreeDItem({
@@ -76,16 +78,18 @@ export function* addThreeDItemRequest({ payload }) {
         height: video.videoHeight 
       },
       ... type == 'image' && { 
-        url: payload.image.url,
-        width: payload.image.width, 
-        height: payload.image.height 
+        url: payload.images[0].url,
+        width: payload.images[0].width, 
+        height: payload.images[0].height,
       },
-      ... type == 'link' && { 
-        url: DEFAULT_LINK_IMAGE_URL,
-        width: 1000, 
-        height: 1000 
-      }
     })
+
+    if (type == 'image') {
+      threeDItem.images = payload.images
+      threeDItem.title = payload.title
+      threeDItem.description = payload.description
+      threeDItem.link = payload.link
+    }
 
     yield put( ThreeDItemsActions.addThreeDItem(id, threeDItem) );
 
@@ -101,25 +105,28 @@ export function* updateThreeDItemRequest({ id, payload }) {
     const threeDItem = state.threeDItems.data[id];
     let data = {};
 
-    if (payload.image) {
+    if (payload.images) {
 
       threeDItem.object.geometry.dispose();
       threeDItem.object.geometry = 
         new THREE.BoxGeometry(
-          payload.image.width,
-          payload.image.height,
+          payload.images[0].width,
+          payload.images[0].height,
           1,
         );
       
       threeDItem.object.material = createMaterial( 
-        createTexture(payload.image.url),
+        createTexture(window.cdn + payload.images[0].url),
         0
       );
-      
+
       data = {
-        url: payload.image.url,
-        width: payload.image.width, 
-        height: payload.image.height 
+        images: payload.images,
+        width: payload.images[0].width, 
+        height: payload.images[0].height,
+        title: payload.title,
+        description: payload.description,
+        link: payload.link
       }
     }
 
@@ -213,22 +220,38 @@ export function* highlightThreeDItemRequest({ id, isHighlight }) {
     const state = yield select();
     const highlightedId = state.threeDItems.highlightedId;
 
-    const threeDItem = isHighlight ? state.threeDItems.data[id] : state.threeDItems.data[highlightedId];
-    const amount = isHighlight ? 0.4 : 0;
+    const highlightItem = (item, isHighlight) => {
+      const amount = isHighlight ? 0.4 : 0;
+      if (item != undefined) {
+        if (item.type == 'image') {
+          item.object.material = createMaterial( 
+            createTexture(window.cdn + item.images[0].url),
+            amount 
+          );
+        }
+        else if (item.type == 'video') {
+          item.object.material = createMaterial( 
+            createVideoTexture(item.video), 
+            amount 
+          );
+        }
+        else if (item.type == 'link') {
+          item.object.material = createMaterial( 
+            createTexture(LINK_IMAGE), 
+            amount 
+          );
+        }
+      }
+    }
 
-    if (threeDItem != undefined) {
-      if (threeDItem.type == 'image' || threeDItem.type == 'link') {
-        threeDItem.object.material = createMaterial( 
-          createTexture(threeDItem.url),
-          amount 
-        );
-      }
-      else if (threeDItem.type == 'video') {
-        threeDItem.object.material = createMaterial( 
-          createVideoTexture(threeDItem.video), 
-          amount 
-        );
-      }
+    if (highlightedId != null && (!isHighlight || isHighlight && id != highlightedId) ) {
+      const item = state.threeDItems.data[highlightedId];
+      highlightItem(item, false)
+    }
+
+    if (isHighlight) {
+      const item = state.threeDItems.data[id]
+      highlightItem(item, true)
     }
    
     yield put( ThreeDItemsActions.highlightThreeDItem(id ?? null) );
@@ -247,11 +270,20 @@ const createThreeDItem = ({ init, type, url, width, height, position, rotation, 
       0
     );
   }
-  else if (type == 'image' || type == 'link') {
+  else if (type == 'image') {
     material = createMaterial( 
-      createTexture(url),
+      createTexture(window.cdn + url),
       0
     );
+  }
+  else if (type == 'link') {
+    const image = LINK_IMAGE
+    width = 1124
+    height = 536
+    material = createMaterial( 
+      createTexture(image),
+      0
+    )
   }
 
   const object = new THREE.Mesh(
@@ -354,11 +386,11 @@ const createMaterial = ( texture, amount ) => new THREE.ShaderMaterial({
   transparent: true
 });
 
-const createTexture = ( url ) => {
-  const texture = textureLoader.load(url);
-  texture.format = THREE.RGBAFormat;
+const createTexture = (image) => {
+  const texture = textureLoader.load(image)
+  texture.format = THREE.RGBAFormat
 
-  return texture;
+  return texture
 }
 
 const createVideoTexture = ( video ) => {

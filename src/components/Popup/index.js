@@ -3,9 +3,7 @@ import store from '@/store';
 import { useSelector } from "react-redux";
 
 import { UploadImage, UploadVideo } from "@/components/Upload";
-import Slides from "@/components/Slides";
-
-import './style.css';
+import Detail from "@/components/Detail";
 
 
 const Popup = () => {
@@ -35,28 +33,23 @@ const Popup = () => {
   return (
     <>
       { (popup.isShown || isVisible) ?
-
         <div className={`dark-overlay ${popup.isShown && isVisible ? ' is-visible' : ''}`}>
           <div 
             className={"dark-overlay-click-area" }
             onClick={() => store.dispatch({type: 'HIDE_POPUP'})}
           />
-          <div className={`popup-container ${noBackground? 'no-bg': ''}`}>
+          {
             {
-              {
-                'uploadVideo': <UploadVideo data={payload}/>,
-                'uploadImage': <UploadImage data={payload}/>,
-                'uploadImages': <UploadImage data={payload} multi/>,
-                'editInfo':  <EditInfo data={payload}/>,
-                'showVideo': <VideoViewer data={payload}/>,
-                'showImages':  <ImageSlides data={payload}/>,
-                'showWarning':  <Warning data={payload}/>,
-                'showMessage':  <Message data={payload}/>,
-              } [mode] || null
-            }       
-          </div>
+              'uploadVideo': <UploadVideo data={payload}/>,
+              'uploadImage': <UploadImage data={payload}/>,
+              'editInfo':  <EditInfo data={payload}/>,
+              'showVideo': <VideoViewer data={payload}/>,
+              'showImages':  <Detail data={payload}/>,
+              'showWarning':  <Warning data={payload}/>,
+              'showMessage':  <Message data={payload}/>,
+            } [mode] || null
+          }       
         </div>
-
       :
         null
       }
@@ -134,57 +127,8 @@ const VideoViewer = ({ data }) => {
 
   return (
     <>
-      <video autoPlay width="100%" height="100%" src={videoUrl} controls/>
+      <video autoPlay width="100%" height="100%" src={window.cdn + videoUrl} controls/>
     </>
-  )
-}
-
-const ImageSlides = ({ data }) => {
-
-  const { id } = data;
-
-  const imageUrl = useSelector(state => state.threeDItems.data[id].url);
-  const slides = useSelector(state => state.threeDItems.data[id].slides);
-  const images = [imageUrl].concat(slides);
-
-  return (
-    <>
-
-      {images.length > 0 && 
-        <Slides images={images}/>
-      }
-
-      <div className='row'>
-
-        <div 
-          className="colored-button popup-button center-flex"
-          onClick={ () => 
-            store.dispatch({
-              type: 'SHOW_POPUP',
-              mode: 'uploadImages',
-              payload: {
-                action: 'add3dImageSlides',
-                id: id,
-              }
-            })  
-          } 
-        >
-          ADD IMAGES
-        </div>
-
-        <div 
-          className="colored-button popup-button center-flex"
-          onClick={ () => 
-            store.dispatch({type: 'HIDE_POPUP'}) 
-          } 
-        >
-          CLOSE
-        </div>
-      
-      </div>
-
-    </>
-    
   )
 }
 

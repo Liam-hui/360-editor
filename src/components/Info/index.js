@@ -35,7 +35,7 @@ const Info = ({ id, data }) => {
      
           <div className="info-text">{text == '' ? 'Press the edit button to add text' : text}</div>
  
-          <div class="info-button-wrapper">
+          <div className="info-button-wrapper">
             <i 
               onClick={ () => 
                 store.dispatch({
@@ -47,11 +47,11 @@ const Info = ({ id, data }) => {
                   }
                 }) 
               }
-              class="info-button material-icons"
+              className="info-button material-icons"
             >
               edit
             </i>
-            <i onClick={deleteItem} class="info-button material-icons">delete</i>
+            <i onClick={deleteItem} className="info-button material-icons">delete</i>
           </div>
     
         </div>
