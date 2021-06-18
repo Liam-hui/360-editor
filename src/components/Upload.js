@@ -158,7 +158,7 @@ export const UploadImage = ({ data }) => {
   }
 
   return (
-    <GreyBox>
+    <GreyBox style={{ width: 570 }} innerStyle={{ padding: '35px 55px'}}>
       <div className="upload-container">
         {images.length == 0 ?
           <div 
