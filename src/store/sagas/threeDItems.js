@@ -1,14 +1,14 @@
 import { call, put, select } from 'redux-saga/effects';
 import store from '@/store';
 import { roomSize, limitPosition } from '@/components/Panorama'
-import { uniqueId } from '@/utils/MyUtils';
+import { uniqueId, imagePath } from '@/utils/MyUtils';
 import ThreeDItemsActions from '@/store/ducks/threeDItems';
 
 const THREE = window.THREE;
 const textureLoader = new THREE.TextureLoader();
 textureLoader.crossOrigin = '*';
 
-const LINK_IMAGE = require('@/assets/images/arrow.png').default
+const LINK_IMAGE = imagePath('arrow.png')
 
 export function* initThreeDItemsRequest({ data, scenes }) {
 
@@ -19,9 +19,9 @@ export function* initThreeDItemsRequest({ data, scenes }) {
     const position = new THREE.Vector3(item.position.x, item.position.y, item.position.z);
     const rotation = new THREE.Vector3(item.rotation.x, item.rotation.y, item.rotation.z);
 
-    let video;
+    let videoElement;
     if (item.type == 'video') {
-      video = yield call(createVideoElement, window.cdn + item.url);
+      videoElement = yield call(createVideoElement, window.cdn + item.url);
     }
 
     const ThreeDItem = createThreeDItem( 
@@ -36,15 +36,22 @@ export function* initThreeDItemsRequest({ data, scenes }) {
         height: item.height,
         scene: item.scene,
         panorama: scenes[item.scene].panorama,
-        ... item.type == 'video' && { video: video }
+        ... item.type == 'video' && { videoElement: videoElement }
       } 
     );
 
     ThreeDItems[id] = {
       ... ThreeDItem,
-      ... item.type == 'link' && { target : item.target},
+      ... item.type == 'link' && { 
+        target : item.target
+      },
+      ... item.type == 'video' && { 
+        video: videoElement,
+      },
       ... item.type == 'image' && { 
         images: item.images,
+      },
+      ... (item.type == 'image' || item.type == 'video') && { 
         title: item.title,
         description: item.description,
         link: item.link,
@@ -63,19 +70,19 @@ export function* addThreeDItemRequest({ payload }) {
 
     const id = uniqueId();
 
-    let video;
+    let videoElement;
     if (type == 'video') {
-      video = yield call(createVideoElement, window.cdn + payload.videoUrl);
+      videoElement = yield call(createVideoElement, window.cdn + payload.url);
     }
 
     const threeDItem = createThreeDItem({
       type: type,
       position,
       ... type == 'video' && { 
-        url: payload.videoUrl,
-        video: video, 
-        width: video.videoWidth, 
-        height: video.videoHeight 
+        url: payload.url,
+        videoElement: videoElement, 
+        width: videoElement.videoWidth, 
+        height: videoElement.videoHeight 
       },
       ... type == 'image' && { 
         url: payload.images[0].url,
@@ -86,6 +93,13 @@ export function* addThreeDItemRequest({ payload }) {
 
     if (type == 'image') {
       threeDItem.images = payload.images
+    }
+
+    if (type == 'video') {
+      threeDItem.video = videoElement
+    }
+
+    if (type == 'image' || type == 'video') {
       threeDItem.title = payload.title
       threeDItem.description = payload.description
       threeDItem.link = payload.link
@@ -105,20 +119,23 @@ export function* updateThreeDItemRequest({ id, payload }) {
     const threeDItem = state.threeDItems.data[id];
     let data = {};
 
-    if (payload.images) {
+    if (threeDItem.type == 'image') {
 
-      threeDItem.object.geometry.dispose();
-      threeDItem.object.geometry = 
-        new THREE.BoxGeometry(
-          payload.images[0].width,
-          payload.images[0].height,
-          1,
+      // if image changed
+      if (payload.images[0].url != threeDItem.images[0].url) {
+        threeDItem.object.geometry.dispose();
+        threeDItem.object.geometry = 
+          new THREE.BoxGeometry(
+            payload.images[0].width,
+            payload.images[0].height,
+            1,
+          );
+        
+        threeDItem.object.material = createMaterial( 
+          createTexture(window.cdn + payload.images[0].url),
+          0
         );
-      
-      threeDItem.object.material = createMaterial( 
-        createTexture(window.cdn + payload.images[0].url),
-        0
-      );
+      }
 
       data = {
         images: payload.images,
@@ -130,29 +147,39 @@ export function* updateThreeDItemRequest({ id, payload }) {
       }
     }
 
-    else if (payload.video) {
-      threeDItem.video.remove();
-      // const video = yield call(createVideoElement, payload.video);
-      const video = yield call(createVideoElement, 'http://demo.solutionforest.net/dark-test/test_video.mp4');
+    else if (threeDItem.type == 'video') {
 
-      threeDItem.object.geometry.dispose();
-      threeDItem.object.geometry = 
-        new THREE.BoxGeometry(
-          video.videoWidth,
-          video.videoHeight,
-          1,
+      // if video changed
+      if (payload.url != threeDItem.url) {
+        threeDItem.video.remove();
+        const video = yield call(createVideoElement, window.cdn + payload.url);
+
+        threeDItem.object.geometry.dispose();
+        threeDItem.object.geometry = 
+          new THREE.BoxGeometry(
+            video.videoWidth,
+            video.videoHeight,
+            1,
+          );
+
+        threeDItem.object.material = createMaterial( 
+          createVideoTexture(video), 
+          0
         );
 
-      threeDItem.object.material = createMaterial( 
-        createVideoTexture(video), 
-        0
-      );
+        data = {
+          url: payload.url,
+          width: video.videoWidth, 
+          height: video.videoHeight,
+          video: video,
+        }
+      }
 
       data = {
-        url: payload.video,
-        width: video.videoWidth, 
-        height: video.videoHeight,
-        video: video,
+        ... data,
+        title: payload.title,
+        description: payload.description,
+        link: payload.link
       }
     }
 
@@ -261,12 +288,12 @@ export function* highlightThreeDItemRequest({ id, isHighlight }) {
   }
 }
 
-const createThreeDItem = ({ init, type, url, width, height, position, rotation, scale, video, scene, panorama }) => {
+const createThreeDItem = ({ init, type, url, width, height, position, rotation, scale, videoElement, scene, panorama }) => {
 
   let material;
   if (type == 'video') {
     material = createMaterial( 
-      createVideoTexture(video), 
+      createVideoTexture(videoElement), 
       0
     );
   }
@@ -336,6 +363,7 @@ const createThreeDItem = ({ init, type, url, width, height, position, rotation, 
     
   if (panorama == undefined) 
     panorama = store.getState().scenes.data[scene].panorama;
+  
   panorama.add(object);
 
   const ThreeDItem = {  
@@ -345,8 +373,6 @@ const createThreeDItem = ({ init, type, url, width, height, position, rotation, 
     height: height,
     object: object,
     scene: scene,
-    slides: [],
-    ... type == 'video' && { video: video },
   }
 
   return ThreeDItem;

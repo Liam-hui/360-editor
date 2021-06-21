@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 
 import { viewer, getElementStyle, createObject } from '@/components/Panorama'
 
-import './style.css';
 
 const Menu = React.forwardRef( ( props, ref ) => {
 
@@ -46,10 +45,10 @@ const Menu = React.forwardRef( ( props, ref ) => {
   }, [ updateScene ] );
 
 
-  const Button = ( { label, onClick } ) => {
+  const Option = ( { label, onClick } ) => {
     return (
       <div  
-        className="button center-flex" 
+        className="option border-box-small animate center-flex" 
         onClick={ () => {
           onClick();
           ref.current.hide();
@@ -63,17 +62,17 @@ const Menu = React.forwardRef( ( props, ref ) => {
   return (
     <>
       {object != null && 
-        <div id="menu" style={style}>
+        <div className="menu-wrapper" style={style}>
 
           <i 
             className='far fa-dot-circle' 
-            style={{ fontSize: 15, color: '#5793fb' }}
+            style={{ fontSize: 15, color: '#black' }}
           />
 
-          <div id="menu-container">
+          <div className="menu-container">
 
-            <Button
-              label='ADD IMAGE'
+            <Option
+              label='Add Image'
               onClick={() => {
                 store.dispatch({
                   type: 'SHOW_POPUP' ,
@@ -86,8 +85,8 @@ const Menu = React.forwardRef( ( props, ref ) => {
               }}
             />
 
-            <Button
-              label='ADD VIDEO'
+            <Option
+              label='Add Video'
               onClick={() => {
                 store.dispatch( {
                   type: 'SHOW_POPUP' ,
@@ -100,21 +99,8 @@ const Menu = React.forwardRef( ( props, ref ) => {
               }}
             />
 
-            <Button
-              label='ADD INFO'
-              onClick={() => {
-                store.dispatch( { 
-                  type: 'ADD_TWO_D_ITEM_REQUEST', 
-                  payload: {
-                    type: 'info',
-                    position: object.position
-                  }
-                })
-              }}
-            />
-
-            <Button
-              label='ADD LINK'
+            <Option
+              label='Link to other scene'
               onClick={() => {
                 store.dispatch({
                   type: 'ADD_THREE_D_ITEM_REQUEST',
@@ -125,6 +111,20 @@ const Menu = React.forwardRef( ( props, ref ) => {
                 })
               }}
             />
+
+            {/* <Option
+              label='ADD INFO'
+              onClick={() => {
+                store.dispatch( { 
+                  type: 'ADD_TWO_D_ITEM_REQUEST', 
+                  payload: {
+                    type: 'info',
+                    position: object.position
+                  }
+                })
+              }}
+            /> */}
+
 
           </div>
         </div>

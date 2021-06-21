@@ -5,9 +5,6 @@ import { isMobile } from "react-device-detect";
 
 import Menu from '@/components/Menu';
 import ThreeDItem from '@/components/ThreeDItem';
-import TwoDItem from '@/components/TwoDItem';
-
-import './style.css';
 
 const THREE = window.THREE;
 const PANOLENS = window.PANOLENS;
@@ -126,17 +123,17 @@ export default function Panorama() {
 
   const scenes = useSelector(state => state.scenes);
   const threeDItems = useSelector(state => state.threeDItems);
-  const twoDItems = useSelector(state => state.twoDItems);
   const currentPanorama = useSelector(state => state.scenes.data[scenes.currentId]?.panorama);
+  const isPopupShown = useSelector(state => state.popup.isShown);
 
   const menuRef = useRef();
 
   // open scene after init
   useEffect(() => {
-    if (scenes.isInited && threeDItems.isInited && twoDItems.isInited) {
+    if (scenes.isInited && threeDItems.isInited) {
       store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: scenes.firstSceneId })
     }
-  }, [scenes.isInited, threeDItems.isInited, twoDItems.isInited]);
+  }, [scenes.isInited, threeDItems.isInited]);
 
   // click event
   let clicked = false;
@@ -147,9 +144,9 @@ export default function Panorama() {
     let threeDItemId = null;
 
     if (isMobile) {
-      mouse.x = ( e.mouseEvent.clientX / viewer.renderer.domElement.clientWidth ) * 2 - 1;
-      mouse.y = - ( e.mouseEvent.clientY / viewer.renderer.domElement.clientHeight ) * 2 + 1;
-      threeDItemId = getIntersectId();
+      mouse.x = ( e.mouseEvent.clientX / viewer.renderer.domElement.clientWidth ) * 2 - 1
+      mouse.y = - ( e.mouseEvent.clientY / viewer.renderer.domElement.clientHeight ) * 2 + 1
+      threeDItemId = getIntersectId()
     }
     else 
       threeDItemId = store.getState().threeDItems.highlightedId;
@@ -159,18 +156,11 @@ export default function Panorama() {
       const threeDItem = store.getState().threeDItems.data[threeDItemId];
       if (threeDItem.type == 'link' && threeDItem.target)
         store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: threeDItem.target });
-      else if (threeDItem.type == 'video')
+      else
+        // video or image
         store.dispatch( {
           type: 'SHOW_POPUP' ,
-          mode: 'showVideo',
-          payload: {
-            videoUrl: threeDItem.url
-          }
-        }) 
-      else if (threeDItem.type == 'image')
-        store.dispatch( {
-          type: 'SHOW_POPUP' ,
-          mode: 'showImages',
+          mode: 'showItem',
           payload: {
             id: threeDItemId
           }
@@ -240,24 +230,31 @@ export default function Panorama() {
   // mouse picking
   const updateMouse = useSelector(state => state.updateMouse);
   useEffect(() => {
-    const id = getIntersectId();
+    if (!isPopupShown) {
+      const id = getIntersectId();
 
-    document.getElementById("root").style.cursor = id == null ? "unset" : "pointer";
+      document.getElementById("root").style.cursor = id == null ? "unset" : "pointer";
 
-    if (id != null && id != threeDItems.highlightedId) {
-      store.dispatch({ type: 'HIGHLIGHT_THREE_D_ITEM_REQUEST', isHighlight: true, id: id });
-    }
+      if (id != null && id != threeDItems.highlightedId) {
+        store.dispatch({ type: 'HIGHLIGHT_THREE_D_ITEM_REQUEST', isHighlight: true, id: id });
+      }
 
-    if (id == null && threeDItems.highlightedId != null) {
-      store.dispatch({ type: 'HIGHLIGHT_THREE_D_ITEM_REQUEST', isHighlight: false });
+      if (id == null && threeDItems.highlightedId != null) {
+        store.dispatch({ type: 'HIGHLIGHT_THREE_D_ITEM_REQUEST', isHighlight: false });
+      }
     }
   }, [updateMouse]);
+  useEffect(() => {
+    if (isPopupShown) 
+      document.getElementById("root").style.cursor = "unset";
+
+  }, [isPopupShown]);
 
   return (
     <>
       <div id='panorama-container'/>
 
-      <div id='components-container'>
+      <div className='components-container'>
 
         <div id="loading-progress"/>
 
@@ -267,17 +264,11 @@ export default function Panorama() {
             .map(x => <ThreeDItem key={x[0]} id={x[0]} data={x[1]}/>) 
         }
 
-        {/* {
-          Object.entries(twoDItems.data)
-            .filter(x => x[1].scene == scenes.currentId)
-            .map(x => <TwoDItem id={x[0]} data={x[1]}/>)
-        } */}
-
         <Menu ref={menuRef}/>
 
-        { Object.keys(scenes.data).length == 0 &&
+        {/* { Object.keys(scenes.data).length == 0 &&
           <div className='start-text center-flex'>ADD A SCENE TO START</div>
-        }
+        } */}
 
       </div>
     </>

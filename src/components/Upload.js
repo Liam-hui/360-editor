@@ -1,28 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import store from '@/store';
-import { uploadFile } from '@/utils/MyUtils'
+import { uploadFile, imagePath } from '@/utils/MyUtils'
 import GreyBox from '@/components/GreyBox';
 
-export const UploadImage = ({ data }) => {
+const Upload = ({ mode, data }) => {
 
   const { action, id } = data;
+  const multiple = mode == 'image' && action != 'addScene'
+  const accept = mode == 'image' ? 'image/jpeg, image/png' : 'video/mp4'
 
   const [images, setImages] = useState([])
+  const [video, setVideo] = useState(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [link, setLink] = useState('')
+  const [warning, setWarning] = useState('')
 
   useEffect(() => {
-    if (action == 'update3dImage') {
+    if (action == 'updateItem') {
       const item = store.getState().threeDItems.data[id]
-      setImages(item.images)
+      if (item.type == 'image')
+        setImages(item.images)
+      else  
+        setVideo(item.url)
       setTitle(item.title)
       setDescription(item.description)
       setLink(item.link)
     }
   }, [])
 
-  const handleUploadImages = async (files) => {
+  useEffect(() => {
+    setWarning('')
+  }, [images, video])
+
+  const removeImage = (index) => {
+    setImages(images.filter( (_, index_) => index_ != index) );
+  }
+
+  const handleUploadImages = async (files, index) => {
     try {
       if (!files) return;
   
@@ -67,7 +82,11 @@ export const UploadImage = ({ data }) => {
         
       };
   
-      setImages(images.concat(newImages));
+      if (index != undefined) {
+        setImages( images.slice(0, index).concat(newImages).concat(images.slice(index, images.length)) )
+      }
+      else
+        setImages( images.concat(newImages) )
   
     } catch (error) {
       alert(error);
@@ -75,37 +94,74 @@ export const UploadImage = ({ data }) => {
     } 
   }
 
-  const removeImage = (index) => {
-    setImages(images.filter( (_, index_) => index_ != index) );
+  const handleUploadVideo = async (files) => {
+    try {
+      if (!files) return;
+
+      if (files[0].type == 'video/mp4') {
+        const video = await load(files[0])
+    
+        function load(file) {
+          return new Promise((resolve, reject) => {
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async function () {
+              resolve({ 
+                file: file,
+                base64: reader.result 
+              });
+            };
+            reader.onerror = () => reject()
+          })
+        }
+
+        setVideo(video);
+      }
+  
+    } catch (error) {
+      alert(error);
+      console.log("Catch Error: ", error);
+    } 
   }
 
-  const confirmUpload = async () => {
-    let imagesData = [];
-    for (const image of images.filter(x => x.file)) {
-      try {
-        const url = await uploadFile(image.file);
-        const image_ = {
-          ... image,
-          url
-        };
-        delete image_.base64;
-        delete image_.file;
-  
-        imagesData.push(image_)
+  const handleUplaod = mode == 'image' ? handleUploadImages : handleUploadVideo  
 
-      } catch(e) {
-        imagesData = null;
-        store.dispatch({
-          type: 'SHOW_POPUP' ,
-          mode: 'showMessage',
-          payload: {
-            text: 'Upload Image Failed!', 
+  const confirmUploadImages = async () => {
+
+    if (images.length == 0)
+      setWarning('Please upload image first!')
+
+    else {
+      let imagesData = [];
+      store.dispatch({ type: 'SHOW_LOADER' })
+
+      for (const image of images) {
+        if (image.file) 
+          try {
+            const url = await uploadFile(image.file);
+            const image_ = {
+              ... image,
+              url
+            };
+            delete image_.base64;
+            delete image_.file;
+      
+            imagesData.push(image_)
+
+          } catch(e) {
+            imagesData = null;
+            store.dispatch({ type: 'HIDE_LOADER' })
+            store.dispatch({
+              type: 'SHOW_POPUP' ,
+              mode: 'showMessage',
+              payload: {
+                text: 'Upload Image Failed!', 
+              }
+            }) 
           }
-        }) 
+        else imagesData.push(image)
       }
-    }
 
-    if (imagesData) {
       switch (action) {
         case 'add3dImage':
           store.dispatch({
@@ -120,12 +176,12 @@ export const UploadImage = ({ data }) => {
             }
           })
         break;
-        case 'update3dImage':
+        case 'updateItem':
           store.dispatch({
             type: 'UPDATE_THREE_D_ITEM_REQUEST',
             id: id,
             payload: {
-              images: images.filter(x => !x.file).concat(imagesData),
+              images: imagesData,
               title: title,
               description: description,
               link: link
@@ -139,16 +195,71 @@ export const UploadImage = ({ data }) => {
           })
         break;
       }
-
-      
+        
+      store.dispatch({ type: 'HIDE_LOADER' })
       store.dispatch({ type: 'HIDE_POPUP' }) 
     }
   }
+  
+  const confirmUploadVideo = async () => {
+
+    if (video == null)
+      setWarning('Please upload video first!')
+
+    else {
+      try {
+        store.dispatch({ type: 'SHOW_LOADER' })
+        const videoUrl = video.file ? await uploadFile(video.file) : video
+
+        switch (action) {
+          case 'add3dVideo':
+            store.dispatch({
+              type: 'ADD_THREE_D_ITEM_REQUEST',
+              payload: {
+                type: 'video',
+                position: data.position,
+                url: videoUrl,
+                title: title,
+                description: description,
+                link: link
+              }
+            })
+          break;
+          case 'updateItem':
+            store.dispatch({
+              type: 'UPDATE_THREE_D_ITEM_REQUEST',
+              id: data.id,
+              payload: {
+                url: videoUrl,
+                title: title,
+                description: description,
+                link: link
+              }
+            })
+          break;
+        }
+
+        store.dispatch({ type: 'HIDE_LOADER' })
+        store.dispatch({ type: 'HIDE_POPUP' }) 
+      } catch(e) {
+        store.dispatch({ type: 'HIDE_LOADER' })
+        store.dispatch({
+          type: 'SHOW_POPUP' ,
+          mode: 'showMessage',
+          payload: {
+            text: 'Upload Video Failed!', 
+          }
+        }) 
+      }
+    }
+  }
+
+  const confirmUpload =  mode == 'image' ? confirmUploadImages : confirmUploadVideo
 
   const [isDragOver, setIsDragOver] = useState(false)
   const onDrop = (e) => {
     e.preventDefault();
-    handleUploadImages(e.dataTransfer.files);
+    handleUplaod(e.dataTransfer.files);
     setIsDragOver(false)
   }
 
@@ -157,10 +268,12 @@ export const UploadImage = ({ data }) => {
     e.preventDefault();
   }
 
+  // backgroundColor: mode == 'image' ? 'rgba(200, 200, 200, 0.6)': 'rgba(50, 50, 50, 0.5)'
   return (
     <GreyBox style={{ width: 570 }} innerStyle={{ padding: '35px 55px'}}>
-      <div className="upload-container">
-        {images.length == 0 ?
+      <div className="upload-container" style={action == 'addScene' ? { minHeight: 300 } : {}}>
+        
+        { ( (mode == 'image' && images.length == 0) || (mode == 'video' && video == null) ) &&
           <div 
             className={`border-box center-flex column ${isDragOver ? 'is-drag-over' : ''}`}
             onDrop={onDrop} 
@@ -169,158 +282,107 @@ export const UploadImage = ({ data }) => {
             onDragLeave={() => setIsDragOver(false)}
             style={{ padding: 20 }}
           >
-            <img src={require('@/assets/icons/icon-upload.svg').default}/>
-            <div style={{ fontSize: '1.8em' }}>Drag and drop your files here</div>
-            <div style={{ fontSize: '0.9em', color: '#CDCDCD' }}>Files supported: jpg, png</div>
+            <img src={imagePath('icon-upload.svg')}/>
+            <div style={{ fontSize: '1.8em' }}>{`Drag and drop your ${mode == 'image' ? 'image' + (multiple? 's' : '') : 'video'} here`}</div>
+            <div style={{ fontSize: '0.9em', color: '#CDCDCD' }}>{`Files supported: ${mode == 'image' ? 'jpg, png' : 'mp4'}`}</div>
             <div style={{ fontSize: '0.95em' }}>or</div>
             <label className="border-box-small">
               Browse files
-              <input onChange={(e) => handleUploadImages(e.target.files)} type="file" id="upload-image" accept="image/*" multiple/>
+              <input onChange={(e) => handleUplaod(e.target.files)} type="file" id="upload-image" accept={accept} multiple={multiple}/>
             </label>
             <div className="overlay" style={{ opacity: isDragOver ? 0.6 : 0 }}/>
           </div>
-        :
-          <div className="display-images">
+        }
+
+        {mode == 'image' && images.length > 0 && action != 'addScene' &&
+          <div className="images-container">
             {images.map( (image, index) => 
               <div className="image-wrapper">
                 <img src={image.base64 ?? (window.cdn + image.url)}/>
                 <div className='overlay'/>
-                <img onClick={() => removeImage(index)} className='delete-button center-absolute' src={require('@/assets/icons/icon-delete.svg').default}/>
+                <div className='center-absolute center-flex'>
+                  <label className='image-button'>
+                    <img style={{ width: '100%', height: '100%' }} src={imagePath('icon-add.svg')}/>
+                    <input onChange={(e) => handleUplaod(e.target.files, index)} type="file" id="upload-image" accept={accept} multiple={multiple}/>
+                  </label>
+                  <img onClick={() => removeImage(index)} className='image-button' src={imagePath('icon-delete.svg')}/>
+                </div>
               </div>
             )}
-            <div className="image-wrapper">
+            {/* <div className="image-wrapper" style={{ justifySelf: 'flex-end' }}>
               <label className="border-box-small column center-flex" style={{ width: '100%', height: '100%', padding: 10}}>
                 <img style={{ width: 40, height: 'auto', marginBottom: 12 }} src={require('@/assets/icons/icon-upload-file.svg').default}/>
                 Upload more
-                <input onChange={(e) => handleUploadImages(e.target.files)} type="file" id="upload-image" accept="image/*" multiple/>
+                <input onChange={(e) => handleUplaod(e.target.files)} type="file" id="upload-image" accept="image/*" multiple/>
               </label>
+            </div> */}
+          </div>
+        }
+
+        {mode == 'image' && images.length > 0 && action == 'addScene' &&
+          <img className='scene-image-preview' src={images[0].base64}/>
+        }
+
+        {mode == 'video' && video != null &&
+          <div className="video-wrapper">
+            <video muted autoPlay playsInline src={video.base64 ?? (window.cdn + video)}/>
+            <div className='overlay center-flex column'>
+              <label
+                className="border-box-small pointer" 
+                style={{ margin: 10, pointerEvents: 'auto' }}
+              >
+                Select another video
+                <input onChange={(e) => handleUplaod(e.target.files)} type="file" id="upload-image" accept={accept}/>
+              </label>
+              {/* <div 
+                className="border-box-small pointer" 
+                style={{ margin: 10, pointerEvents: 'auto' }}
+                onClick={() => setVideo(null)}
+              >
+                Delete this video
+              </div> */}
             </div>
           </div>
         }
 
-        <div className="heading">Title</div>
-        <input type="text" className="border-box" style={{ height: 40, padding: 15, borderRadius: 12 }} value={title} onChange={(e) => setTitle(e.target.value)}/>
+        {action != 'addScene' && 
+          <>
+            <div className="heading">Title</div>
+            <input type="text" className="border-box" style={{ height: 40, padding: 15, borderRadius: 12 }} value={title} onChange={(e) => setTitle(e.target.value)}/>
 
-        <div className="heading">Description</div>
-        <textarea className="border-box" type="text" style={{ height: 100, padding: 15 }} value={description} onChange={(e) => setDescription(e.target.value)}/>
+            <div className="heading">Description</div>
+            <textarea className="border-box" type="text" style={{ height: 100, padding: 15 }} value={description} onChange={(e) => setDescription(e.target.value)}/>
 
-        <div className="heading">Direct link</div>
-        <input type="text" className="border-box" style={{ height: 40, padding: 15, borderRadius: 12 }} value={link} onChange={(e) => setLink(e.target.value)}/>
+            <div className="heading">Direct link</div>
+            <input type="text" className="border-box" style={{ height: 40, padding: 15, borderRadius: 12 }} value={link} onChange={(e) => setLink(e.target.value)}/>
+           </>
+        }
+
+        {warning != '' &&
+          <div 
+            className="warning-text" 
+            style={{ alignSelf: 'center', marginTop: 20 }}
+          >
+            {warning}
+          </div>
+        }
 
         <div 
           className="border-box-small pointer" 
           style={{ alignSelf: 'center', marginTop: 20 }}
           onClick={confirmUpload}
         >
-          {action == 'update3dImage' ? 'Confirm' : 'Upload'}
+          {action == 'updateItem' ? 'Confirm' : 'Upload'}
         </div>
+
       </div>
+
     </GreyBox>
   )
 
 }
 
-export const UploadVideo = ({ data }) => {
-
-  const { action } = data;
-
-  const [videoUrl, setVideoUrl] = useState(null);
-
-  const handleUploadVideo = async (e) => {
-    
-    try {
-      const url = await uploadFile( Array.from(e.target.files)[0] );
-      setVideoUrl(url);
-    } catch(e) {
-      store.dispatch({
-        type: 'SHOW_POPUP' ,
-        mode: 'showMessage',
-        payload: {
-          text: 'Upload Video Failed!', 
-        }
-      }) 
-    }
-
-  }
-
-  return (
-    <div className="popup-container">
-      
-    </div>
-  )
-
-  // return (
-  //   <>
-  //     <div className="popup-title">{`UPLOAD VIDEO`}</div>
-
-  //     {videoUrl && 
-  //       <video width="320" height="240" autoPlay muted>
-  //         <source src={window.cdn + videoUrl} type="video/mp4"></source>
-  //       </video>
-  //     }
-
-  //     <div className='row'>
-
-  //       {!videoUrl ? 
-  //         <label
-  //           htmlFor="upload-video"
-  //           className="colored-button popup-button center-flex"
-  //         >
-  //           SELECT VIDEO
-  //         </label>
-  //       :
-  //         <div
-  //           className="colored-button popup-button center-flex"
-  //           onClick={ async() => {
-
-  //             switch (action) {
-
-  //               case 'add3dVideo':
-  //                 store.dispatch({
-  //                   type: 'ADD_THREE_D_ITEM_REQUEST',
-  //                   payload: {
-  //                     type: 'video',
-  //                     position: data.position,
-  //                     videoUrl
-  //                   }
-  //                 })
-  //               break;
-
-  //               case 'change3dVideo':
-  //                 store.dispatch({
-  //                   type: 'UPDATE_THREE_D_ITEM_REQUEST',
-  //                   id: data.id,
-  //                   payload: {
-  //                     video: videoUrl
-  //                   }
-  //                 })
-  //               break;
-
-  //             }
-
-  //             store.dispatch({type: 'HIDE_POPUP'}) 
-  //           }} 
-  //         >
-  //           CONFIRM
-  //         </div>
-  //       }
-
-  //       <div 
-  //         className="colored-button popup-button center-flex"
-  //         onClick={ () => 
-  //           store.dispatch({type: 'HIDE_POPUP'}) 
-  //         } 
-  //       >
-  //         CANCEL
-  //       </div>
-
-  //     </div>
-
-  //     <input onChange={(e) => handleUploadVideo(e)} type="file" id="upload-video" accept="video/*"/>
-
-  //   </>
-  // )
-}
+export default Upload;
 
 
 

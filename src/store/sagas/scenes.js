@@ -28,7 +28,7 @@ export function* initScenesRequest({ data }) {
     
     yield put({ type:'INIT_SCENES', data: scenes, firstSceneId });
     yield put({ type:'INIT_THREE_D_ITEMS_REQUEST', data: data.threeDItems, scenes });
-    yield put({ type:'INIT_TWO_D_ITEMS_REQUEST', data: data.twoDItems, scenes });
+    // yield put({ type:'INIT_TWO_D_ITEMS_REQUEST', data: data.twoDItems, scenes });
     
   } catch (error) {
     // console.log(error);
@@ -66,7 +66,7 @@ export function* removeSceneRequest({ id }) {
 
     yield put({ type: 'REMOVE_SCENE', id: id });
     yield put({ type: 'REMOVE_THREE_D_ITEM_REQUEST', sceneId: id });
-    yield put({ type: 'REMOVE_TWO_D_ITEM_REQUEST', sceneId: id });
+    // yield put({ type: 'REMOVE_TWO_D_ITEM_REQUEST', sceneId: id });
     
   } catch (error) {
     // console.log(error);
@@ -145,8 +145,6 @@ export function* setCameraAngle({ angle }) {
 
 const createPanorama = (baseImage) => {
   const panorama = new PANOLENS.ImagePanorama(window.cdn + baseImage);
-
-  console.log(window.cdn + baseImage);
 
   const onEnter = () => {
     store.dispatch({ type: 'ENTER_SCENE', isEntered: true });

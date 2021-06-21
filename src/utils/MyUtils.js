@@ -25,33 +25,7 @@ export const uploadFile = async (file) => {
   })
 }
 
-// export const uploadFiles = async (files) => {
-
-//   return new Promise( async (resolve, reject) => {
-
-//     const urls = await Promise.all(
-//       files.map( async file => {
-//         try {
-//           let body = new FormData();
-//           body.append('image', file);
-//           const response = await api.post(
-//             'uploadFile', 
-//             body
-//           );
-          
-//           if (response?.data?.data) {
-//             return window.cdn + response?.data?.data;
-//           }
-//           else reject();
-          
-//         } catch(error) {
-//           reject();
-//           throw error;
-//         }
-//       })
-//     );
-
-//     resolve(urls);
-//   });
-
-// }
+export const imagePath = (path) => {
+  return window.cdn + '/editor/static/media/' + path;
+  // return require('@/assets/media/' + path).default
+}

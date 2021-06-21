@@ -6,6 +6,7 @@ import store from './store';
 import Panorama from '@/components/Panorama';
 import Popup from '@/components/Popup';
 import ControlBar from '@/components/ControlBar';
+import Loader from '@/components/Loader';
 
 import '@/styles/styles.css';
 import './style.css';
@@ -19,13 +20,12 @@ function App() {
     setMode(window.mode)
   }, [])
 
-  console.log(window.mode)
-
   return (
     <Provider store={store}>
       <Panorama/>
       {mode == 'admin' && <ControlBar/>}
       <Popup/>
+      <Loader/>
     </Provider>
   );
 

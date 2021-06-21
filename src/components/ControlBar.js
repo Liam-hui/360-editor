@@ -2,15 +2,13 @@ import React from 'react';
 import store from '@/store';
 import { useSelector } from "react-redux";
 import api from '@/services/api';
-import { viewer, camera } from '@/components/Panorama'
-
-import './style.css';
+import { camera } from '@/components/Panorama'
 
 const ControlBar = () => {
 
   const scenes = useSelector(state => state.scenes);
   const threeDItems = useSelector(state => state.threeDItems.data);
-  const twoDItems = useSelector(state => state.twoDItems.data);
+  // const twoDItems = useSelector(state => state.twoDItems.data);
 
   const setCameraAngle = () => {    
     store.dispatch({
@@ -54,7 +52,7 @@ const ControlBar = () => {
     let data = {
       scenes: { ...scenes.data },
       threeDItems: { ...threeDItems },
-      twoDItems: { ...twoDItems }
+      // twoDItems: { ...twoDItems }
     };
 
     for (const id in data.scenes) {
@@ -83,30 +81,36 @@ const ControlBar = () => {
           z: item.object.rotation.z
         },
         scale: item.object.scale.x,
-        ... item.target && { target: item.target }
-        // slides: threeDItem.slides,
+        ... item.type == 'link' && { 
+          target: item.target 
+        },
+        ... item.type == 'image' && { 
+          images: item.images
+        },
+        ... (item.type == 'image' || item.type == 'video' ) && { 
+          title: item.title,
+          description: item.description,
+          link: item.link,
+        }
       }
     }
 
-    for (const id in data.twoDItems) {
-      const item = { ...data.twoDItems[id] };
+    // for (const id in data.twoDItems) {
+    //   const item = { ...data.twoDItems[id] };
   
-      data.twoDItems[id] = {
-        ...data.twoDItems[id],
-        position: item.object.position,
-      }
+    //   data.twoDItems[id] = {
+    //     ...data.twoDItems[id],
+    //     position: item.object.position,
+    //   }
 
-      delete data.twoDItems[id].object;
-    }
+    //   delete data.twoDItems[id].object;
+    // }
 
     let body = new FormData();
     body.append('uuid', window.uuid);
     body.append('user', window.user);
     body.append('name', window.name);
     body.append('data', JSON.stringify(data) );
-    for (var pair of body.entries()) {
-      console.log(pair[0]+ ', ' + pair[1]); 
-    }
     api.post(
       'scenes/save', 
       body
@@ -122,10 +126,17 @@ const ControlBar = () => {
         }) 
       }, (error) => {
         console.error(error);
+        store.dispatch({
+          type: 'SHOW_POPUP' ,
+          mode: 'showMessage',
+          payload: {
+            text: 'Save Failed!', 
+          }
+        }) 
       });
 
     // console.log(data);
-    saveToLocalText(data);
+    // saveToLocalText(data);
   }
 
   return (

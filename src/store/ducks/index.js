@@ -20,7 +20,7 @@ const updateMouseReducer = ( state = 0, action ) => {
   }
 }
 
-const popupReducer = ( state = { isShown: false, mode: null, payload: null}, action ) => {
+const popupReducer = ( state = { isShown: false, mode: null, payload: null }, action ) => {
   switch( action.type ) {
     case 'SHOW_POPUP':
       return {
@@ -37,11 +37,26 @@ const popupReducer = ( state = { isShown: false, mode: null, payload: null}, act
   }
 }
 
+const loaderReducer = ( state = { isShown: false }, action ) => {
+  switch( action.type ) {
+    case 'SHOW_LOADER':
+      return {
+        isShown: true
+      }
+    case 'HIDE_LOADER':
+      return {
+        isShown: false
+      }
+    default: return state;
+  }
+}
+
 export default () =>
   combineReducers({
     updateScene: updateSceneReducer,
     updateMouse: updateMouseReducer,
     popup: popupReducer,
+    loader: loaderReducer,
     scenes,
     threeDItems,
     twoDItems,

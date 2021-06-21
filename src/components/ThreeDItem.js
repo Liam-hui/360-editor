@@ -3,11 +3,12 @@ import store from '@/store';
 import { useSelector } from "react-redux";
 import { Menu, MenuItem } from '@material-ui/core';
 import { getElementStyle, limitPosition } from '@/components/Panorama'
+import { imagePath } from '@/utils/MyUtils';
 
 const THREE = window.THREE;
 
 const TRANSLATION_MAX = 800;
-const ROTATION_MAX = 180;
+const ROTATION_STEP = 100;
 
 const Slider = (props) => {
 
@@ -24,7 +25,7 @@ const Slider = (props) => {
     setValue(0);
   }
 
-  const offset = style?.width? 64 : 71;
+  const offset = style?.width ? 64 : 71;
 
   return(
     <div className='three-d-editor-slider' style={style}>
@@ -100,7 +101,7 @@ const ThreeDItem = (props) => {
     object.rotation.y = tempValue.y;
     object.rotation.z = tempValue.z;
 
-    const amount =  value / 100 * ROTATION_MAX  * Math.PI/180;
+    const amount =  value / 100 * ROTATION_STEP * Math.PI/180;
 
     if ( axis == 'x' )
       object.rotateX( amount );
@@ -209,17 +210,17 @@ const ThreeDItem = (props) => {
             <span className="three-d-editor-slider-label" style={{ fontStyle: 'normal', marginLeft: 8, marginRight: 0 }}>+</span>
           </div>
 
-          {type == 'image' && 
+          { (type == 'image' || type == 'video') && 
             <div 
-              className="border-box-small pointer"
+              className="border-box-small animate pointer"
               style={{ margin: '10px 0' }}
               onClick={() => {
                 closeEditor();
                 store.dispatch({
                   type: 'SHOW_POPUP' ,
-                  mode: 'uploadImage',
+                  mode: type == 'image' ? 'uploadImage' : 'uploadVideo',
                   payload: {
-                    action: 'update3dImage',
+                    action: 'updateItem',
                     id: id,
                   }
                 }) 
@@ -229,61 +230,39 @@ const ThreeDItem = (props) => {
             </div>
           }
 
-          {type == 'video' && 
-            <div 
-              className="colored-button three-d-editor-large-button center-flex"
-              onClick={() => 
-                store.dispatch({
-                  type: 'SHOW_POPUP' ,
-                  mode: 'uploadVideo',
-                  payload: {
-                    action: 'change3dVideo', 
-                    id: id,
-                  }
-                }) 
-              } 
-            >
-              CHANGE VIDEO
-            </div>
-          }
 
           {type == 'link' && 
             <LinkSelectTarget id={id} scene={data.scene} currentTarget={data.target} />
           }
 
-          <i 
-            className="closethree-d-editor-button material-icons"
+          <img 
+            className="three-d-editor-close-button"
             onClick={closeEditor} 
-          >
-            close
-          </i>
+            src={imagePath('icon-close.svg')}
+          />
 
         </div> 
       }
 
       { (isHighlighted || isHover) && !isEditorShown &&
-        <div className="three-d-editor-buttonWrapper">
+        <>
 
-          <i 
-            className="three-d-editor-button material-icons"
+          <img 
+            className="three-d-editor-button"
+            src={imagePath('icon-edit.svg')}
             onClick={() => {
               setIsHover(false);
               setIsEditorShown(true);
             }} 
-          >
-            edit
-          </i>
+          />
 
-          {/* <img src={require('@/assets/icons/icon-edit.svg').default}/> */}
-
-          <i
-            className="three-d-editor-button material-icons" 
+          <img 
+            className="three-d-editor-button"
+            src={imagePath('icon-delete-circle.svg')}
             onClick={deleteItem} 
-          >
-            delete
-          </i>
+          />
 
-        </div>
+        </>
       }
 
     </div>
@@ -319,10 +298,11 @@ const LinkSelectTarget = ({ id, scene, currentTarget }) => {
   return (
     <>
       <div 
-        className="colored-button three-d-editor-large-button center-flex"
+        className="border-box-small animate pointer"
+        style={{ margin: '10px 0' }}
         onClick={handleClick} 
       >
-        SELECT TARGET
+        Select Target
       </div>
 
       <Menu
