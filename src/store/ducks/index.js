@@ -51,12 +51,28 @@ const loaderReducer = ( state = { isShown: false }, action ) => {
   }
 }
 
+const setTargetModeReducer = ( state = { isOn: false }, action ) => {
+  switch( action.type ) {
+    case 'SET_TARGET_START':
+      return {
+        isOn: true,
+        ... action.payload
+      }
+    case 'SET_TARGET_FINISH':
+      return {
+        isOn: false
+      }
+    default: return state;
+  }
+}
+
 export default () =>
   combineReducers({
     updateScene: updateSceneReducer,
     updateMouse: updateMouseReducer,
     popup: popupReducer,
     loader: loaderReducer,
+    setTargetMode: setTargetModeReducer,
     scenes,
     threeDItems,
     twoDItems,

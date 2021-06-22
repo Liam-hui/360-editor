@@ -270,7 +270,7 @@ const Upload = ({ mode, data }) => {
 
   // backgroundColor: mode == 'image' ? 'rgba(200, 200, 200, 0.6)': 'rgba(50, 50, 50, 0.5)'
   return (
-    <GreyBox style={{ width: 570 }} innerStyle={{ padding: '35px 55px'}}>
+    <GreyBox style={{ width: 580 }} innerStyle={{ padding: '35px 55px'}}>
       <div className="upload-container" style={action == 'addScene' ? { minHeight: 300 } : {}}>
         
         { ( (mode == 'image' && images.length == 0) || (mode == 'video' && video == null) ) &&

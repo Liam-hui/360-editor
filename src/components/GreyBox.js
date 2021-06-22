@@ -2,7 +2,7 @@ import React from 'react';
 import store from '@/store';
 import { imagePath } from '@/utils/MyUtils';
 
-const GreyBox = ({ children, style, innerStyle }) => {
+const GreyBox = ({ children, style, innerStyle, close }) => {
 
   const closePopup = () => {
     store.dispatch({ type: 'HIDE_POPUP' }); 
@@ -15,7 +15,7 @@ const GreyBox = ({ children, style, innerStyle }) => {
           {children}
         </div>
       {/* </div> */}
-      <img onClick={closePopup} className="close-button pointer" src={imagePath('icon-close.svg')}/>
+      <img onClick={close?? closePopup} className="close-button pointer" src={imagePath('icon-close.svg')}/>
     </div>
   )
 }

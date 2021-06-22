@@ -2,24 +2,24 @@ import React, { useState, useEffect } from 'react';
 import store from '@/store';
 import { useSelector } from "react-redux";
 
+import LightBox from '@/components/LightBox';
 import GreyBox from '@/components/GreyBox';
 import Upload from "@/components/Upload";
 import Detail from "@/components/Detail";
-
 
 const Popup = () => {
 
   const popup = useSelector(state => state.popup);
   const { mode, payload } = popup;
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [isHidden, setIsHidden] = useState(false)
 
   useEffect(() => {
     let loop;
     if (popup.isShown) 
-      loop = setTimeout( () => setIsVisible(true), 20 );
+      loop = setTimeout( () => setIsHidden(false), 0 );
     else 
-      loop = setTimeout( () => setIsVisible(false), 500 );
+      loop = setTimeout( () => setIsHidden(true), 500 );
     
     return () => {
       clearTimeout(loop);
@@ -28,12 +28,10 @@ const Popup = () => {
 
   return (
     <>
-      { (popup.isShown || isVisible) ?
-        <div className={`dark-overlay ${popup.isShown && isVisible ? ' is-visible' : ''}`}>
-          <div 
-            className={"dark-overlay-click-area" }
-            onClick={() => store.dispatch({type: 'HIDE_POPUP'})}
-          />
+      {isHidden ?
+        null
+      :
+        <LightBox isVisible={popup.isShown} close={() => store.dispatch({type: 'HIDE_POPUP'})}>
           {
             {
               'uploadVideo': <Upload data={payload} mode='video' />,
@@ -43,9 +41,7 @@ const Popup = () => {
               'showMessage':  <Message data={payload} mode='message'/>,
             } [mode] || null
           }       
-        </div>
-      :
-        null
+        </LightBox>
       }
     </>
   )

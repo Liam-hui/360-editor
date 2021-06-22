@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react';
 import store from '@/store';
 import { useSelector } from "react-redux";
-
 import { viewer, getElementStyle, createObject } from '@/components/Panorama'
+import { imagePath } from '@/utils/MyUtils';
 
 
 const Menu = React.forwardRef( ( props, ref ) => {
@@ -48,7 +48,7 @@ const Menu = React.forwardRef( ( props, ref ) => {
   const Option = ( { label, onClick } ) => {
     return (
       <div  
-        className="option border-box-small animate center-flex" 
+        className="option border-box-small center-flex" 
         onClick={ () => {
           onClick();
           ref.current.hide();
@@ -64,9 +64,9 @@ const Menu = React.forwardRef( ( props, ref ) => {
       {object != null && 
         <div className="menu-wrapper" style={style}>
 
-          <i 
-            className='far fa-dot-circle' 
-            style={{ fontSize: 15, color: '#black' }}
+          <img 
+            src={imagePath('icon-dot.svg')}
+            style={{ width: 15, height: 15 }}
           />
 
           <div className="menu-container">

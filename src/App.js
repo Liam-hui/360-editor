@@ -9,8 +9,6 @@ import ControlBar from '@/components/ControlBar';
 import Loader from '@/components/Loader';
 
 import '@/styles/styles.css';
-import './style.css';
-import './animate.css';
 
 function App() {
 

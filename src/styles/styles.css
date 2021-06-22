@@ -1,6 +1,18 @@
 @charset "UTF-8";
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: "Roboto", sans-serif;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
 }
 
 div, label, input, textarea {
@@ -59,7 +71,7 @@ textarea {
 }
 
 .center-flex {
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
 }
@@ -79,6 +91,7 @@ textarea {
   position: relative;
   width: 500px;
   max-height: 90%;
+  max-width: 90%;
   background-color: rgba(200, 200, 200, 0.6);
   border-radius: 15px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
@@ -97,10 +110,15 @@ textarea {
 .grey-box .content-container {
   padding: 40px 40px;
 }
+@media (max-width: 800px) {
+  .grey-box .content-container {
+    padding: 30px !important;
+  }
+}
 .grey-box .close-button {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: -5px;
 }
 
 .border-box {
@@ -124,9 +142,10 @@ textarea {
   background-color: transparent;
   transition: all 0.5s ease;
 }
-.border-box-small.animate:hover {
+.border-box-small:hover {
   background-color: white;
-  color: black;
+  color: #9D9D9F;
+  text-shadow: none;
 }
 
 #panorama-container {
@@ -296,11 +315,17 @@ textarea {
   width: 100%;
 }
 .detail-container.video-container {
-  width: 700px;
+  width: 900px;
+  max-width: 90%;
   max-height: 90%;
+  padding: 20px;
   overflow-y: scroll;
   overflow-x: hidden;
-  padding: 20px;
+}
+@media (max-width: 800px) {
+  .detail-container.video-container {
+    padding: 0;
+  }
 }
 .detail-container .images-container {
   width: 100%;
@@ -325,6 +350,33 @@ textarea {
   width: 100%;
   height: auto;
   margin-bottom: 20px;
+}
+.detail-container .view-more .view-more-arrow {
+  display: inline-block;
+  margin-left: 5px;
+  width: 19px;
+  height: 15px;
+  position: relative;
+}
+.detail-container .view-more .view-more-arrow img {
+  height: auto;
+  width: 19px;
+  position: absolute;
+  left: 0;
+  top: 1px;
+  transition: all 0.5s ease;
+}
+.detail-container .view-more .view-more-arrow img:nth-child(1) {
+  opacity: 1;
+}
+.detail-container .view-more .view-more-arrow img:nth-child(2) {
+  opacity: 0;
+}
+.detail-container .view-more:hover .view-more-arrow img:nth-child(1) {
+  opacity: 0;
+}
+.detail-container .view-more:hover .view-more-arrow img:nth-child(2) {
+  opacity: 1;
 }
 
 .three-d-editor-wrapper {
@@ -409,7 +461,7 @@ textarea {
   font-weight: 400;
 }
 
-.dark-overlay {
+.light-box {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -421,14 +473,15 @@ textarea {
   align-items: center;
   z-index: 999;
   opacity: 0;
+  animation: fade-in 0.3s ease-in-out;
   transition: opacity 0.3s ease-in-out;
   pointer-events: none;
 }
-.dark-overlay.is-visible {
+.light-box.is-visible {
   opacity: 1;
   pointer-events: auto;
 }
-.dark-overlay .dark-overlay-click-area {
+.light-box .dark-click-area {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -447,11 +500,18 @@ textarea {
   position: relative;
   display: inline-block;
   cursor: pointer;
-  color: white;
-  font-size: 30px;
+  width: 45px;
+  height: 45px;
   transition: transform 0.2s ease-in-out;
-  margin: 0 7px;
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
+  overflow: visible;
+}
+.control-bar .control-bar-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.control-bar .control-bar-button.control-bar-circle {
+  margin: 0 4px;
 }
 .control-bar .control-bar-button:hover {
   color: white;
@@ -474,26 +534,12 @@ textarea {
   transform: translate(-50%);
 }
 
-.loader-container {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  background-color: rgba(0, 0, 0, 0.6);
-  opacity: 0;
-  transition: opacity 0.4s ease-in-out;
-}
-.loader-container.is-shown {
-  opacity: 1;
-}
-.loader-container .loader {
+.loader {
   display: inline-block;
   width: 80px;
   height: 80px;
 }
-.loader-container .loader div {
+.loader div {
   box-sizing: border-box;
   display: block;
   position: absolute;
@@ -505,13 +551,13 @@ textarea {
   animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: #fff transparent transparent transparent;
 }
-.loader-container .loader div:nth-child(1) {
+.loader div:nth-child(1) {
   animation-delay: -0.45s;
 }
-.loader-container .loader div:nth-child(2) {
+.loader div:nth-child(2) {
   animation-delay: -0.3s;
 }
-.loader-container .loader div:nth-child(3) {
+.loader div:nth-child(3) {
   animation-delay: -0.15s;
 }
 @keyframes loading {
@@ -525,7 +571,7 @@ textarea {
 
 .swiper-container {
   width: 100%;
-  height: 230px;
+  height: 350px;
 }
 .swiper-container .swiper-slide {
   text-align: center;
@@ -533,6 +579,7 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 .swiper-container .swiper-slide img {
   display: block;
@@ -546,7 +593,6 @@ textarea {
   height: 90px;
 }
 .thumbs .swiper-container .swiper-slide {
-  cursor: pointer;
   width: 115px;
 }
 .thumbs .swiper-container .swiper-slide img {
@@ -558,8 +604,17 @@ textarea {
 
 .slider-arrow {
   position: absolute;
-  top: 200px;
+  top: 280px;
   z-index: 99;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

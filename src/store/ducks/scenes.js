@@ -12,14 +12,16 @@ const { Types, Creators } = createActions({
   removeSceneRequest: ['id'],
   removeScene: ['id'],
 
-  changeSceneRequest: ['id'],
-  changeScene: ['id'],
+  changeSceneRequest: ['id', 'angle'],
+  changeScene: ['id', 'angle'],
 
-  setCameraAngle: ['id'],
+  setFirstScene: ['id', 'angle'],
 
-  enterScene:['isEntered'],
+  enterScene: ['isEntered'],
 
-  showSceneItems:['id'],
+  showSceneItems: ['id'],
+
+  setAngleFinish: []
 });
 
 export const ScenesTypes = Types;
@@ -69,17 +71,19 @@ const removeScene = ( state, { id } ) => {
   };
 }
 
-const changeScene = ( state, { id } ) => {
+const changeScene = ( state, { id, angle } ) => {
   return {
     ...state,
     previousId: state.currentId,
     currentId: id,
+    angle: angle,
   };
 }
 
-const setCameraAngle = ( state, { id, angle } ) => {
+const setFirstScene = ( state, { id, angle } ) => {
   return {
     ...state,
+    firstSceneId: id,
     data: {
       ...state.data,
       [id]: {
@@ -97,6 +101,14 @@ const enterScene = ( state, { isEntered } ) => {
   };
 }
 
+const setAngleFinish = ( state ) => {
+  return {
+    ...state,
+    angle: null
+  };
+}
+
+
 /* Reducers to types */
 
 export const reducer = createReducer(INITIAL_STATE, {
@@ -104,6 +116,7 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.ADD_SCENE]: addScene,
   [Types.REMOVE_SCENE]: removeScene,
   [Types.CHANGE_SCENE]: changeScene,
-  [Types.SET_CAMERA_ANGLE]: setCameraAngle,
+  [Types.SET_FIRST_SCENE]: setFirstScene,
   [Types.ENTER_SCENE]: enterScene,
+  [Types.SET_ANGLE_FINISH]: setAngleFinish,
 });

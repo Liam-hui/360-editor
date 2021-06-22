@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { Menu, MenuItem } from '@material-ui/core';
 import { getElementStyle, limitPosition } from '@/components/Panorama'
 import { imagePath } from '@/utils/MyUtils';
+import { camera } from '@/components/Panorama'
 
 const THREE = window.THREE;
 
@@ -212,7 +213,7 @@ const ThreeDItem = (props) => {
 
           { (type == 'image' || type == 'video') && 
             <div 
-              className="border-box-small animate pointer"
+              className="border-box-small pointer"
               style={{ margin: '10px 0' }}
               onClick={() => {
                 closeEditor();
@@ -286,19 +287,26 @@ const LinkSelectTarget = ({ id, scene, currentTarget }) => {
 
   const selectTarget = (targetId) => {
     store.dispatch({
-      type: 'UPDATE_THREE_D_ITEM_REQUEST',
-      id: id,
+      type: 'SET_TARGET_START',
       payload: {
-        target: targetId
+        id: id,
+        scene: scene,
+        targetScene: targetId,
+        prevAngle: {
+          x: camera.position.x,
+          y: camera.position.y,
+          z: camera.position.z
+        },
       }
-    })
+    }) 
+    store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: targetId })
     setAnchorEl(null);
   }
 
   return (
     <>
       <div 
-        className="border-box-small animate pointer"
+        className="border-box-small pointer"
         style={{ margin: '10px 0' }}
         onClick={handleClick} 
       >

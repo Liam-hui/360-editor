@@ -3,23 +3,32 @@ import store from '@/store';
 import { useSelector } from "react-redux";
 import api from '@/services/api';
 import { camera } from '@/components/Panorama'
+import { imagePath } from '@/utils/MyUtils';
 
 const ControlBar = () => {
 
   const scenes = useSelector(state => state.scenes);
   const threeDItems = useSelector(state => state.threeDItems.data);
-  // const twoDItems = useSelector(state => state.twoDItems.data);
 
-  const setCameraAngle = () => {    
+  const setTargetMode = useSelector(state => state.setTargetMode);
+
+  const setFirstScene = () => { 
     store.dispatch({
-      type: 'SET_CAMERA_ANGLE',
-      id: scenes.currentId,
-      angle: {
-        x: camera.position.x,
-        y: camera.position.y,
-        z: camera.position.z
-      },
-    }) 
+      type: 'SHOW_POPUP' ,
+      mode: 'showWarning',
+      payload: {
+        text: 'Do you want to set this scene as the first scene, and current camera angle as the default angle？',
+        confirm: () => store.dispatch({
+          type: 'SET_FIRST_SCENE',
+          id: scenes.currentId,
+          angle: {
+            x: camera.position.x,
+            y: camera.position.y,
+            z: camera.position.z
+          },
+        }) 
+      }
+    })    
   }
 
   const goToScene = ( id ) => {
@@ -60,8 +69,10 @@ const ControlBar = () => {
 
       data.scenes[id] = {
         baseImage: item.baseImage,
-        angle: item.angle,
-        ... scenes.firstSceneId == id && { isFirst: true }
+        ... scenes.firstSceneId == id && { 
+          isFirst: true,
+          angle: item.angle,
+        }
       }
     }
 
@@ -82,7 +93,8 @@ const ControlBar = () => {
         },
         scale: item.object.scale.x,
         ... item.type == 'link' && { 
-          target: item.target 
+          target: item.target,
+          angle: item.angle,
         },
         ... item.type == 'image' && { 
           images: item.images
@@ -139,29 +151,40 @@ const ControlBar = () => {
     // saveToLocalText(data);
   }
 
-  return (
+  if (setTargetMode.isOn) return null
+  else return (
 
     <div className="control-bar">
 
       {
         Object.keys(scenes.data).map( 
           (sceneId, index) => 
-            <i 
-              className='control-bar-button fas fa-circle' 
+            <img
+              className='control-bar-button control-bar-circle' 
+              src={imagePath('icon-circle.svg')}
               style={
                 sceneId == scenes.currentId ?
-                  { fontSize: 16 }
+                  { width: 21, height: 21 }
                 :
-                  { fontSize: 10, opacity: 0.8 }
+                  { width: 13, height: 13, opacity: 0.8 }
                }
               onClick={() => goToScene(sceneId)}
             /> 
         )
       }
-      <i className='control-bar-button fas fa-camera' style={{ '--tipText': "'Set Camera Position'" }} onClick={setCameraAngle}/>
-      <i className='control-bar-button fas fa-trash' style={{ '--tipText': "'Delete Scene'", fontSize: 27 }} onClick={removeScene}/>
-      <i className='control-bar-button fas fa-plus' style={{ '--tipText': "'Add Scene'" }} onClick={addNewScene}/>
-      <i className='control-bar-button fas fa-save' style={{ '--tipText': "'Save'" }} onClick={handleSave}/>
+
+      <div className='control-bar-button' style={{ '--tipText': "'Set First Scene'" }} onClick={setFirstScene}>
+        <img src={imagePath('icon-camera.svg')} />
+      </div>
+      <div className='control-bar-button' style={{ '--tipText': "'Delete Scene'", fontSize: 27 }} onClick={removeScene}>
+        <img src={imagePath('icon-trash.svg')} />
+      </div>
+      <div className='control-bar-button' style={{ '--tipText': "'Add Scene'" }} onClick={addNewScene}>
+        <img  src={imagePath('icon-plus.svg')} />
+      </div>
+      <div className='control-bar-button' style={{ '--tipText': "'Save'" }} onClick={handleSave}>
+        <img src={imagePath('icon-save.svg')}  />
+      </div>
 
     </div>
   )

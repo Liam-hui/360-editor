@@ -4,7 +4,7 @@ import {
 } from 'redux-saga/effects';
 
 import { ScenesTypes } from '../ducks/scenes';
-import { initScenesRequest, addSceneRequest, removeSceneRequest, changeSceneRequest, showSceneItems, setCameraAngle } from './scenes';
+import { initScenesRequest, addSceneRequest, removeSceneRequest, changeSceneRequest, showSceneItems, setFirstScene } from './scenes';
 
 import { ThreeDItemsTypes } from '../ducks/threeDItems';
 import { initThreeDItemsRequest, addThreeDItemRequest, removeThreeDItemRequest, updateThreeDItemRequest, highlightThreeDItemRequest } from './threeDItems';
@@ -23,7 +23,7 @@ export default function* rootSaga() {
     takeLatest(ScenesTypes.REMOVE_SCENE_REQUEST, removeSceneRequest),
     takeLatest(ScenesTypes.CHANGE_SCENE_REQUEST, changeSceneRequest),
     takeLatest(ScenesTypes.SHOW_SCENE_ITEMS, showSceneItems),
-    takeLatest(ScenesTypes.SET_CAMERA_ANGLE, setCameraAngle),
+    takeLatest(ScenesTypes.SET_FIRST_SCENE, setFirstScene),
 
     takeLatest(ThreeDItemsTypes.INIT_THREE_D_ITEMS_REQUEST, initThreeDItemsRequest),
     takeLatest(ThreeDItemsTypes.ADD_THREE_D_ITEM_REQUEST, addThreeDItemRequest),

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { isMobile } from "react-device-detect";
 
 import Menu from '@/components/Menu';
+import SetTarget from '@/components/SetTarget';
 import ThreeDItem from '@/components/ThreeDItem';
 
 const THREE = window.THREE;
@@ -124,6 +125,7 @@ export default function Panorama() {
   const scenes = useSelector(state => state.scenes);
   const threeDItems = useSelector(state => state.threeDItems);
   const currentPanorama = useSelector(state => state.scenes.data[scenes.currentId]?.panorama);
+  const setTargetMode = useSelector(state => state.setTargetMode);
   const isPopupShown = useSelector(state => state.popup.isShown);
 
   const menuRef = useRef();
@@ -140,7 +142,6 @@ export default function Panorama() {
   let clickLoop;
   const onClick = (e) => {
     let threeDItemId = null;
-
     if (isMobile) {
       mouse.x = ( e.mouseEvent.clientX / viewer.renderer.domElement.clientWidth ) * 2 - 1
       mouse.y = - ( e.mouseEvent.clientY / viewer.renderer.domElement.clientHeight ) * 2 + 1
@@ -152,8 +153,10 @@ export default function Panorama() {
     // 3d item onPress
     if (threeDItemId != null) {
       const threeDItem = store.getState().threeDItems.data[threeDItemId];
-      if (threeDItem.type == 'link' && threeDItem.target)
-        store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: threeDItem.target });
+      if (threeDItem.type == 'link') {
+        if (threeDItem.target)
+          store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: threeDItem.target, angle: threeDItem.angle });
+      }
       else
         // video or image
         store.dispatch( {
@@ -182,7 +185,7 @@ export default function Panorama() {
 
   // add event to current panorama
   useEffect(() => {
-    if (currentPanorama) {
+    if (currentPanorama && !setTargetMode.isOn) {
       currentPanorama.addEventListener('click', onClick);
     }
 
@@ -191,14 +194,19 @@ export default function Panorama() {
         currentPanorama.removeEventListener('click', onClick);
       }
     }
-  }, [currentPanorama]);
+  }, [currentPanorama, setTargetMode.isOn]);
 
-  // when enter scene
+  // when enter scene 
   useEffect(() => {
     if (scenes.isEntered) {
       store.dispatch({ type: 'SHOW_SCENE_ITEMS', id: scenes.currentId })
 
-      if (scenes.data[scenes.currentId]?.angle) {
+      if (scenes.angle) {
+        const angle = scenes.angle
+        camera.position.set(angle.x, angle.y, angle.z)
+        store.dispatch({ type: 'SET_ANGLE_FINISH' })
+      }
+      else if (scenes.data[scenes.currentId]?.angle) {
         const angle = scenes.data[scenes.currentId].angle;
         camera.position.set(angle.x, angle.y, angle.z);
       }
@@ -231,7 +239,7 @@ export default function Panorama() {
   // mouse picking
   const updateMouse = useSelector(state => state.updateMouse);
   useEffect(() => {
-    if (!isPopupShown) {
+    if (!isPopupShown && !setTargetMode.isOn ) {
       const id = getIntersectId();
 
       document.getElementById("root").style.cursor = id == null ? "unset" : "pointer";
@@ -267,6 +275,10 @@ export default function Panorama() {
 
         { window.mode == 'admin' &&
           <Menu ref={menuRef}/>
+        }
+
+        {setTargetMode.isOn &&
+          <SetTarget/>
         }
 
         {/* { Object.keys(scenes.data).length == 0 &&

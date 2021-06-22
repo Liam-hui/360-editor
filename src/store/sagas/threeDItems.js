@@ -43,7 +43,8 @@ export function* initThreeDItemsRequest({ data, scenes }) {
     ThreeDItems[id] = {
       ... ThreeDItem,
       ... item.type == 'link' && { 
-        target : item.target
+        target: item.target,
+        angle: item.angle
       },
       ... item.type == 'video' && { 
         video: videoElement,
@@ -305,8 +306,8 @@ const createThreeDItem = ({ init, type, url, width, height, position, rotation, 
   }
   else if (type == 'link') {
     const image = LINK_IMAGE()
-    width = 1124
-    height = 536
+    width = 901
+    height = 1229
     material = createMaterial( 
       createTexture(image),
       0

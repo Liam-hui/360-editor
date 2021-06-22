@@ -1,6 +1,5 @@
 import { call, put, select } from 'redux-saga/effects';
 import store from '@/store'
-import api from '@/services/api';
 import { viewer } from '@/components/Panorama'
 import { uniqueId } from '@/utils/MyUtils';
 
@@ -73,7 +72,7 @@ export function* removeSceneRequest({ id }) {
   }
 }
 
-export function* changeSceneRequest({ id }) {
+export function* changeSceneRequest({ id, angle }) {
   try {
 
     const state = yield select();
@@ -87,7 +86,7 @@ export function* changeSceneRequest({ id }) {
       viewer.add(scene.panorama);
       viewer.setPanorama(scene.panorama);
 
-      yield put({ type: 'CHANGE_SCENE', id: id });
+      yield put({ type: 'CHANGE_SCENE', id: id, angle: angle });
       yield put({ type: 'UPDATE_SCENE' });
     
     }
@@ -126,17 +125,17 @@ export function* showSceneItems({ id }) {
   }
 }
 
-export function* setCameraAngle({ angle }) {
+export function* setFirstScene({ angle }) {
   try {
 
-   if (angle) 
-    yield put({
-      type: 'SHOW_POPUP' ,
-      mode: 'showMessage',
-      payload: {
-        text: 'Camera position set!', 
-      }
-    }) 
+  //  if (angle) 
+  //   yield put({
+  //     type: 'SHOW_POPUP' ,
+  //     mode: 'showMessage',
+  //     payload: {
+  //       text: 'Camera position set!', 
+  //     }
+  //   }) 
     
   } catch (error) {
     // console.log(error);
