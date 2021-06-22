@@ -4,6 +4,16 @@ import { reducer as threeDItems} from './threeDItems';
 import { reducer as twoDItems} from './twoDItems';
 import { reducer as links } from './links';
 
+const configReducer = ( state = {}, action ) => {
+  switch( action.type ) {
+    case 'SET_CONFIG':
+      return {
+        ... action.payload
+      };
+    default: return state;
+  }
+}
+
 const updateSceneReducer = ( state = 0, action ) => {
   switch( action.type ) {
     case 'UPDATE_SCENE':
@@ -68,6 +78,7 @@ const setTargetModeReducer = ( state = { isOn: false }, action ) => {
 
 export default () =>
   combineReducers({
+    config: configReducer,
     updateScene: updateSceneReducer,
     updateMouse: updateMouseReducer,
     popup: popupReducer,

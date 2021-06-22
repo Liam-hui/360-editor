@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import store from '@/store';
 import GreyBox from '@/components/GreyBox';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { imagePath } from '@/utils/MyUtils';
 import LightBox from '@/components/LightBox';
+
 import 'swiper/swiper-bundle.css';
 import "swiper/components/pagination/pagination.min.css"
 import SwiperCore, {

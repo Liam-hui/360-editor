@@ -99,7 +99,6 @@ export default function Panorama() {
 
   // init 
   const init = () => {
-
     viewer = new PANOLENS.Viewer({ 
       container: document.getElementById('panorama-container'),
       controlBar: false,
@@ -115,13 +114,13 @@ export default function Panorama() {
     if (data?.scenes) {
       store.dispatch({ type:'INIT_SCENES_REQUEST', data: data });
     }
-   
   }
 
   useEffect(() => {
     init();
   }, []);
 
+  const config = useSelector(state => state.config);
   const scenes = useSelector(state => state.scenes);
   const threeDItems = useSelector(state => state.threeDItems);
   const currentPanorama = useSelector(state => state.scenes.data[scenes.currentId]?.panorama);
@@ -168,7 +167,7 @@ export default function Panorama() {
         }) 
     }
 
-    if (window.mode == 'admin') {
+    if (config.mode == 'admin') {
       if (threeDItemId == null & clicked)
         menuRef.current.show();
       else {
@@ -267,13 +266,13 @@ export default function Panorama() {
 
         <div id="loading-progress"/>
 
-        { window.mode == 'admin' &&
+        { config.mode == 'admin' &&
           Object.entries(threeDItems.data)
             .filter(x => x[1].scene == scenes.currentId)
             .map(x => <ThreeDItem key={x[0]} id={x[0]} data={x[1]}/>) 
         }
 
-        { window.mode == 'admin' &&
+        { config.mode == 'admin' &&
           <Menu ref={menuRef}/>
         }
 

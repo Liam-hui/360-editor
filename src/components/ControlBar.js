@@ -7,9 +7,9 @@ import { imagePath } from '@/utils/MyUtils';
 
 const ControlBar = () => {
 
+  const config = useSelector(state => state.config);
   const scenes = useSelector(state => state.scenes);
   const threeDItems = useSelector(state => state.threeDItems.data);
-
   const setTargetMode = useSelector(state => state.setTargetMode);
 
   const setFirstScene = () => { 
@@ -151,7 +151,7 @@ const ControlBar = () => {
     // saveToLocalText(data);
   }
 
-  if (setTargetMode.isOn) return null
+  if (config.mode != 'admin' || setTargetMode.isOn) return null
   else return (
 
     <div className="control-bar">
@@ -176,12 +176,15 @@ const ControlBar = () => {
       <div className='control-bar-button' style={{ '--tipText': "'Set First Scene'" }} onClick={setFirstScene}>
         <img src={imagePath('icon-camera.svg')} />
       </div>
+
       <div className='control-bar-button' style={{ '--tipText': "'Delete Scene'", fontSize: 27 }} onClick={removeScene}>
         <img src={imagePath('icon-trash.svg')} />
       </div>
+
       <div className='control-bar-button' style={{ '--tipText': "'Add Scene'" }} onClick={addNewScene}>
         <img  src={imagePath('icon-plus.svg')} />
       </div>
+      
       <div className='control-bar-button' style={{ '--tipText': "'Save'" }} onClick={handleSave}>
         <img src={imagePath('icon-save.svg')}  />
       </div>
