@@ -101,7 +101,7 @@ const Detail = ({ data }) => {
   )
 
   else if (item.type == 'video') return (
-    <div className="detail-container" style={{ width: 700 }}>
+    <div className="detail-container video-container">
 
       <video autoPlay src={window.cdn + item.url} controls/>
 

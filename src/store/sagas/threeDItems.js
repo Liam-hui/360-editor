@@ -8,7 +8,7 @@ const THREE = window.THREE;
 const textureLoader = new THREE.TextureLoader();
 textureLoader.crossOrigin = '*';
 
-const LINK_IMAGE = imagePath('arrow.png')
+const LINK_IMAGE = () => imagePath('arrow.png')
 
 export function* initThreeDItemsRequest({ data, scenes }) {
 
@@ -264,7 +264,7 @@ export function* highlightThreeDItemRequest({ id, isHighlight }) {
         }
         else if (item.type == 'link') {
           item.object.material = createMaterial( 
-            createTexture(LINK_IMAGE), 
+            createTexture((LINK_IMAGE())), 
             amount 
           );
         }
@@ -304,7 +304,7 @@ const createThreeDItem = ({ init, type, url, width, height, position, rotation, 
     );
   }
   else if (type == 'link') {
-    const image = LINK_IMAGE
+    const image = LINK_IMAGE()
     width = 1124
     height = 536
     material = createMaterial( 

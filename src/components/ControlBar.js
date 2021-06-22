@@ -116,7 +116,7 @@ const ControlBar = () => {
       body
     )
       .then( (response) => {
-        console.log(response.data);
+        // console.log(response.data);
         store.dispatch({
           type: 'SHOW_POPUP' ,
           mode: 'showMessage',

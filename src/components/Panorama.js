@@ -139,8 +139,6 @@ export default function Panorama() {
   let clicked = false;
   let clickLoop;
   const onClick = (e) => {
-    menuRef.current.hide();
-
     let threeDItemId = null;
 
     if (isMobile) {
@@ -166,16 +164,19 @@ export default function Panorama() {
           }
         }) 
     }
-    else if (clicked) {
-      menuRef.current.show();
-    }
-    else {
-      clearTimeout(clickLoop)
-      clicked = true;
-      clickLoop = setTimeout(
-        () => clicked = false,
-        200,
-      )
+
+    if (window.mode == 'admin') {
+      if (threeDItemId == null & clicked)
+        menuRef.current.show();
+      else {
+        menuRef.current.hide();
+        clearTimeout(clickLoop)
+        clicked = true;
+        clickLoop = setTimeout(
+          () => clicked = false,
+          200,
+        )
+      }
     }
   };
 
@@ -264,7 +265,9 @@ export default function Panorama() {
             .map(x => <ThreeDItem key={x[0]} id={x[0]} data={x[1]}/>) 
         }
 
-        <Menu ref={menuRef}/>
+        { window.mode == 'admin' &&
+          <Menu ref={menuRef}/>
+        }
 
         {/* { Object.keys(scenes.data).length == 0 &&
           <div className='start-text center-flex'>ADD A SCENE TO START</div>
