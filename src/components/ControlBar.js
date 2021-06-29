@@ -28,7 +28,7 @@ const ControlBar = () => {
           },
         }) 
       }
-    })    
+    })  
   }
 
   const goToScene = ( id ) => {
@@ -69,7 +69,7 @@ const ControlBar = () => {
 
       data.scenes[id] = {
         baseImage: item.baseImage,
-        ... scenes.firstSceneId == id && { 
+        ...scenes.firstSceneId == id && { 
           isFirst: true,
           angle: item.angle,
         }
@@ -92,14 +92,14 @@ const ControlBar = () => {
           z: item.object.rotation.z
         },
         scale: item.object.scale.x,
-        ... item.type == 'link' && { 
+        ...item.type == 'link' && { 
           target: item.target,
           angle: item.angle,
         },
-        ... item.type == 'image' && { 
+        ...item.type == 'image' && { 
           images: item.images
         },
-        ... (item.type == 'image' || item.type == 'video' ) && { 
+        ...(item.type == 'image' || item.type == 'video' ) && { 
           title: item.title,
           description: item.description,
           link: item.link,
@@ -158,8 +158,9 @@ const ControlBar = () => {
 
       {
         Object.keys(scenes.data).map( 
-          (sceneId, index) => 
+          (sceneId) => 
             <img
+              key={sceneId}
               className='control-bar-button control-bar-circle' 
               src={imagePath('icon-circle.svg')}
               style={

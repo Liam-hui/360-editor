@@ -36,23 +36,23 @@ export function* initThreeDItemsRequest({ data, scenes }) {
         height: item.height,
         scene: item.scene,
         panorama: scenes[item.scene].panorama,
-        ... item.type == 'video' && { videoElement: videoElement }
+        ...item.type == 'video' && { videoElement: videoElement }
       } 
     );
 
     ThreeDItems[id] = {
-      ... ThreeDItem,
-      ... item.type == 'link' && { 
+      ...ThreeDItem,
+      ...item.type == 'link' && { 
         target: item.target,
         angle: item.angle
       },
-      ... item.type == 'video' && { 
+      ...item.type == 'video' && { 
         video: videoElement,
       },
-      ... item.type == 'image' && { 
+      ...item.type == 'image' && { 
         images: item.images,
       },
-      ... (item.type == 'image' || item.type == 'video') && { 
+      ...(item.type == 'image' || item.type == 'video') && { 
         title: item.title,
         description: item.description,
         link: item.link,
@@ -79,13 +79,13 @@ export function* addThreeDItemRequest({ payload }) {
     const threeDItem = createThreeDItem({
       type: type,
       position,
-      ... type == 'video' && { 
+      ...type == 'video' && { 
         url: payload.url,
         videoElement: videoElement, 
         width: videoElement.videoWidth, 
         height: videoElement.videoHeight 
       },
-      ... type == 'image' && { 
+      ...type == 'image' && { 
         url: payload.images[0].url,
         width: payload.images[0].width, 
         height: payload.images[0].height,
@@ -177,7 +177,7 @@ export function* updateThreeDItemRequest({ id, payload }) {
       }
 
       data = {
-        ... data,
+        ...data,
         title: payload.title,
         description: payload.description,
         link: payload.link
@@ -333,22 +333,22 @@ const createThreeDItem = ({ init, type, url, width, height, position, rotation, 
     object.rotation.z = rotation.z;
   }
   else {
-    if (position.y > roomSize) {
-      object.rotateX( Math.PI * 0.5 )
+    if (position.y >= roomSize) {
+      object.rotateX(Math.PI * 0.5)
     }
-    else if (position.y < -roomSize) {
-      object.rotateX( - Math.PI * 0.5 )
+    else if (position.y <= -roomSize) {
+      object.rotateX(-Math.PI * 0.5)
     }
-    else if (position.x < -roomSize) {
-      object.rotateY( Math.PI * 0.5 )
+    else if (position.x <= -roomSize) {
+      object.rotateY(Math.PI * 0.5)
     }
-    else if (position.x > roomSize) {
-      object.rotateY( - Math.PI * 0.5 )
+    else if (position.x >= roomSize) {
+      object.rotateY(-Math.PI * 0.5)
     }
-    else if (position.z > roomSize) {
-      object.rotateY( Math.PI )
+    else if (position.z >= roomSize) {
+      object.rotateY(Math.PI)
     }
-    // else if (position.z < -roomSize) {
+    // else if (position.z <= -roomSize) {
     // }
   }
 

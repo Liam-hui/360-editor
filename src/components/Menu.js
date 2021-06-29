@@ -1,48 +1,48 @@
-import React, { useState, useEffect, useImperativeHandle } from 'react';
-import store from '@/store';
-import { useSelector } from "react-redux";
+import React, { useState, useEffect, useImperativeHandle } from 'react'
+import store from '@/store'
+import { useSelector } from "react-redux"
 import { viewer, getElementStyle, createObject } from '@/components/Panorama'
-import { imagePath } from '@/utils/MyUtils';
+import { imagePath } from '@/utils/MyUtils'
 
-const Menu = React.forwardRef( ( props, ref ) => {
+const Menu = React.forwardRef( (props, ref) => {
 
-  const [ object, setObject ] = useState( null );
-  const [ style, setStyle ] = useState( {} );
+  const [object, setObject] = useState(null)
+  const [style, setStyle] = useState({})
 
-  const config = useSelector(state => state.config);
-  const currentSceneId = useSelector( state => state.scenes.currentId );
-  const panorama = useSelector( state => state.scenes.data[currentSceneId]?.panorama );
+  const config = useSelector(state => state.config)
+  const currentSceneId = useSelector(state => state.scenes.currentId)
+  const panorama = useSelector(state => state.scenes.data[currentSceneId]?.panorama)
 
-  useImperativeHandle( ref, () => ( {
+  useImperativeHandle(ref, () => ({
     show: () => {
-      const object = createObject( viewer.getPosition() );
+      const object = createObject( viewer.getPosition() )
 
-      panorama.add( object );
+      panorama.add(object)
 
-      const newStyle = getElementStyle( object );
-      if ( newStyle != null ) {
+      const newStyle = getElementStyle(object)
+      if (newStyle != null) {
         setStyle(newStyle)
       }
 
-      setObject(object);
+      setObject(object)
     },
     hide: () => {
       if ( object != null ) {
-        panorama.remove( object );
-        setObject( null );
+        panorama.remove( object )
+        setObject( null )
       }
     }
-  } ) );
+  }) )
 
   // update menu position
-  const updateScene = useSelector( state => state.updateScene );
+  const updateScene = useSelector(state => state.updateScene)
   useEffect(() => {
     if (object != null) {
-      const newStyle = getElementStyle( object );
+      const newStyle = getElementStyle(object)
       if (newStyle != null) 
-        setStyle(newStyle);
+        setStyle(newStyle)
     }
-  }, [updateScene]);
+  }, [updateScene])
 
 
   const Option = ({ label, onClick } ) => {
@@ -50,8 +50,8 @@ const Menu = React.forwardRef( ( props, ref ) => {
       <div  
         className="option border-box-small center-flex" 
         onClick={() => {
-          onClick();
-          ref.current.hide();
+          onClick()
+          ref.current.hide()
         }}
       >
         {label}
@@ -141,5 +141,5 @@ const Menu = React.forwardRef( ( props, ref ) => {
 })
 
 
-export default React.memo(Menu);
+export default React.memo(Menu)
 

@@ -8,7 +8,7 @@ const configReducer = ( state = {}, action ) => {
   switch( action.type ) {
     case 'SET_CONFIG':
       return {
-        ... action.payload
+        ...action.payload
       };
     default: return state;
   }
@@ -66,7 +66,7 @@ const setTargetModeReducer = ( state = { isOn: false }, action ) => {
     case 'SET_TARGET_START':
       return {
         isOn: true,
-        ... action.payload
+        ...action.payload
       }
     case 'SET_TARGET_FINISH':
       return {

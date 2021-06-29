@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import store from '@/store';
-import { useSelector } from "react-redux";
-import { Menu, MenuItem } from '@material-ui/core';
+import React, { useState, useEffect } from 'react'
+import store from '@/store'
+import { useSelector } from "react-redux"
+import { Menu, MenuItem } from '@material-ui/core'
 import { getElementStyle, limitPosition } from '@/components/Panorama'
-import { imagePath } from '@/utils/MyUtils';
+import { imagePath } from '@/utils/MyUtils'
 import { camera } from '@/components/Panorama'
 
-const THREE = window.THREE;
+const THREE = window.THREE
 
-const TRANSLATION_MAX = 800;
-const ROTATION_STEP = 100;
+const TRANSLATION_MAX = 800
+const ROTATION_STEP = 100
 
 const Slider = (props) => {
 
   const [value, setValue] = useState(0)
 
-  const { style, update, onMouseDown } = props;
+  const { style, update, onMouseDown } = props
 
   const onChange = (e) => {
-    setValue(e.target.value);
-    update(e.target.value);
+    setValue(e.target.value)
+    update(e.target.value)
   }
 
   const onMouseUp = () => {
-    setValue(0);
+    setValue(0)
   }
 
-  const offset = style?.width ? 64 : 71;
+  const offset = style?.width ? 64 : 71
 
   return(
     <div className='three-d-editor-slider' style={style}>
@@ -41,80 +41,80 @@ const Slider = (props) => {
 
 const ThreeDItem = (props) => {
 
-  const { id, data } = props;
-  const { object, type } = data;
+  const { id, data } = props
+  const { object, type } = data
 
-  const isHighlighted = useSelector(state => state.threeDItems.highlightedId == id);
+  const isHighlighted = useSelector(state => state.threeDItems.highlightedId == id)
 
-  const [isHover, setIsHover] = useState(false);
-  const [isEditorShown, setIsEditorShown] = useState(false);
+  const [isHover, setIsHover] = useState(false)
+  const [isEditorShown, setIsEditorShown] = useState(false)
 
   // update position
-  const updateScene = useSelector(state => state.updateScene);
-  const [style, setStyle] = useState({});
+  const updateScene = useSelector(state => state.updateScene)
+  const [style, setStyle] = useState({})
   useEffect(() => {
     if (object != null) {
-      const style = getElementStyle(object);
-      if (style != null) setStyle(style);
+      const style = getElementStyle(object)
+      if (style != null) setStyle(style)
     }
-  }, [updateScene]);
+  }, [updateScene])
 
-  const [tempValue, setTempValue] = useState(null);
+  const [tempValue, setTempValue] = useState(null)
   const setTemp = (mode) => {
-    let v;
+    let v
 
     if (mode == 'translate') {
-      v = new THREE.Vector3();
+      v = new THREE.Vector3()
       v.copy(object.position)
     }
     else if (mode == 'rotate') {
-      v = new THREE.Vector3();
+      v = new THREE.Vector3()
       v.copy(object.rotation)
     }
     else if (mode == 'scale') {
-      v = object.scale.x;
+      v = object.scale.x
     }
       
-    setTempValue(v);
+    setTempValue(v)
   }
 
   const updateTranslate = ( value, axis ) => {
 
-    object.position.x = tempValue.x;
-    object.position.y = tempValue.y;
-    object.position.z = tempValue.z;
+    object.position.x = tempValue.x
+    object.position.y = tempValue.y
+    object.position.z = tempValue.z
 
-    const amount =  value / 100 * TRANSLATION_MAX;
+    const amount =  value / 100 * TRANSLATION_MAX
 
-    if ( axis == 'x' )
-      object.translateX( amount );
-    else if ( axis == 'y' )
-      object.translateY( amount );
-    else if ( axis == 'z' )
-      object.translateZ( amount );   
+    if (axis == 'x')
+      object.translateX(amount)
+    else if (axis == 'y')
+      object.translateY(amount)
+    else if (axis == 'z')
+      object.translateZ(amount)
       
-    object.position.copy( limitPosition( object, object.position ) )
+    object.position.copy( limitPosition(object, object.position) )
   }
 
-  const updateRotate = ( value, axis ) => {
+  const updateRotate = (value, axis) => {
 
-    object.rotation.x = tempValue.x;
-    object.rotation.y = tempValue.y;
-    object.rotation.z = tempValue.z;
+    object.rotation.x = tempValue.x
+    object.rotation.y = tempValue.y
+    object.rotation.z = tempValue.z
 
-    const amount =  value / 100 * ROTATION_STEP * Math.PI/180;
+    const amount = value / 100 * ROTATION_STEP * Math.PI / 180
 
-    if ( axis == 'x' )
-      object.rotateX( amount );
-    else if ( axis == 'y' )
-      object.rotateY( amount );
-    else if ( axis == 'z' )
-      object.rotateZ( - amount );  
+    if (axis == 'x')
+      object.rotateX( amount )
+    else if (axis == 'y')
+      object.rotateY( amount )
+    else if (axis == 'z')
+      object.rotateZ( - amount )
   }
 
-  const updateScale = ( value ) => {
+  const updateScale = (value) => {
 
-    const scale = Math.max( 0.1, tempValue + value / 100 );
+    const scale = Math.max(0.1, tempValue + value / 100)
 
     object.scale.set(
       scale,
@@ -135,9 +135,9 @@ const ThreeDItem = (props) => {
   }
 
   const closeEditor = () => {
-    setIsEditorShown(false);
-    const style = getElementStyle(object);
-    if (style != null) setStyle(style);
+    setIsEditorShown(false)
+    const style = getElementStyle(object)
+    if (style != null) setStyle(style)
   }
 
   return (
@@ -145,9 +145,9 @@ const ThreeDItem = (props) => {
       className="three-d-editor-wrapper center-flex" 
       style={{
         ...style,
-        ... type == 'link' && { marginBottom: 100 }
+        ...type == 'link' && { marginBottom: 100 }
       }}
-      onMouseEnter={() => { if (!isEditorShown) setIsHover(true); }}
+      onMouseEnter={() => { if (!isEditorShown) setIsHover(true) }}
       onMouseLeave={() => setIsHover(false)}
     >
 
@@ -216,7 +216,7 @@ const ThreeDItem = (props) => {
               className="border-box-small pointer"
               style={{ margin: '10px 0' }}
               onClick={() => {
-                closeEditor();
+                closeEditor()
                 store.dispatch({
                   type: 'SHOW_POPUP' ,
                   mode: type == 'image' ? 'uploadImage' : 'uploadVideo',
@@ -252,8 +252,8 @@ const ThreeDItem = (props) => {
             className="three-d-editor-button"
             src={imagePath('icon-edit.svg')}
             onClick={() => {
-              setIsHover(false);
-              setIsEditorShown(true);
+              setIsHover(false)
+              setIsEditorShown(true)
             }} 
           />
 
@@ -273,17 +273,17 @@ const ThreeDItem = (props) => {
 
 const LinkSelectTarget = ({ id, scene, currentTarget }) => {
 
-  const scenes = useSelector(state => state.scenes.data);
+  const scenes = useSelector(state => state.scenes.data)
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null)
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   const selectTarget = (targetId) => {
     store.dispatch({
@@ -300,7 +300,7 @@ const LinkSelectTarget = ({ id, scene, currentTarget }) => {
       }
     }) 
     store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: targetId })
-    setAnchorEl(null);
+    setAnchorEl(null)
   }
 
   return (
@@ -339,5 +339,5 @@ const LinkSelectTarget = ({ id, scene, currentTarget }) => {
   )
 }
 
-export default ThreeDItem;
+export default ThreeDItem
 

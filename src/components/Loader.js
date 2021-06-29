@@ -1,11 +1,11 @@
-import React from 'react';
-import { useSelector } from "react-redux";
+import React from 'react'
+import { useSelector } from "react-redux"
 
-import LightBox from '@/components/LightBox';
+import LightBox from '@/components/LightBox'
 
 const Loader = () => {
 
-  const loader = useSelector(state => state.loader);
+  const loader = useSelector(state => state.loader)
 
   return (
     <LightBox isVisible={loader.isShown}>
@@ -15,7 +15,7 @@ const Loader = () => {
 
 }
 
-export default Loader;
+export default Loader
 
 
 

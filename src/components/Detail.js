@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import store from '@/store';
-import GreyBox from '@/components/GreyBox';
-import { Swiper, SwiperSlide } from "swiper/react";
-import { imagePath } from '@/utils/MyUtils';
-import LightBox from '@/components/LightBox';
+import React, { useState, useEffect } from 'react'
+import store from '@/store'
+import GreyBox from '@/components/GreyBox'
+import { Swiper, SwiperSlide } from "swiper/react"
+import { imagePath } from '@/utils/MyUtils'
+import LightBox from '@/components/LightBox'
 
-import 'swiper/swiper-bundle.css';
+import 'swiper/swiper-bundle.css'
 import "swiper/components/pagination/pagination.min.css"
 import SwiperCore, {
   Thumbs,
   Controller,
   Pagination
-} from 'swiper/core';
-SwiperCore.use([Pagination, Thumbs, Controller]);
+} from 'swiper/core'
+SwiperCore.use([Pagination, Thumbs, Controller])
 
 const Slides = ({ images, openImage }) => {
 
   const [swiper, setSwiper] = useState(null)
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
  
-  const slides = [];
+  const slides = []
   images.map(image => (
     slides.push(
       <SwiperSlide>
         <img src={window.cdn + image}/>
       </SwiperSlide>
     )
-  ));
+  ))
 
   return (
     <>
@@ -70,7 +70,7 @@ const Slides = ({ images, openImage }) => {
 
 const Detail = ({ data }) => {
 
-  const { id } = data;
+  const { id } = data
   
   const item = store.getState().threeDItems.data[id]
 
@@ -146,7 +146,6 @@ const Detail = ({ data }) => {
   )
 }
 
-export default Detail;
-
+export default Detail
 
 

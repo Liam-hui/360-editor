@@ -12,8 +12,9 @@ const { Types, Creators } = createActions({
   removeSceneRequest: ['id'],
   removeScene: ['id'],
 
-  changeSceneRequest: ['id', 'angle'],
-  changeScene: ['id', 'angle'],
+  changeSceneRequest: ['id', 'angle', 'isChangeScene'],
+  changeScene: ['id', 'angle', 'isChangeScene'],
+  changeSceneFinish: [],
 
   setFirstScene: ['id', 'angle'],
 
@@ -71,12 +72,20 @@ const removeScene = ( state, { id } ) => {
   };
 }
 
-const changeScene = ( state, { id, angle } ) => {
+const changeScene = ( state, { id, angle, isChangeScene } ) => {
   return {
     ...state,
     previousId: state.currentId,
     currentId: id,
     angle: angle,
+    isChangeScene: Boolean(isChangeScene)
+  };
+}
+
+const changeSceneFinish = (state) => {
+  return {
+    ...state,
+    isChangeScene: false
   };
 }
 
@@ -116,6 +125,7 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.ADD_SCENE]: addScene,
   [Types.REMOVE_SCENE]: removeScene,
   [Types.CHANGE_SCENE]: changeScene,
+  [Types.CHANGE_SCENE_FINISH]: changeSceneFinish,
   [Types.SET_FIRST_SCENE]: setFirstScene,
   [Types.ENTER_SCENE]: enterScene,
   [Types.SET_ANGLE_FINISH]: setAngleFinish,

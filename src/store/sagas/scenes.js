@@ -13,11 +13,11 @@ export function* initScenesRequest({ data }) {
 
     for ( const [id, scene] of Object.entries(data.scenes) ) {
 
-      const panorama = createPanorama(scene.baseImage);
+      const panorama = createPanorama(scene.baseImage)
       scenes[id] = {
         baseImage: scene.baseImage,
         panorama: panorama,
-        ... scene.angle && { angle: scene.angle }
+        ...scene.angle && { angle: scene.angle }
       }
 
       if (firstSceneId == null || scene.isFirst)
@@ -37,13 +37,13 @@ export function* initScenesRequest({ data }) {
 export function* addSceneRequest({ image }) {
   try {
 
-    const panorama = createPanorama(image);
-    viewer.add(panorama);
-    viewer.setPanorama(panorama);
+    const panorama = createPanorama(image)
+    viewer.add(panorama)
+    viewer.setPanorama(panorama)
 
-    const id = uniqueId();
+    const id = uniqueId()
     
-    yield put( { type: 'ADD_SCENE', id: id, scene: { baseImage: image, panorama: panorama } } );
+    yield put( { type: 'ADD_SCENE', id: id, scene: { baseImage: image, panorama: panorama } } )
     
   } catch (error) {
     // console.log(error);
@@ -72,7 +72,7 @@ export function* removeSceneRequest({ id }) {
   }
 }
 
-export function* changeSceneRequest({ id, angle }) {
+export function* changeSceneRequest({ id, angle, isChangeScene }) {
   try {
 
     const state = yield select();
@@ -86,7 +86,7 @@ export function* changeSceneRequest({ id, angle }) {
       viewer.add(scene.panorama);
       viewer.setPanorama(scene.panorama);
 
-      yield put({ type: 'CHANGE_SCENE', id: id, angle: angle });
+      yield put({ type: 'CHANGE_SCENE', id: id, angle: angle, isChangeScene: isChangeScene });
       yield put({ type: 'UPDATE_SCENE' });
     
     }
@@ -143,7 +143,8 @@ export function* setFirstScene({ angle }) {
 }
 
 const createPanorama = (baseImage) => {
-  const panorama = new PANOLENS.ImagePanorama(window.cdn + baseImage);
+  const panorama = new PANOLENS.ImagePanorama(window.cdn + baseImage)
+  panorama.animationDuration = 2000
 
   const onEnter = () => {
     store.dispatch({ type: 'ENTER_SCENE', isEntered: true });

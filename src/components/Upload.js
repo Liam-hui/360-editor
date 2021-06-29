@@ -140,7 +140,7 @@ const Upload = ({ mode, data }) => {
           try {
             const url = await uploadFile(image.file);
             const image_ = {
-              ... image,
+              ...image,
               url
             };
             delete image_.base64;
