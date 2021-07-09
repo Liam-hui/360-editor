@@ -117,8 +117,10 @@ textarea {
 }
 .grey-box .close-button {
   position: absolute;
-  top: 10px;
-  right: -5px;
+  width: 20px;
+  height: 20px;
+  top: 15px;
+  right: 0px;
 }
 
 .border-box {
@@ -396,11 +398,11 @@ textarea {
   pointer-events: auto;
 }
 .three-d-editor-wrapper .three-d-editor-close-button {
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 15px;
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
 }
 .three-d-editor-wrapper .three-d-editor {
@@ -459,6 +461,7 @@ textarea {
   font-style: italic;
   margin-right: 8px;
   font-weight: 400;
+  transform: translateY(5px);
 }
 
 .light-box {
@@ -605,6 +608,8 @@ textarea {
 .slider-arrow {
   position: absolute;
   top: 280px;
+  width: 30px;
+  height: auto;
   z-index: 99;
 }
 

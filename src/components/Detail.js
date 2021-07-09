@@ -56,8 +56,8 @@ const Slides = ({ images, openImage }) => {
               {slides}
             </Swiper>
           </div>
-          <img style={{ left: -100 }} onClick={() => swiper.slidePrev(700)} className="slider-arrow pointer" src={imagePath('icon-arrow.svg')}/>
-          <img style={{ right: -100, transform: `scaleX(-1)` }} onClick={() => swiper.slideNext(400)} className="slider-arrow pointer" src={imagePath('icon-arrow.svg')}/>
+          <img style={{ left: -100 }} onClick={() => swiper.slidePrev(700)} className="slider-arrow pointer" src={imagePath('icon-arrow.png')}/>
+          <img style={{ right: -100, transform: `scaleX(-1)` }} onClick={() => swiper.slideNext(400)} className="slider-arrow pointer" src={imagePath('icon-arrow.png')}/>
         </>
       :
         <img onClick={() => openImage(0)} style={{ width: '100%', height: 350, marginBottom: 15, cursor: 'pointer', objectFit: 'contain' }} src={window.cdn + images[0]}/>

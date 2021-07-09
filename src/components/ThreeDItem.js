@@ -239,7 +239,7 @@ const ThreeDItem = (props) => {
           <img 
             className="three-d-editor-close-button"
             onClick={closeEditor} 
-            src={imagePath('icon-close.svg')}
+            src={imagePath('icon-close.png')}
           />
 
         </div> 

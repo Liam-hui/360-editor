@@ -162,7 +162,7 @@ const ControlBar = () => {
             <img
               key={sceneId}
               className='control-bar-button control-bar-circle' 
-              src={imagePath('icon-circle.svg')}
+              src={imagePath('icon-circle.png')}
               style={
                 sceneId == scenes.currentId ?
                   { width: 21, height: 21 }
@@ -175,19 +175,19 @@ const ControlBar = () => {
       }
 
       <div className='control-bar-button' style={{ '--tipText': "'Set First Scene'" }} onClick={setFirstScene}>
-        <img src={imagePath('icon-camera.svg')} />
+        <img src={imagePath('icon-camera.png')} />
       </div>
 
       <div className='control-bar-button' style={{ '--tipText': "'Delete Scene'", fontSize: 27 }} onClick={removeScene}>
-        <img src={imagePath('icon-trash.svg')} />
+        <img src={imagePath('icon-trash.png')} />
       </div>
 
       <div className='control-bar-button' style={{ '--tipText': "'Add Scene'" }} onClick={addNewScene}>
-        <img  src={imagePath('icon-plus.svg')} />
+        <img  src={imagePath('icon-plus.png')} />
       </div>
       
       <div className='control-bar-button' style={{ '--tipText': "'Save'" }} onClick={handleSave}>
-        <img src={imagePath('icon-save.svg')}  />
+        <img src={imagePath('icon-save.png')}  />
       </div>
 
     </div>

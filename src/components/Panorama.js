@@ -11,6 +11,7 @@ const THREE = window.THREE
 const TWEEN = window.TWEEN
 const PANOLENS = window.PANOLENS
 PANOLENS.Viewer.prototype.getPosition = function () {
+
   const intersects = this.raycaster.intersectObject(this.panorama, true)
   if (intersects.length > 0) {
     const point = intersects[0].point.clone()
@@ -154,8 +155,9 @@ export default function Panorama() {
     if (threeDItemId != null) {
       const threeDItem = store.getState().threeDItems.data[threeDItemId]
       if (threeDItem.type == 'link') {
-        if (threeDItem.target) {
-          const position = viewer.getPosition()
+        if (threeDItem.target && scenes.data[threeDItem.target]) {
+          const position = viewer.getPosition(true)
+          position.y = 0
           currentPanorama.dispatchEvent({ type: 'panolens-viewer-handler', method: 'tweenControlCenter', data: [position, 300, TWEEN.Easing] })
           const target = Math.max(camera.fov - 10, 30)
           new TWEEN.Tween(camera)

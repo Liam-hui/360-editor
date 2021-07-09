@@ -15,7 +15,7 @@ const GreyBox = ({ children, style, innerStyle, close }) => {
           {children}
         </div>
       {/* </div> */}
-      <img onClick={close?? closePopup} className="close-button pointer" src={imagePath('icon-close.svg')}/>
+      <img onClick={close?? closePopup} className="close-button pointer" src={imagePath('icon-close.png')}/>
     </div>
   )
 }
