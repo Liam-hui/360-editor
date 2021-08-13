@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import store from '@/store';
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react'
+import store from '@/store'
+import { useSelector } from "react-redux"
 
-import LightBox from '@/components/LightBox';
-import GreyBox from '@/components/GreyBox';
-import Upload from "@/components/Upload";
-import Detail from "@/components/Detail";
+import LightBox from '@/components/LightBox'
+import GreyBox from '@/components/GreyBox'
+import Upload from "@/components/Upload"
+import Detail from "@/components/Detail"
 
 const Popup = () => {
 
-  const popup = useSelector(state => state.popup);
-  const { mode, payload } = popup;
+  const popup = useSelector(state => state.popup)
+  const { mode, data } = popup
 
   const [isHidden, setIsHidden] = useState(false)
 
@@ -34,11 +34,11 @@ const Popup = () => {
         <LightBox isVisible={popup.isShown} close={() => store.dispatch({type: 'HIDE_POPUP'})}>
           {
             {
-              'uploadVideo': <Upload data={payload} mode='video' />,
-              'uploadImage': <Upload data={payload} mode='image'/>,
-              'showItem':  <Detail data={payload}/>,
-              'showWarning':  <Message data={payload} mode='warning'/>,
-              'showMessage':  <Message data={payload} mode='message'/>,
+              'uploadImage': <Upload data={data} mode='image'/>,
+              'uploadVideo': <Upload data={data} mode='video' />,
+              'showItem':  <Detail data={data}/>,
+              'showWarning':  <Message data={data} mode='warning'/>,
+              'showMessage':  <Message data={data} mode='message'/>,
             } [mode] || null
           }       
         </LightBox>
@@ -96,5 +96,5 @@ const Message = ({ data, mode }) => {
   )
 }
 
-export default Popup;
+export default Popup
 

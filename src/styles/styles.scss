@@ -18,10 +18,22 @@ body {
 #root {
   width: 100%;
   height: 100%;
+  background-color: black;
 }
 
-div, label, input, textarea {
+canvas {
+  transition: opacity 0.8s ease-in-out;
+  .not-ready & {
+    opacity: 0;
+  }
+}
+
+* {
   box-sizing: border-box;
+  user-select: none;
+  margin: 0;
+  outline: 0;
+  padding: 0;
 }
 
 p {
@@ -185,6 +197,7 @@ textarea {
   position: absolute;
   width: 15px;
   height: 15px;
+  transform: translate(-50%, -50%);
   .menu-container {
     background-color: rgba(0, 0, 0, 0.4);
     border-radius: 15px;
@@ -398,8 +411,9 @@ textarea {
 
 .three-d-editor-wrapper {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
   &:hover{
     z-index: 99;
   }
@@ -489,7 +503,7 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 99999999 !important;
   opacity: 0;
   animation: fade-in 0.3s ease-in-out;
   transition: opacity 0.3s ease-in-out;
@@ -513,6 +527,10 @@ textarea {
   right: 22px;
   display: flex;
   align-items: center;
+  transition: opacity 0.5s ease-in-out;
+  &.is-hidden {
+    opacity: 0;
+  }
   .control-bar-button {
     position: relative;
     display: inline-block;
@@ -552,7 +570,6 @@ textarea {
   }
 }
 
-
 .loader {
   display: inline-block;
   width: 80px;
@@ -586,6 +603,11 @@ textarea {
       transform: rotate(360deg);
     }
   }
+}
+
+#simple-menu {
+  z-index: 99999999 !important;
+  transform: translate3d(0, 0, 10px);
 }
 
 // image slider

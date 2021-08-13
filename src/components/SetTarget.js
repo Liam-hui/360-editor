@@ -1,37 +1,33 @@
-import React from 'react';
-import store from '@/store';
-import { useSelector } from "react-redux";
-import { camera } from '@/components/Panorama'
+import React from 'react'
+import store from '@/store'
+import { useSelector } from "react-redux"
 
-import GreyBox from '@/components/GreyBox';
+import GreyBox from '@/components/GreyBox'
 
 const SetTarget = () => {
 
-  const setTargetMode = useSelector(state => state.setTargetMode);
+  const { isOn, id, scene, targetScene, prevPosition }  = useSelector(state => state.setTarget)
+  const camera = useSelector(state => state.camera)
 
   const confirmSet = () => {
     store.dispatch({
-      type: 'UPDATE_THREE_D_ITEM_REQUEST',
-      id: setTargetMode.id,
-      payload: {
-        target: setTargetMode.targetScene,
-        angle: {
-          x: camera.position.x,
-          y: camera.position.y,
-          z: camera.position.z
-        },
+      type: 'UPDATE_THREE_D_ITEM',
+      id: id,
+      data: {
+        target: targetScene,
+        cameraPosition: camera.position.toArray()
       }
     })
-    store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: setTargetMode.scene, angle: setTargetMode.prevAngle })
+    store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: scene, cameraPosition: prevPosition })
     store.dispatch({ type: 'SET_TARGET_FINISH' })
   }
 
   const cancelSet = () => {
-    store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: setTargetMode.scene, angle: setTargetMode.prevAngle })
+    store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: scene, cameraPosition: prevPosition })
     store.dispatch({ type: 'SET_TARGET_FINISH' })
   }
 
-  return (
+  if (isOn) return (
     <div className='center-absolute' style={{ pointerEvents: 'auto'}} >
       <GreyBox close={cancelSet} style={{ width: 600 }} innerStyle={{ padding: '40px'}}>
         <div className="center-flex column">
@@ -49,10 +45,7 @@ const SetTarget = () => {
       </GreyBox>
     </div>
   )
+  else return null
 }
 
-export default SetTarget;
-
-
-
-
+export default SetTarget

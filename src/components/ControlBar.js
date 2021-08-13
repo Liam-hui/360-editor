@@ -1,45 +1,42 @@
-import React from 'react';
-import store from '@/store';
-import { useSelector } from "react-redux";
-import api from '@/services/api';
-import { camera } from '@/components/Panorama'
-import { imagePath } from '@/utils/MyUtils';
+import React from 'react'
+import store from '@/store'
+import { useSelector } from "react-redux"
+import api from '@/services/api'
+import { imagePath } from '@/utils/MyUtils'
 
 const ControlBar = () => {
 
-  const config = useSelector(state => state.config);
-  const scenes = useSelector(state => state.scenes);
-  const threeDItems = useSelector(state => state.threeDItems.data);
-  const setTargetMode = useSelector(state => state.setTargetMode);
+  const camera = useSelector(state => state.camera)
+  const scenes = useSelector(state => state.scenes)
+  const threeDItems = useSelector(state => state.threeDItems.data)
+  const setTarget = useSelector(state => state.setTarget)
+
+  const sceneId = scenes.currentLayer == 0 ? scenes.layer0Id : scenes.layer1Id
 
   const setFirstScene = () => { 
     store.dispatch({
       type: 'SHOW_POPUP' ,
       mode: 'showWarning',
-      payload: {
+      data: {
         text: 'Do you want to set this scene as the first scene, and current camera angle as the default angle？',
         confirm: () => store.dispatch({
           type: 'SET_FIRST_SCENE',
-          id: scenes.currentId,
-          angle: {
-            x: camera.position.x,
-            y: camera.position.y,
-            z: camera.position.z
-          },
+          id: sceneId,
+          cameraPosition: camera.position.toArray()
         }) 
       }
     })  
   }
 
-  const goToScene = ( id ) => {
+  const goToScene = (id) => {
     store.dispatch({ type: 'CHANGE_SCENE_REQUEST', id: id })
   }
 
-  const addNewScene = () => {
+  const addScene = () => {
     store.dispatch({
       type: 'SHOW_POPUP' ,
       mode: 'uploadImage',
-      payload: {
+      data: {
         action: 'addScene', 
       }
     }) 
@@ -49,112 +46,68 @@ const ControlBar = () => {
     store.dispatch({
       type: 'SHOW_POPUP' ,
       mode: 'showWarning',
-      payload: {
+      data: {
         text: 'Are you sure you want to delete this scene？',
-        confirm: () => store.dispatch({ type: 'REMOVE_SCENE_REQUEST', id: scenes.currentId }) 
+        confirm: () => store.dispatch({ type: 'REMOVE_SCENE', id: sceneId }) 
       }
     }) 
   }
 
   const handleSave = () => {
 
-    let data = {
+    const data = {
       scenes: { ...scenes.data },
       threeDItems: { ...threeDItems },
-      // twoDItems: { ...twoDItems }
-    };
+    }
 
-    for (const id in data.scenes) {
-      const item = { ...data.scenes[id] };
-
-      data.scenes[id] = {
-        baseImage: item.baseImage,
-        ...scenes.firstSceneId == id && { 
-          isFirst: true,
-          angle: item.angle,
-        }
-      }
+    if (data.scenes[scenes.firstScene.id]) {
+      data.scenes[scenes.firstScene.id].isFirst = true
+      data.scenes[scenes.firstScene.id].cameraPosition = scenes.firstScene.cameraPosition
     }
 
     for (const id in data.threeDItems) {
-      const item = { ...data.threeDItems[id] };
-
-      data.threeDItems[id] = {
-        scene: item.scene,
-        type: item.type,
-        url: item.url,
-        width: item.width,
-        height: item.height,
-        position: item.object.position,
-        rotation: {
-          x: item.object.rotation.x,
-          y: item.object.rotation.y,
-          z: item.object.rotation.z
-        },
-        scale: item.object.scale.x,
-        ...item.type == 'link' && { 
-          target: item.target,
-          angle: item.angle,
-        },
-        ...item.type == 'image' && { 
-          images: item.images
-        },
-        ...(item.type == 'image' || item.type == 'video' ) && { 
-          title: item.title,
-          description: item.description,
-          link: item.link,
-        }
-      }
+        const item = { ...data.threeDItems[id] }
+  
+        if (!item.rotation)
+          data.threeDItems[id].rotation = [0, 0, 0]
     }
 
-    // for (const id in data.twoDItems) {
-    //   const item = { ...data.twoDItems[id] };
-  
-    //   data.twoDItems[id] = {
-    //     ...data.twoDItems[id],
-    //     position: item.object.position,
-    //   }
 
-    //   delete data.twoDItems[id].object;
-    // }
+    // let body = new FormData();
+    // body.append('uuid', window.uuid);
+    // body.append('user', window.user);
+    // body.append('name', window.name);
+    // body.append('data', JSON.stringify(data) );
+    // api.post(
+    //   'scenes/save', 
+    //   body
+    // )
+    //   .then( (response) => {
+    //     // console.log(response.data);
+    //     store.dispatch({
+    //       type: 'SHOW_POPUP' ,
+    //       mode: 'showMessage',
+    //       payload: {
+    //         text: 'Save Success!', 
+    //       }
+    //     }) 
+    //   }, (error) => {
+    //     console.error(error);
+    //     store.dispatch({
+    //       type: 'SHOW_POPUP' ,
+    //       mode: 'showMessage',
+    //       payload: {
+    //         text: 'Save Failed!', 
+    //       }
+    //     }) 
+    //   });
 
-    let body = new FormData();
-    body.append('uuid', window.uuid);
-    body.append('user', window.user);
-    body.append('name', window.name);
-    body.append('data', JSON.stringify(data) );
-    api.post(
-      'scenes/save', 
-      body
-    )
-      .then( (response) => {
-        // console.log(response.data);
-        store.dispatch({
-          type: 'SHOW_POPUP' ,
-          mode: 'showMessage',
-          payload: {
-            text: 'Save Success!', 
-          }
-        }) 
-      }, (error) => {
-        console.error(error);
-        store.dispatch({
-          type: 'SHOW_POPUP' ,
-          mode: 'showMessage',
-          payload: {
-            text: 'Save Failed!', 
-          }
-        }) 
-      });
-
-    // console.log(data);
-    // saveToLocalText(data);
+    console.log(data)
+    saveToLocalText(data)
   }
 
-  if (config.mode != 'admin' || setTargetMode.isOn) return null
-  else return (
-
-    <div className="control-bar">
+  return (
+    <div className={`control-bar ${setTarget.isOn ? 'is-hidden' : ''}`}>
 
       {
         Object.keys(scenes.data).map( 
@@ -182,7 +135,7 @@ const ControlBar = () => {
         <img src={imagePath('icon-trash.png')} />
       </div>
 
-      <div className='control-bar-button' style={{ '--tipText': "'Add Scene'" }} onClick={addNewScene}>
+      <div className='control-bar-button' style={{ '--tipText': "'Add Scene'" }} onClick={addScene}>
         <img  src={imagePath('icon-plus.png')} />
       </div>
       
@@ -192,7 +145,6 @@ const ControlBar = () => {
 
     </div>
   )
-
 }
 
 
@@ -206,5 +158,5 @@ const saveToLocalText = ( data ) => {
 
 }
 
-export default ControlBar;
+export default ControlBar
 

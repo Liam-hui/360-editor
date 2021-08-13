@@ -14,7 +14,7 @@ const LightBox = ({ isVisible, children, close }) => {
     return () => {
       clearTimeout(loop);
     };
-  }, [isVisible]);
+  }, [isVisible])
 
   if (isHidden) return null
   else return (
@@ -26,7 +26,7 @@ const LightBox = ({ isVisible, children, close }) => {
 
 }
 
-export default LightBox;
+export default LightBox
 
 
 

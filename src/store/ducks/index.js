@@ -1,8 +1,7 @@
-import { combineReducers } from 'redux';
-import { reducer as scenes } from './scenes';
-import { reducer as threeDItems} from './threeDItems';
-import { reducer as twoDItems} from './twoDItems';
-import { reducer as links } from './links';
+import { combineReducers } from 'redux'
+import { reducer as scenes } from './scenes'
+import { reducer as threeDItems} from './threeDItems'
+import { reducer as popup } from './popup'
 
 const configReducer = ( state = {}, action ) => {
   switch( action.type ) {
@@ -10,40 +9,15 @@ const configReducer = ( state = {}, action ) => {
       return {
         ...action.payload
       };
-    default: return state;
+    default: return state
   }
 }
 
-const updateSceneReducer = ( state = 0, action ) => {
-  switch( action.type ) {
-    case 'UPDATE_SCENE':
-      return ( state + 1 ) % 1000 ;
-    default: return state;
-  }
-}
-
-const updateMouseReducer = ( state = 0, action ) => {
-  switch( action.type ) {
-    case 'UPDATE_MOUSE':
-      return ( state + 1 ) % 1000 ;
-    default: return state;
-  }
-}
-
-const popupReducer = ( state = { isShown: false, mode: null, payload: null }, action ) => {
-  switch( action.type ) {
-    case 'SHOW_POPUP':
-      return {
-        isShown: true,
-        mode: action.mode,
-        payload: action.payload,
-      };
-    case 'HIDE_POPUP':
-      return {
-        ...state,
-        isShown: false,
-      };
-    default: return state;
+const cameraReducer = ( state = null, { type, camera } ) => {
+  switch(type) {
+    case 'SET_CAMERA':
+      return camera
+    default: return state
   }
 }
 
@@ -61,7 +35,7 @@ const loaderReducer = ( state = { isShown: false }, action ) => {
   }
 }
 
-const setTargetModeReducer = ( state = { isOn: false }, action ) => {
+const setTargetReducer = ( state = { isOn: false }, action ) => {
   switch( action.type ) {
     case 'SET_TARGET_START':
       return {
@@ -72,20 +46,17 @@ const setTargetModeReducer = ( state = { isOn: false }, action ) => {
       return {
         isOn: false
       }
-    default: return state;
+    default: return state
   }
 }
 
 export default () =>
   combineReducers({
+    camera: cameraReducer,
     config: configReducer,
-    updateScene: updateSceneReducer,
-    updateMouse: updateMouseReducer,
-    popup: popupReducer,
     loader: loaderReducer,
-    setTargetMode: setTargetModeReducer,
+    setTarget: setTargetReducer,
     scenes,
     threeDItems,
-    twoDItems,
-    links
-  });
+    popup
+  })

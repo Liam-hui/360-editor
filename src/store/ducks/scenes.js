@@ -1,122 +1,126 @@
-import { createReducer, createActions } from 'reduxsauce';
+import { createReducer, createActions } from 'reduxsauce'
+import { uniqueId } from '@/utils/MyUtils'
 
 /* Types & Action Creators */
 
 const { Types, Creators } = createActions({
-  initScenesRequest: [ 'data', 'firstSceneId' ],
-  initScenes: [ 'data' ],
-
-  addSceneRequest: ['image'],
-  addScene: ['id', 'scene'],
-
-  removeSceneRequest: ['id'],
+  initScenes: ['data'],
+  addScene: ['baseImage'],
   removeScene: ['id'],
-
-  changeSceneRequest: ['id', 'angle', 'isChangeScene'],
-  changeScene: ['id', 'angle', 'isChangeScene'],
+  setFirstScene: ['id', 'cameraPosition'],
+  changeSceneRequest: ['id'],
+  changeSceneStart: [],
   changeSceneFinish: [],
+})
 
-  setFirstScene: ['id', 'angle'],
-
-  enterScene: ['isEntered'],
-
-  showSceneItems: ['id'],
-
-  setAngleFinish: []
-});
-
-export const ScenesTypes = Types;
-export default Creators;
+export const ScenesTypes = Types
+export default Creators
 
 /* Initial State */
 
 export const INITIAL_STATE = {
   data: {},
-  currentId: null,
-  isInited: false,
-  isEntered: false,
-};
+  layer0Id: null,
+  layer1Id: null,
+  currentLayer: 0,
+  isTransitioning: false,
+  transitionCenter: null,
+  cameraPosition: null
+}
 
 /* Reducers */
 
-const initScenes = ( state, { data, firstSceneId } ) => {
+const initScenes = ( state, { data } ) => {
+  
+  let firstSceneId = null
+  let cameraPosition = null
+  for (const [id, scene] of Object.entries(data)) {
+    if (scene.isFirst) {
+      firstSceneId = id
+      cameraPosition = scene.cameraPosition
+      delete scene.isFirst
+      delete scene.cameraPosition
+      break
+    }
+    if (firstSceneId == null)
+      firstSceneId = id
+  }
 
   return {
     ...state,
     data: data,
-    firstSceneId: firstSceneId,
-    isInited: true,
-  };
-
+    firstScene: { id: firstSceneId, cameraPosition: cameraPosition },
+    layer0Id: firstSceneId,
+    currentLayer: 0,
+    cameraPosition: cameraPosition
+  }
 }
 
-const addScene = ( state, { id, scene } ) => {
+const addScene = ( state, { baseImage } ) => {
+  const id = uniqueId()
+
   return {
     ...state,
     data: {
       ...state.data,
-      [id]: scene
+      [id]: { baseImage: baseImage }
     },
-    currentId: id,
-  };
+  }
 }
 
 const removeScene = ( state, { id } ) => {
+  const data_ = { ...state.data }
+  delete data_[id]
 
-  const data_ = {...state.data}
-  delete data_[id];
+  const nextSceneId = Object.keys(data_).length > 0 ? Object.keys(data_)[0] : null
 
   return {
     ...state,
-    data: data_
-  };
+    data: data_,
+    ...state.currentLayer == 0 && { layer0Id: nextSceneId },
+    ...state.currentLayer == 1 && { layer1Id: nextSceneId },
+  }
 }
 
-const changeScene = ( state, { id, angle, isChangeScene } ) => {
+const setFirstScene = ( state, { id, cameraPosition } ) => {
   return {
     ...state,
-    previousId: state.currentId,
-    currentId: id,
-    angle: angle,
-    isChangeScene: Boolean(isChangeScene)
-  };
+    firstScene: { id: id, cameraPosition: cameraPosition },
+  }
 }
 
-const changeSceneFinish = (state) => {
-  return {
-    ...state,
-    isChangeScene: false
-  };
-}
+const changeSceneRequest = ( state, { id, cameraPosition, transitionCenter } ) => {
 
-const setFirstScene = ( state, { id, angle } ) => {
+  const currentId = state.currentLayer == 0 ? state.layer0Id : state.layer1Id
+
   return {
     ...state,
-    firstSceneId: id,
-    data: {
-      ...state.data,
-      [id]: {
-        ...state.data[id],
-        angle: angle
-      }
+    ...currentId != id && {
+      layer0Id: state.currentLayer == 0 ? state.layer0Id : id,
+      layer1Id: state.currentLayer == 1 ? state.layer1Id : id,
+      cameraPosition: cameraPosition ?? null,
+      transitionCenter: transitionCenter ?? null
     }
-  };
+  }
 }
 
-const enterScene = ( state, { isEntered } ) => {
+const changeSceneStart = ( state ) => {
   return {
     ...state,
-    isEntered: isEntered
-  };
+    isTransitioning: true
+  }
 }
 
-const setAngleFinish = ( state ) => {
+const changeSceneFinish = ( state ) => {
   return {
     ...state,
-    angle: null
-  };
+    layer0Id: state.currentLayer == 0 ? null : state.layer0Id,
+    layer1Id: state.currentLayer == 1 ? null : state.layer1Id,
+    currentLayer: state.currentLayer == 0 ? 1 : 0,
+    isTransitioning: false,
+    transitionCenter: null
+  }
 }
-
 
 /* Reducers to types */
 
@@ -124,9 +128,8 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.INIT_SCENES]: initScenes,
   [Types.ADD_SCENE]: addScene,
   [Types.REMOVE_SCENE]: removeScene,
-  [Types.CHANGE_SCENE]: changeScene,
-  [Types.CHANGE_SCENE_FINISH]: changeSceneFinish,
   [Types.SET_FIRST_SCENE]: setFirstScene,
-  [Types.ENTER_SCENE]: enterScene,
-  [Types.SET_ANGLE_FINISH]: setAngleFinish,
-});
+  [Types.CHANGE_SCENE_REQUEST]: changeSceneRequest,
+  [Types.CHANGE_SCENE_START]: changeSceneStart,
+  [Types.CHANGE_SCENE_FINISH]: changeSceneFinish,
+})

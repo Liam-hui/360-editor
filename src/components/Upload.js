@@ -5,7 +5,7 @@ import GreyBox from '@/components/GreyBox';
 
 const Upload = ({ mode, data }) => {
 
-  const { action, id } = data;
+  const { action, id } = data
   const multiple = mode == 'image' && action != 'addScene'
   const accept = mode == 'image' ? 'image/jpeg, image/png' : 'video/mp4'
 
@@ -34,7 +34,7 @@ const Upload = ({ mode, data }) => {
   }, [images, video])
 
   const removeImage = (index) => {
-    setImages(images.filter( (_, index_) => index_ != index) );
+    setImages(images.filter( (_, index_) => index_ != index) )
   }
 
   const handleUploadImages = async (files, index) => {
@@ -109,8 +109,8 @@ const Upload = ({ mode, data }) => {
               resolve({ 
                 file: file,
                 base64: reader.result 
-              });
-            };
+              })
+            }
             reader.onerror = () => reject()
           })
         }
@@ -124,15 +124,13 @@ const Upload = ({ mode, data }) => {
     } 
   }
 
-  const handleUplaod = mode == 'image' ? handleUploadImages : handleUploadVideo  
-
   const confirmUploadImages = async () => {
 
     if (images.length == 0)
       setWarning('Please upload image first!')
 
     else {
-      let imagesData = [];
+      let imagesData = []
       store.dispatch({ type: 'SHOW_LOADER' })
 
       for (const image of images) {
@@ -163,11 +161,12 @@ const Upload = ({ mode, data }) => {
       }
 
       switch (action) {
-        case 'add3dImage':
+        case 'addImage':
           store.dispatch({
-            type: 'ADD_THREE_D_ITEM_REQUEST',
-            payload: {
+            type: 'ADD_THREE_D_ITEM',
+            data: {
               type: 'image',
+              scene: store.getState().scenes.currentLayer == 0 ? store.getState().scenes.layer0Id : store.getState().scenes.layer1Id,
               position: data.position,
               images: imagesData,
               title: title,
@@ -175,25 +174,25 @@ const Upload = ({ mode, data }) => {
               link: link
             }
           })
-        break;
+        break
         case 'updateItem':
           store.dispatch({
-            type: 'UPDATE_THREE_D_ITEM_REQUEST',
+            type: 'UPDATE_THREE_D_ITEM',
             id: id,
-            payload: {
+            data: {
               images: imagesData,
               title: title,
               description: description,
               link: link
             }
           })
-        break;
+        break
         case 'addScene':
           store.dispatch({
-            type: 'ADD_SCENE_REQUEST',
-            image: imagesData[0].url,
+            type: 'ADD_SCENE',
+            baseImage: imagesData[0].url,
           })
-        break;
+        break
       }
         
       store.dispatch({ type: 'HIDE_LOADER' })
@@ -212,11 +211,12 @@ const Upload = ({ mode, data }) => {
         const videoUrl = video.file ? await uploadFile(video.file) : video
 
         switch (action) {
-          case 'add3dVideo':
+          case 'addVideo':
             store.dispatch({
-              type: 'ADD_THREE_D_ITEM_REQUEST',
-              payload: {
+              type: 'ADD_THREE_D_ITEM',
+              data: {
                 type: 'video',
+                scene: store.getState().scenes.currentLayer == 0 ? store.getState().scenes.layer0Id : store.getState().scenes.layer1Id,
                 position: data.position,
                 url: videoUrl,
                 title: title,
@@ -227,9 +227,9 @@ const Upload = ({ mode, data }) => {
           break;
           case 'updateItem':
             store.dispatch({
-              type: 'UPDATE_THREE_D_ITEM_REQUEST',
+              type: 'UPDATE_THREE_D_ITEM',
               id: data.id,
-              payload: {
+              data: {
                 url: videoUrl,
                 title: title,
                 description: description,
@@ -254,6 +254,7 @@ const Upload = ({ mode, data }) => {
     }
   }
 
+  const handleUplaod = mode == 'image' ? handleUploadImages : handleUploadVideo  
   const confirmUpload =  mode == 'image' ? confirmUploadImages : confirmUploadVideo
 
   const [isDragOver, setIsDragOver] = useState(false)
@@ -268,9 +269,8 @@ const Upload = ({ mode, data }) => {
     e.preventDefault();
   }
 
-  // backgroundColor: mode == 'image' ? 'rgba(200, 200, 200, 0.6)': 'rgba(50, 50, 50, 0.5)'
   return (
-    <GreyBox style={{ width: 580 }} innerStyle={{ padding: '35px 55px'}}>
+    <GreyBox style={{ width: 580 }} innerStyle={{ padding: '35px 55px' }}>
       <div className="upload-container" style={action == 'addScene' ? { minHeight: 300 } : {}}>
         
         { ( (mode == 'image' && images.length == 0) || (mode == 'video' && video == null) ) &&
@@ -382,7 +382,7 @@ const Upload = ({ mode, data }) => {
 
 }
 
-export default Upload;
+export default Upload
 
 
 

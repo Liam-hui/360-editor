@@ -1,145 +1,123 @@
-import React, { useState, useEffect, useImperativeHandle } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import store from '@/store'
-import { useSelector } from "react-redux"
-import { viewer, getElementStyle, createObject } from '@/components/Panorama'
+import { useThree } from '@react-three/fiber'
+import { Html } from '@react-three/drei'
 import { imagePath } from '@/utils/MyUtils'
 
-const Menu = React.forwardRef( (props, ref) => {
+const Option = ({ label, onClick } ) => (
+  <div  
+    className="option border-box-small center-flex" 
+    onClick={() => {
+      onClick()
+    }}
+  >
+    {label}
+  </div>
+)
 
-  const [object, setObject] = useState(null)
-  const [style, setStyle] = useState({})
+const Menu = () => {
 
-  const config = useSelector(state => state.config)
-  const currentSceneId = useSelector(state => state.scenes.currentId)
-  const panorama = useSelector(state => state.scenes.data[currentSceneId]?.panorama)
+  const { get, currentLayer, sceneId } = useThree()
 
-  useImperativeHandle(ref, () => ({
-    show: () => {
-      const object = createObject( viewer.getPosition() )
+  const [position, setPosition] = useState([0, 0, 0])
+  const [isShown, setIsShown] = useState(false)
 
-      panorama.add(object)
-
-      const newStyle = getElementStyle(object)
-      if (newStyle != null) {
-        setStyle(newStyle)
-      }
-
-      setObject(object)
-    },
-    hide: () => {
-      if ( object != null ) {
-        panorama.remove( object )
-        setObject( null )
-      }
-    }
-  }) )
-
-  // update menu position
-  const updateScene = useSelector(state => state.updateScene)
   useEffect(() => {
-    if (object != null) {
-      const newStyle = getElementStyle(object)
-      if (newStyle != null) 
-        setStyle(newStyle)
+    window.addEventListener("mousedown", onMouseDown)
+  } ,[])
+
+  let clickedRef = useRef(false)
+  let clickLoop
+  const onMouseDown = (e) => {
+    if (get().hovered == null && e.target.tagName == 'CANVAS') {
+      if (clickedRef.current) {
+        setPosition(get().point)
+        setIsShown(true)
+      }
+      else {
+        setIsShown(false)
+        clearTimeout(clickLoop)
+        clickedRef.current = true
+        clickLoop = setTimeout(
+          () => clickedRef.current = false,
+        200)
+      }
     }
-  }, [updateScene])
-
-
-  const Option = ({ label, onClick } ) => {
-    return (
-      <div  
-        className="option border-box-small center-flex" 
-        onClick={() => {
-          onClick()
-          ref.current.hide()
-        }}
-      >
-        {label}
-      </div>
-    )
+    else {
+      // setIsShown(false)
+    }
   }
 
+  const config = useMemo(() => {
+    return store.getState().config
+  }, [])
+
   return (
-    <>
-      {object != null && 
-        <div className="menu-wrapper" style={style}>
-
-          <img 
-            src={imagePath('icon-dot.svg')}
-            style={{ width: 15, height: 15 }}
-          />
-
-          <div className="menu-container">
-
-            {config.functions.findIndex(x => x == 'add-photo') != -1 &&
-              <Option
-                label='Add Image'
-                onClick={() => {
-                  store.dispatch({
-                    type: 'SHOW_POPUP' ,
-                    mode: 'uploadImage',
-                    payload: {
-                      action: 'add3dImage', 
-                      position: object.position,
-                    }
-                  }) 
-                }}
-              />
-            }
-
-            {config.functions.findIndex(x => x == 'add-video') != -1 &&
-              <Option
-                label='Add Video'
-                onClick={() => {
-                  store.dispatch( {
-                    type: 'SHOW_POPUP' ,
-                    mode: 'uploadVideo',
-                    payload: {
-                      action: 'add3dVideo', 
-                      position: object.position,
-                    }
-                  }) 
-                }}
-              />
-            }
-
-            {config.functions.findIndex(x => x == 'add-link') != -1 &&
-              <Option
-                label='Link to other scene'
-                onClick={() => {
-                  store.dispatch({
-                    type: 'ADD_THREE_D_ITEM_REQUEST',
-                    payload: {
-                      type: 'link',
-                      position: object.position,
-                    }
-                  })
-                }}
-              />
-            }
-
-            {/* <Option
-              label='ADD INFO'
-              onClick={() => {
-                store.dispatch( { 
-                  type: 'ADD_TWO_D_ITEM_REQUEST', 
-                  payload: {
-                    type: 'info',
-                    position: object.position
-                  }
-                })
-              }}
-            /> */}
-
-
+    <mesh position={position} layers={currentLayer}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshBasicMaterial transparent opacity={0} />
+      {isShown &&
+        <Html>
+          <div className="menu-wrapper">
+            <img 
+              src={imagePath('icon-dot.svg')}
+              style={{ width: 15, height: 15 }}
+            />
+            <div className="menu-container">
+              {config.functions.findIndex(x => x == 'add-photo') != -1 &&
+                <Option
+                  label='Add Image'
+                  onClick={() => {
+                    setIsShown(false)
+                    store.dispatch({
+                      type: 'SHOW_POPUP' ,
+                      mode: 'uploadImage',
+                      data: {
+                        action: 'addImage',
+                        position: position,
+                      }
+                    }) 
+                  }}
+                />
+              }
+              {config.functions.findIndex(x => x == 'add-video') != -1 &&
+                <Option
+                  label='Add Video'
+                  onClick={() => {
+                    setIsShown(false)
+                    store.dispatch({
+                      type: 'SHOW_POPUP' ,
+                      mode: 'uploadVideo',
+                      data: {
+                        action: 'addVideo',
+                        position: position,
+                      }
+                    }) 
+                  }}
+                />
+              }
+              {config.functions.findIndex(x => x == 'add-link') != -1 &&
+                <Option
+                  label='Link to other scene'
+                  onClick={() => {
+                    setIsShown(false)
+                    store.dispatch({
+                      type: 'ADD_THREE_D_ITEM',
+                      data: {
+                        type: 'link',
+                        scene: sceneId,
+                        position: position,
+                      }
+                    })
+                  }}
+                />
+              }
+            </div>
           </div>
-        </div>
+        </Html>
       }
-    </>
+    </mesh>
   )
+}
 
-})
-
-
-export default React.memo(Menu)
-
+export default Menu

@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react';
-import { Provider } from 'react-redux';
-import store from './store';
+import React, { useEffect } from 'react'
+import { Provider, useSelector } from 'react-redux'
+import store from './store'
 
-import Panorama from '@/components/Panorama';
-import Popup from '@/components/Popup';
-import ControlBar from '@/components/ControlBar';
-import Loader from '@/components/Loader';
+import '@/styles/styles.css'
 
-import '@/styles/styles.css';
+import ThreeCanvas from '@/components/ThreeCanvas'
+import Popup from '@/components/Popup'
+import Loader from '@/components/Loader'
+import ControlBar from '@/components/ControlBar'
+import SetTarget from '@/components/SetTarget'
 
-function App() {
+const App = () => {
 
   useEffect(() => {
     store.dispatch({ 
@@ -19,17 +20,41 @@ function App() {
         functions: JSON.parse(window.allowed_function)
       } 
     })
+
+    const data = window.data
+    if (data?.scenes) {
+      store.dispatch({ type: 'INIT_SCENES', data: data.scenes })
+    }
+    if (data?.threeDItems) {
+      store.dispatch({ type: 'INIT_THREE_D_ITEMS', data: data.threeDItems })
+    }
+
   }, [])
 
   return (
     <Provider store={store}>
-      <Panorama/>
-      <ControlBar/>
-      <Popup/>
-      <Loader/>
+      <Components/>
     </Provider>
-  );
-
+  )
 }
 
-export default App;
+const Components = () => {
+
+  const config = useSelector(state => state.config)
+
+  return (
+    <>
+      <ThreeCanvas/>
+      <Popup/>
+      {config.mode == 'admin' && 
+        <>
+          <ControlBar/>
+          <Loader/>
+          <SetTarget/>
+        </>
+      }
+    </>
+  )
+}
+
+export default App
