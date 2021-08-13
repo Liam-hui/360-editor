@@ -67,7 +67,11 @@ const Setup = () => {
     raycaster.layers.enable(1)
 
     window.addEventListener("mousemove", onMouseMove)
-    return () => window.removeEventListener("mousemove", onMouseMove)
+    window.addEventListener("wheel", onWheel)
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove)
+      window.removeEventListener("wheel", onWheel)
+    }
   }, [camera.layers, raycaster.layers])
 
   const onMouseMove = useCallback(e => {
@@ -93,6 +97,11 @@ const Setup = () => {
       document.getElementById("root").style.cursor = "unset"
       set({ hovered: null })
     }
+  }, [])
+
+  const onWheel = useCallback(({ deltaY }) => {
+    camera.fov = Math.max(23, Math.min(camera.fov + deltaY * 0.005, 100))
+    camera.updateProjectionMatrix()
   }, [])
 
   return null

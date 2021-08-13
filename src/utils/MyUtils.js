@@ -30,7 +30,7 @@ export const imagePath = (path) => {
   // return require('@/assets/media/' + path).default
 }
 
-export const PANORAMA_SIZE = 300
+export const PANORAMA_SIZE = 600
 
 export const limitPosition = (position) => {
   for (let i = 0; i < 3; i ++) {

@@ -10,7 +10,7 @@ import Image from './Image'
 import Video from './Video'
 import Link from './Link'
 
-const TRANSLATION_MAX = 20
+const TRANSLATION_MAX = 60
 const ROTATION_STEP = 100
 
 const Slider = (props) => {
@@ -232,6 +232,7 @@ const SelectScene = ({ id, data, camera }) => {
         {Object.keys(scenes.data).map((id, index) => {
           if (id != sceneId ) return (
             <MenuItem 
+              key={id}
               style={{ fontWeight: id == target ? 'bold' : 'normal' }}
               onClick={() => selectTarget(id)}
             >

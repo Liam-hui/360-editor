@@ -86,7 +86,7 @@ const ControlBar = () => {
         store.dispatch({
           type: 'SHOW_POPUP' ,
           mode: 'showMessage',
-          payload: {
+          data: {
             text: 'Save Success!', 
           }
         }) 
@@ -95,14 +95,14 @@ const ControlBar = () => {
         store.dispatch({
           type: 'SHOW_POPUP' ,
           mode: 'showMessage',
-          payload: {
+          data: {
             text: 'Save Failed!', 
           }
         }) 
       });
 
     // console.log(data)
-    // saveToLocalText(data)
+    saveToLocalText(data)
   }
 
   return (
