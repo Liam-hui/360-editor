@@ -72,38 +72,37 @@ const ControlBar = () => {
           data.threeDItems[id].rotation = [0, 0, 0]
     }
 
+    let body = new FormData();
+    body.append('uuid', window.uuid);
+    body.append('user', window.user);
+    body.append('name', window.name);
+    body.append('data', JSON.stringify(data) );
+    api.post(
+      'scenes/save', 
+      body
+    )
+      .then( (response) => {
+        // console.log(response.data);
+        store.dispatch({
+          type: 'SHOW_POPUP' ,
+          mode: 'showMessage',
+          payload: {
+            text: 'Save Success!', 
+          }
+        }) 
+      }, (error) => {
+        console.error(error);
+        store.dispatch({
+          type: 'SHOW_POPUP' ,
+          mode: 'showMessage',
+          payload: {
+            text: 'Save Failed!', 
+          }
+        }) 
+      });
 
-    // let body = new FormData();
-    // body.append('uuid', window.uuid);
-    // body.append('user', window.user);
-    // body.append('name', window.name);
-    // body.append('data', JSON.stringify(data) );
-    // api.post(
-    //   'scenes/save', 
-    //   body
-    // )
-    //   .then( (response) => {
-    //     // console.log(response.data);
-    //     store.dispatch({
-    //       type: 'SHOW_POPUP' ,
-    //       mode: 'showMessage',
-    //       payload: {
-    //         text: 'Save Success!', 
-    //       }
-    //     }) 
-    //   }, (error) => {
-    //     console.error(error);
-    //     store.dispatch({
-    //       type: 'SHOW_POPUP' ,
-    //       mode: 'showMessage',
-    //       payload: {
-    //         text: 'Save Failed!', 
-    //       }
-    //     }) 
-    //   });
-
-    console.log(data)
-    saveToLocalText(data)
+    // console.log(data)
+    // saveToLocalText(data)
   }
 
   return (
@@ -111,18 +110,18 @@ const ControlBar = () => {
 
       {
         Object.keys(scenes.data).map( 
-          (sceneId) => 
+          id => 
             <img
-              key={sceneId}
+              key={id}
               className='control-bar-button control-bar-circle' 
               src={imagePath('icon-circle.png')}
               style={
-                sceneId == scenes.currentId ?
+                id == sceneId ?
                   { width: 21, height: 21 }
                 :
                   { width: 13, height: 13, opacity: 0.8 }
                }
-              onClick={() => goToScene(sceneId)}
+              onClick={() => goToScene(id)}
             /> 
         )
       }
