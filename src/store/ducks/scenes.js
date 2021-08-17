@@ -99,7 +99,8 @@ const changeSceneRequest = ( state, { id, cameraPosition, transitionCenter } ) =
       layer0Id: state.currentLayer == 0 ? state.layer0Id : id,
       layer1Id: state.currentLayer == 1 ? state.layer1Id : id,
       cameraPosition: cameraPosition ?? null,
-      transitionCenter: transitionCenter ?? null
+      transitionCenter: transitionCenter ?? null,
+      isTransitionRequested: true,
     }
   }
 }
@@ -107,7 +108,8 @@ const changeSceneRequest = ( state, { id, cameraPosition, transitionCenter } ) =
 const changeSceneStart = ( state ) => {
   return {
     ...state,
-    isTransitioning: true
+    isTransitioning: true,
+    isTransitionRequested: false,
   }
 }
 

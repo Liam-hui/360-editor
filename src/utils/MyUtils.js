@@ -26,8 +26,8 @@ export const uploadFile = async (file) => {
 }
 
 export const imagePath = (path) => {
-  return window.cdn + '/editor/static/media/' + path;
-  // return require('@/assets/media/' + path).default
+  // return window.cdn + '/editor/static/media/' + path;
+  return require('@/assets/media/' + path).default
 }
 
 export const PANORAMA_SIZE = 600
@@ -37,4 +37,27 @@ export const limitPosition = (position) => {
     position[i] = Math.min(PANORAMA_SIZE, Math.max(position[i], -PANORAMA_SIZE))
   }
   return position
+}
+
+export let cursorVideo = null
+export const setCursorVideo = (set) => {
+  return new Promise(resolve => {
+    cursorVideo = document.createElement('video')
+    cursorVideo.crossOrigin = "anonymous"
+    cursorVideo.src = imagePath('cursor.mp4')
+
+    cursorVideo.onloadedmetadata = () => {
+      cursorVideo.autoplay = true;
+      cursorVideo.loop = true
+      cursorVideo.muted = true
+      cursorVideo.setAttribute("muted", true)
+      cursorVideo.setAttribute("playsinline", true)
+      cursorVideo.play().then(
+        () => {
+          set()
+          resolve()
+        }
+      )
+    }
+  })
 }

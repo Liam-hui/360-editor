@@ -8,6 +8,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader'
 
 import TransitionShader from '@/shaders/TransitionShader'
 import MixShader from '@/shaders/MixShader'
@@ -106,6 +107,7 @@ const Effects = ({ scenes, controlsRef }) => {
         <renderPass attachArray="passes" args={[scene, camera]} />
         <shaderPass attachArray="passes" args={[TransitionShader]} />
         <shaderPass ref={mixRef} attachArray="passes" args={[MixShader]} uniforms-isMix-value={scenes.isTransitioning} uniforms-tAdd-value={transitionRenderTarget.texture} />
+        <shaderPass attachArray="passes" args={[FXAAShader]} material-uniforms-resolution-value={[1 / size.width, 1 / size.height]} />
         <shaderPass attachArray="passes" args={[GammaCorrectionShader]} />
       </effectComposer>
     </>

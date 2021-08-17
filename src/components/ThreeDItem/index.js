@@ -171,6 +171,7 @@ const Editor = ({ object, close, updateItem, children }) => {
       {children}
 
       <img 
+        alt="Close Editor"
         className="three-d-editor-close-button"
         onClick={close} 
         src={imagePath('icon-close.png')}
@@ -331,7 +332,7 @@ const ThreeDItem = ({ id, type, data, layer, isAdmin }) => {
       }
 
       {type == 'link' &&
-        <Link meshProps={meshProps} data={data} isHover={isHover} />
+        <Link meshProps={meshProps} data={data} />
       }
 
       {isAdmin &&
@@ -342,6 +343,7 @@ const ThreeDItem = ({ id, type, data, layer, isAdmin }) => {
             <div className="three-d-editor-wrapper center-flex" >
               {isHover && !isEditorShown && <>
                 <img 
+                  alt="Edit Item"
                   className="three-d-editor-button"
                   src={imagePath('icon-edit.svg')}
                   onClick={() => {
@@ -349,6 +351,7 @@ const ThreeDItem = ({ id, type, data, layer, isAdmin }) => {
                   }} 
                 />
                 <img 
+                  alt="Delete Item"
                   className="three-d-editor-button"
                   src={imagePath('icon-delete-circle.svg')}
                   onClick={removeItem} 

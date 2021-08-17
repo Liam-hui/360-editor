@@ -44,16 +44,18 @@ export default function Video({ meshProps, data, isHover }) {
 
   const shader = useMemo(() => { return JSON.parse(JSON.stringify(ItemShader)) }, [])
 
-  const onPointerDown = () => {
-    store.dispatch({
-      type: 'SHOW_POPUP',
-      mode: 'showItem',
-      data: data
-    })
+  const onClick = (e) => {
+    if (e.which == 1) {
+      store.dispatch({
+        type: 'SHOW_POPUP',
+        mode: 'showItem',
+        data: data
+      })
+    }
   }
 
   if (video != null) return (
-    <mesh {...meshProps} onPointerDown={onPointerDown} >
+    <mesh {...meshProps} onClick={onClick} >
       <planeBufferGeometry args={[video.videoWidth, video.videoHeight]}/>
       <shaderMaterial args={[shader]} uniforms-tex-value={texture} uniforms-isHover-value={isHover} transparent side={THREE.DoubleSide}/>
     </mesh>

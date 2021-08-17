@@ -10,11 +10,9 @@ const GreyBox = ({ children, style, innerStyle, close }) => {
 
   return (
     <div className="grey-box" style={style}>
-      {/* <div className="scroll-wrapper"> */}
-        <div className="content-container" style={innerStyle}>
-          {children}
-        </div>
-      {/* </div> */}
+      <div className="content-container" style={innerStyle}>
+        {children}
+      </div>
       <img onClick={close?? closePopup} className="close-button pointer" src={imagePath('icon-close.png')}/>
     </div>
   )

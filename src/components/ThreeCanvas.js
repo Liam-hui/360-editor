@@ -4,6 +4,8 @@ import store from '@/store'
 import { useSelector } from "react-redux"
 import { Canvas, useThree } from '@react-three/fiber'
 import { useProgress, OrbitControls } from '@react-three/drei'
+import { ResizeObserver } from '@juggle/resize-observer'
+import { isMobile } from 'react-device-detect' 
 
 import Panorama from '@/components/Panorama'
 import Menu from '@/components/Menu'
@@ -36,7 +38,7 @@ const ThreeLoader = () => {
 
   // change scenes
   useEffect(() => {
-    if (!active && scenes.layer0Id != null && scenes.layer1Id != null && !scenes.isTransitioning) {
+    if (!active && scenes.isTransitionRequested && !scenes.isTransitioning) {
 
       if (timeoutRef.current != null) 
         clearTimeout(timeoutRef.current)
@@ -51,7 +53,7 @@ const ThreeLoader = () => {
   return null
 }
 
-const Setup = () => {
+const Setup = ({ setEnableRotate }) => {
 
   const { camera, raycaster, scene, set, get } = useThree()
 
@@ -68,9 +70,17 @@ const Setup = () => {
 
     window.addEventListener("mousemove", onMouseMove)
     window.addEventListener("wheel", onWheel)
+    if (isMobile) {
+      window.addEventListener("touchmove", onTouchMove)
+      window.addEventListener("touchend", onTouchEnd)
+    }
     return () => {
       window.removeEventListener("mousemove", onMouseMove)
       window.removeEventListener("wheel", onWheel)
+      if (isMobile) {
+        window.removeEventListener("touchmove", onTouchMove)
+        window.removeEventListener("touchend", onTouchEnd)
+      }
     }
   }, [camera.layers, raycaster.layers])
 
@@ -104,6 +114,32 @@ const Setup = () => {
     camera.updateProjectionMatrix()
   }, [])
 
+  // touch events on mobile
+  const deltaStart = useRef(null)
+  const fovStart = useRef(null)
+  const onTouchMove = useCallback(e => {
+    if (e.touches.length > 1) {
+      setEnableRotate(false)
+      const point0 = new THREE.Vector2(e.touches[0].clientX, e.touches[0].clientY)
+      const point1 = new THREE.Vector2(e.touches[1].clientX, e.touches[1].clientY)
+      const delta = point0.distanceTo(point1)
+      if (deltaStart.current == null) {
+        deltaStart.current = delta
+        fovStart.current = camera.fov
+      }
+      else {
+        camera.fov = Math.max(23, Math.min(fovStart.current * deltaStart.current / delta, 100))
+        camera.updateProjectionMatrix()
+      }
+    }
+  }, [])
+
+  const onTouchEnd = useCallback(e => {
+    setEnableRotate(true)
+    deltaStart.current = null
+    fovStart.current = null
+  }, [])
+
   return null
 }
 
@@ -130,14 +166,17 @@ export default function ThreeCanvas() {
   const isSetTargetOn = useSelector(state => state.setTarget.isOn)
   const controlsRef = useRef()
 
+  const [enableRotate, setEnableRotate] = useState(true)
+
   return (
     <>
       <ThreeLoader/>      
       <Canvas
         gl={{ alpha: true, antialias: true }}
         camera={{ position: [0, 0, 0.1], fov: 55 }}
+        resize={{ polyfill: ResizeObserver }}
       >
-        <Setup/>
+        <Setup setEnableRotate={setEnableRotate} />
         {scenes.layer0Id != null && 
           <Scene 
             id={scenes.layer0Id} 
@@ -158,7 +197,7 @@ export default function ThreeCanvas() {
         }
         <Effects scenes={scenes} controlsRef={controlsRef} />
         {config.mode == 'admin' && !scenes.isTransitioning && !isSetTargetOn && <Menu/>}
-        <OrbitControls ref={controlsRef} enableRotate={!scenes.isTransitioning} enableZoom={false} enablePan={false} enableDamping dampingFactor={0.2} autoRotate={false} rotateSpeed={-0.2} /> 
+        <OrbitControls ref={controlsRef} enableRotate={enableRotate && !scenes.isTransitioning} enableZoom={false} enablePan={false} enableDamping dampingFactor={0.2} autoRotate={false} rotateSpeed={-0.2} /> 
       </Canvas>
     </>
   )

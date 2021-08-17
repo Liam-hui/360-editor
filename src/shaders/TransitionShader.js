@@ -7,7 +7,6 @@ const TransitionShader = {
         zoom: { value: 1.0 },
         progress: { value: 0.0 },
         center: { value: new THREE.Vector2(0.5, 0.5) },
-        blurDetail: { value: 20 },
     },
   
     vertexShader: `
@@ -22,12 +21,12 @@ const TransitionShader = {
     fragmentShader: `
         uniform sampler2D tDiffuse;
         uniform float progress;
-        uniform int blurDetail;
         uniform float zoom;
         uniform vec2 center;
         varying vec2 vUv;
 
         void main() {
+            const int blurDetail = 20;
             float blurAmount = progress * 10.0;
 
             vec2 uv = (vUv - center) * zoom + center;

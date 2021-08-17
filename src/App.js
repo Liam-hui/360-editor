@@ -9,6 +9,7 @@ import Popup from '@/components/Popup'
 import Loader from '@/components/Loader'
 import ControlBar from '@/components/ControlBar'
 import SetTarget from '@/components/SetTarget'
+import Info from '@/components/Info'
 
 const App = () => {
 
@@ -46,6 +47,7 @@ const Components = () => {
     <>
       <ThreeCanvas/>
       <Popup/>
+      <Info/>
       {config.mode == 'admin' && 
         <>
           <ControlBar/>

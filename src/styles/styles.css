@@ -111,6 +111,7 @@ textarea {
   overflow-x: hidden;
 }
 .grey-box .message-text {
+  text-align: center;
   color: white;
   font-size: 20px;
   margin-bottom: 15px;
@@ -132,7 +133,7 @@ textarea {
   width: 20px;
   height: 20px;
   top: 15px;
-  right: 0px;
+  right: 5px;
 }
 
 .border-box {
@@ -189,6 +190,17 @@ textarea {
   opacity: 0;
 }
 
+.info-container {
+  background-color: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  color: white;
+  padding: 3px 10px;
+  font-size: 14px;
+}
+.info-container p {
+  margin: 8px 0;
+}
+
 .menu-wrapper {
   pointer-events: auto;
   position: absolute;
@@ -231,6 +243,9 @@ textarea {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.upload-container span {
+  text-align: center;
 }
 .upload-container .scene-image-preview {
   width: 100%;
@@ -532,7 +547,9 @@ textarea {
   object-fit: contain;
 }
 .control-bar .control-bar-button.control-bar-circle {
-  margin: 0 4px;
+  margin: 0 2px;
+  width: 17px;
+  height: 17px;
 }
 .control-bar .control-bar-button:hover {
   color: white;

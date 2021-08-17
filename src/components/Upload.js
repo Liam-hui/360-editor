@@ -283,9 +283,9 @@ const Upload = ({ mode, data }) => {
             style={{ padding: 20 }}
           >
             <img src={imagePath('icon-upload.svg')}/>
-            <div style={{ fontSize: '1.8em' }}>{`Drag and drop your ${mode == 'image' ? 'image' + (multiple? 's' : '') : 'video'} here`}</div>
-            <div style={{ fontSize: '0.9em', color: '#CDCDCD' }}>{`Files supported: ${mode == 'image' ? 'jpg, png' : 'mp4'}`}</div>
-            <div style={{ fontSize: '0.95em' }}>or</div>
+            <span style={{ fontSize: '1.8em' }}>{`Drag and drop your ${mode == 'image' ? 'image' + (multiple? 's' : '') : 'video'} here`}</span>
+            <span style={{ fontSize: '0.9em', color: '#CDCDCD' }}>{`Files supported: ${mode == 'image' ? 'jpg, png' : 'mp4'}`}</span>
+            <span style={{ fontSize: '0.95em' }}>or</span>
             <label className="border-box-small">
               Browse files
               <input onChange={(e) => handleUplaod(e.target.files)} type="file" id="upload-image" accept={accept} multiple={multiple}/>

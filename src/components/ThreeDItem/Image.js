@@ -11,16 +11,18 @@ export default function Image({ meshProps, data, isHover }) {
   const texture = useTexture(window.cdn + url)
   const shader = useMemo(() => { return JSON.parse(JSON.stringify(ItemShader)) }, [])
 
-  const onPointerDown = () => {
-    store.dispatch({
-      type: 'SHOW_POPUP',
-      mode: 'showItem',
-      data: data
-    })
+  const onClick = (e) => {
+    if (e.which == 1) {
+      store.dispatch({
+        type: 'SHOW_POPUP',
+        mode: 'showItem',
+        data: data
+      })
+    }
   }
 
   return (
-    <mesh {...meshProps} onPointerDown={onPointerDown} >
+    <mesh {...meshProps} onClick={onClick} >
       <planeBufferGeometry args={[width, height]}/>
       <shaderMaterial args={[shader]} uniforms-tex-value={texture} uniforms-isHover-value={isHover} transparent side={THREE.DoubleSide}/>
     </mesh>

@@ -55,21 +55,24 @@ const ControlBar = () => {
 
   const handleSave = () => {
 
-    const data = {
-      scenes: { ...scenes.data },
-      threeDItems: { ...threeDItems },
+    const data = {}
+
+    if (scenes.data) {
+      const scenes_ = { ...scenes.data }
+      if (scenes_[scenes_.firstScene?.id]) {
+        scenes_[scenes_.firstScene.id].isFirst = true
+        scenes_[scenes_.firstScene.id].cameraPosition = scenes_.firstScene.cameraPosition
+      }
+      data.scenes = scenes_
     }
 
-    if (data.scenes[scenes.firstScene.id]) {
-      data.scenes[scenes.firstScene.id].isFirst = true
-      data.scenes[scenes.firstScene.id].cameraPosition = scenes.firstScene.cameraPosition
-    }
-
-    for (const id in data.threeDItems) {
-        const item = { ...data.threeDItems[id] }
-  
-        if (!item.rotation)
-          data.threeDItems[id].rotation = [0, 0, 0]
+    if (threeDItems) {
+      const threeDItems_ = { ...threeDItems}
+      for (const id in threeDItems_) {
+        if (!threeDItems_[id].rotation)
+          threeDItems_[id].rotation = [0, 0, 0]
+      }
+      data.threeDItems = threeDItems_
     }
 
     let body = new FormData();
@@ -102,7 +105,7 @@ const ControlBar = () => {
       });
 
     // console.log(data)
-    saveToLocalText(data)
+    // saveToLocalText(data)
   }
 
   return (
@@ -110,16 +113,17 @@ const ControlBar = () => {
 
       {
         Object.keys(scenes.data).map( 
-          id => 
+          (id, index) => 
             <img
+              alt={`Scene ${index}`}
               key={id}
               className='control-bar-button control-bar-circle' 
               src={imagePath('icon-circle.png')}
               style={
                 id == sceneId ?
-                  { width: 21, height: 21 }
+                  { transform: `scale(1)` }
                 :
-                  { width: 13, height: 13, opacity: 0.8 }
+                  { transform: `scale(0.7)`, opacity: 0.8 }
                }
               onClick={() => goToScene(id)}
             /> 
@@ -127,19 +131,19 @@ const ControlBar = () => {
       }
 
       <div className='control-bar-button' style={{ '--tipText': "'Set First Scene'" }} onClick={setFirstScene}>
-        <img src={imagePath('icon-camera.png')} />
+        <img alt="Set First Scene" src={imagePath('icon-camera.png')} />
       </div>
 
       <div className='control-bar-button' style={{ '--tipText': "'Delete Scene'", fontSize: 27 }} onClick={removeScene}>
-        <img src={imagePath('icon-trash.png')} />
+        <img alt="Delete Scene" src={imagePath('icon-trash.png')} />
       </div>
 
       <div className='control-bar-button' style={{ '--tipText': "'Add Scene'" }} onClick={addScene}>
-        <img  src={imagePath('icon-plus.png')} />
+        <img alt="Add Scene" src={imagePath('icon-plus.png')} />
       </div>
       
       <div className='control-bar-button' style={{ '--tipText': "'Save'" }} onClick={handleSave}>
-        <img src={imagePath('icon-save.png')}  />
+        <img alt="Save" src={imagePath('icon-save.png')}  />
       </div>
 
     </div>

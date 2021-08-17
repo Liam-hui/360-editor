@@ -24,12 +24,13 @@ const Menu = () => {
 
   useEffect(() => {
     window.addEventListener("mousedown", onMouseDown)
+    return () => window.removeEventListener("mousedown", onMouseDown)
   } ,[])
 
   let clickedRef = useRef(false)
   let clickLoop
   const onMouseDown = (e) => {
-    if (get().hovered == null && e.target.tagName == 'CANVAS') {
+    if (e.which == 1 && get().hovered == null && e.target.tagName == 'CANVAS') {
       if (clickedRef.current) {
         setPosition(get().point)
         setIsShown(true)
@@ -42,9 +43,6 @@ const Menu = () => {
           () => clickedRef.current = false,
         200)
       }
-    }
-    else {
-      // setIsShown(false)
     }
   }
 
