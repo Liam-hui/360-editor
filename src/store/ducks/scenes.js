@@ -11,6 +11,7 @@ const { Types, Creators } = createActions({
   changeSceneRequest: ['id'],
   changeSceneStart: [],
   changeSceneFinish: [],
+  changeSceneWithoutTransition: ['id'],
 })
 
 export const ScenesTypes = Types
@@ -92,6 +93,7 @@ const setFirstScene = ( state, { id, cameraPosition } ) => {
 const changeSceneRequest = ( state, { id, cameraPosition, transitionCenter } ) => {
 
   const currentId = state.currentLayer == 0 ? state.layer0Id : state.layer1Id
+  document.getElementById("root").classList.add('is-transitioning')
 
   return {
     ...state,
@@ -114,11 +116,23 @@ const changeSceneStart = ( state ) => {
 }
 
 const changeSceneFinish = ( state ) => {
+  document.getElementById("root").classList.remove('is-transitioning')
+
   return {
     ...state,
     layer0Id: state.currentLayer == 0 ? null : state.layer0Id,
     layer1Id: state.currentLayer == 1 ? null : state.layer1Id,
     currentLayer: state.currentLayer == 0 ? 1 : 0,
+    isTransitioning: false,
+    transitionCenter: null
+  }
+}
+
+const changeSceneWithoutTransition = ( state, { id } ) => {
+  return {
+    ...state,
+    layer0Id: state.currentLayer == 0 ? id : null,
+    layer1Id: state.currentLayer == 1 ? id : null,
     isTransitioning: false,
     transitionCenter: null
   }
@@ -134,4 +148,5 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.CHANGE_SCENE_REQUEST]: changeSceneRequest,
   [Types.CHANGE_SCENE_START]: changeSceneStart,
   [Types.CHANGE_SCENE_FINISH]: changeSceneFinish,
+  [Types.CHANGE_SCENE_WITHOUT_TRANSITION]: changeSceneWithoutTransition
 })

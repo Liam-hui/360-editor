@@ -26,7 +26,11 @@ const initThreeDItems = (state, { data } ) => {
 
 const addThreeDItem = (state, { data } ) => {
   const id = uniqueId()
-  data.position = limitPosition(data.position.toArray())
+  if (data.type == 'info' || data.type == 'location')
+    data.position = data.position.toArray()
+  else 
+    data.position = limitPosition(data.position.toArray())
+
   if (data.type == 'image') {
     data.scale = 100 / Math.max(data.images[0].width, data.images[0].height)
   }
@@ -89,43 +93,6 @@ const removeScene = ( state, { id } ) => {
     data: data_,
   }
 }
-
-// const updateThreeDItem = (state, { id, data } ) => {
-
-//   return {
-//     ...state,
-//     data: {
-//       ...state.data,
-//       [id]: {
-//         ...state.data[id],
-//         ...data,
-//       }
-//     },
-//   };
-// }
-
-// const highlightThreeDItem = (state, { id } ) => {
-
-//   return {
-//     ...state,
-//     highlightedId: id,
-//   };
-
-// }
-
-// const addThreeDImageSlides = (state, {id, images} ) => {
-
-//   return {
-//     ...state,
-//     data: {
-//       ...state.data,
-//       [id]: {
-//         ...state.data[id],
-//         slides: state.data[id].slides.concat(images),
-//       }
-//     },
-//   };
-// }
 
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.INIT_THREE_D_ITEMS]: initThreeDItems,

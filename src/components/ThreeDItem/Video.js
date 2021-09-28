@@ -3,9 +3,11 @@ import store from '@/store'
 import * as THREE from 'three'
 import ItemShader from '@/shaders/ItemShader'
 
-export default function Video({ meshProps, data, isHover }) {
+import Label from './Label'
 
-  const { url } = data
+export default function Video({ meshProps, data, isHover, isAdmin }) {
+
+  const { url, description } = data
   const [video, setVideo] = useState(null)
 
   useEffect(async() => {
@@ -19,7 +21,8 @@ export default function Video({ meshProps, data, isHover }) {
     return new Promise(resolve => {
       const vid = document.createElement('video')
       vid.crossOrigin = "anonymous"
-      vid.src = url
+      // vid.src = url
+      vid.src = "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
   
       vid.onloadedmetadata = () => {
         vid.autoplay = true;
@@ -45,7 +48,7 @@ export default function Video({ meshProps, data, isHover }) {
   const shader = useMemo(() => { return JSON.parse(JSON.stringify(ItemShader)) }, [])
 
   const onClick = (e) => {
-    if (e.which == 1) {
+    if (e.which == 1 || e.button == 0) {
       store.dispatch({
         type: 'SHOW_POPUP',
         mode: 'showItem',
@@ -55,10 +58,15 @@ export default function Video({ meshProps, data, isHover }) {
   }
 
   if (video != null) return (
-    <mesh {...meshProps} onClick={onClick} >
-      <planeBufferGeometry args={[video.videoWidth, video.videoHeight]}/>
-      <shaderMaterial args={[shader]} uniforms-tex-value={texture} uniforms-isHover-value={isHover} transparent side={THREE.DoubleSide}/>
-    </mesh>
+    <>  
+      <mesh {...meshProps} onClick={onClick} >
+        <planeBufferGeometry args={[video.videoWidth, video.videoHeight]}/>
+        <shaderMaterial args={[shader]} uniforms-tex-value={texture} uniforms-isHover-value={isHover} transparent side={THREE.DoubleSide}/>
+      </mesh>
+      {!isAdmin &&
+        <Label position={meshProps.position} labelText={description} onClick={onClick} role='img' />
+      }
+    </>
   )
   else return null
 }

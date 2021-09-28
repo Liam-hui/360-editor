@@ -27,6 +27,12 @@ const Upload = ({ mode, data }) => {
       setDescription(item.description)
       setLink(item.link)
     }
+    else if (action == 'editScene') {
+      const scenes = store.getState().scenes
+      const currentScene = scenes.data[scenes.currentLayer == 0 ? scenes.layer0Id : scenes.layer1Id]
+      setTitle(currentScene.name)
+      setImages([currentScene.baseImage])
+    }
   }, [])
 
   useEffect(() => {
@@ -271,7 +277,7 @@ const Upload = ({ mode, data }) => {
 
   return (
     <GreyBox style={{ width: 580 }} innerStyle={{ padding: '35px 55px' }}>
-      <div className="upload-container" style={action == 'addScene' ? { minHeight: 300 } : {}}>
+      <div className="upload-container" style={(action == 'addScene' || action == 'editScene') ? { minHeight: 300 } : {}}>
         
         { ( (mode == 'image' && images.length == 0) || (mode == 'video' && video == null) ) &&
           <div 
@@ -294,7 +300,7 @@ const Upload = ({ mode, data }) => {
           </div>
         }
 
-        {mode == 'image' && images.length > 0 && action != 'addScene' &&
+        {mode == 'image' && images.length > 0 && action != 'addScene' && action != 'editScene' &&
           <div className="images-container">
             {images.map( (image, index) => 
               <div className="image-wrapper">
@@ -320,11 +326,26 @@ const Upload = ({ mode, data }) => {
         }
 
         {mode == 'image' && images.length > 0 && action == 'addScene' &&
-          <img className='scene-image-preview' src={images[0].base64}/>
+          <img className='scene-image-preview' src={images[0].base64} />
+        }
+
+        {action == 'editScene' &&
+          <div className="uploaded-wrapper">
+            <img src={images[0]?.base64 ?? window.cdn + images[0]} />
+            <div className='overlay center-flex column'>
+              <label
+                className="border-box-small pointer" 
+                style={{ margin: 10, pointerEvents: 'auto' }}
+              >
+                Select another image
+                <input onChange={(e) => handleUplaod(e.target.files)} type="file" id="upload-image" accept={accept}/>
+              </label>
+            </div>
+          </div>
         }
 
         {mode == 'video' && video != null &&
-          <div className="video-wrapper">
+          <div className="uploaded-wrapper">
             <video muted autoPlay playsInline src={video.base64 ?? (window.cdn + video)}/>
             <div className='overlay center-flex column'>
               <label
@@ -345,7 +366,14 @@ const Upload = ({ mode, data }) => {
           </div>
         }
 
-        {action != 'addScene' && 
+        {(action == 'addScene' || action == 'editScene') && 
+          <>
+            <div className="heading">Title</div>
+            <input type="text" className="border-box" style={{ height: 40, padding: 15, borderRadius: 12 }} value={title} onChange={(e) => setTitle(e.target.value)}/>
+           </>
+        }
+
+        {(action == 'addImage' || action == 'updateItem') && 
           <>
             <div className="heading">Title</div>
             <input type="text" className="border-box" style={{ height: 40, padding: 15, borderRadius: 12 }} value={title} onChange={(e) => setTitle(e.target.value)}/>
@@ -367,12 +395,22 @@ const Upload = ({ mode, data }) => {
           </div>
         }
 
+        {action == 'editScene' &&
+          <div 
+            className="border-box-small pointer" 
+            style={{ alignSelf: 'center', marginTop: 20 }}
+            // onClick={confirmUpload}
+          >
+            {'Set as first scene'}
+          </div>
+        }
+
         <div 
           className="border-box-small pointer" 
           style={{ alignSelf: 'center', marginTop: 20 }}
           onClick={confirmUpload}
         >
-          {action == 'updateItem' ? 'Confirm' : 'Upload'}
+          {(action == 'addScene' || action == "addImage") ? 'Upload' : 'Confirm'}
         </div>
 
       </div>

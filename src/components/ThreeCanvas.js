@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react'
+import React, { useState, useEffect, useRef, useCallback, Suspense, useMemo } from 'react'
 import * as THREE from 'three'
 import store from '@/store'
 import { useSelector } from "react-redux"
-import { Canvas, useThree } from '@react-three/fiber'
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { useProgress, OrbitControls } from '@react-three/drei'
 import { ResizeObserver } from '@juggle/resize-observer'
-import { isMobile } from 'react-device-detect' 
+import { isMobile } from 'react-device-detect'
 
 import Panorama from '@/components/Panorama'
 import Menu from '@/components/Menu'
@@ -46,14 +46,13 @@ const ThreeLoader = () => {
       timeoutRef.current = setTimeout(
         () => store.dispatch({ type: 'CHANGE_SCENE_START' })
       ,500)
-
     }
   }, [active, scenes])
   
   return null
 }
 
-const Setup = ({ setEnableRotate }) => {
+const Setup = ({ controlsRef, keyRef, setEnableRotate }) => {
 
   const { camera, raycaster, scene, set, get } = useThree()
 
@@ -140,10 +139,75 @@ const Setup = ({ setEnableRotate }) => {
     fovStart.current = null
   }, [])
 
+  useFrame(() => {
+    if (keyRef.current.ArrowLeft) 
+      camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), 0.01)
+    else if (keyRef.current.ArrowRight) 
+      camera.position.applyAxisAngle(new THREE.Vector3(0, 1, 0), -0.01)
+
+    if ( (keyRef.current.ArrowUp && camera.position.y > -0.0995) || (keyRef.current.ArrowDown && camera.position.y < 0.0995) ) {
+      let axis = new THREE.Vector3
+      axis.copy(camera.position).applyAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI * 0.5)
+      axis.y = 0
+      axis.normalize()
+
+      if (keyRef.current.ArrowUp) 
+        camera.position.applyAxisAngle(axis, 0.01)
+      else if (keyRef.current.ArrowDown) 
+        camera.position.applyAxisAngle(axis, -0.01)
+    }
+    controlsRef.current.update()
+  })
+
   return null
 }
 
+const Locations = ({ setTargetToLookAt }) => {
+
+  const scenes = useSelector(state => state.scenes)
+  const currentSceneId = scenes.currentLayer == 0 ? scenes.layer0Id : scenes.layer1Id
+  const threeDItems = useSelector(state => state.threeDItems.data)
+  const locations = Object.entries(threeDItems).map(
+    ([id, data]) => ({ id, ...data })).filter(x => x.scene == currentSceneId && (x.type == 'location' || (x.type == 'link' && x.target) ) 
+  ).sort(function(a, b) {
+    if (b.type == 'link' && a.type == 'location') return -1
+    if (a.type == 'link' && b.type == 'location') return 1
+    return 0
+  })
+
+  const LocationButton = ({ location }) => {
+
+    const label = location.type == 'link' ? 
+      store.getState().scenes.data[location.target].name 
+    : location.type == 'location' ? 
+        location.text
+      :
+        ''
+
+    const goToLocation = () => {
+      if (location.type == 'link')
+        store.dispatch({ type: 'CHANGE_SCENE_WITHOUT_TRANSITION', id: location.target })
+      if (location.type == 'location')
+        setTargetToLookAt(location.position)
+      }
+
+    return (
+      <button tabIndex={1} aria-label={`前往${label}`} onClick={goToLocation}/>
+    )
+  }
+
+  return (
+    <div className="locations-container">
+      {locations.map(location => <LocationButton location={location} />)}
+    </div>
+  )
+}
+
 const Scene = ({ layer, baseImage, items, isAdmin }) => {
+
+  if (!isAdmin)
+    items = items.filter(item => item.type != 'location')
+
   return (
     <>
       <Suspense fallback={null}>
@@ -158,7 +222,35 @@ const Scene = ({ layer, baseImage, items, isAdmin }) => {
   )
 }
 
+const LookAtPosition = ({ targetToLookAt, setTargetToLookAt, controlsRef }) => {
+
+  const cameraPosition = useMemo(() => {
+    if (targetToLookAt) {
+      const pos = new THREE.Vector3(0, 0, 0)
+      const target = new THREE.Vector3().fromArray(targetToLookAt)
+      const dir = new THREE.Vector3()
+      dir.subVectors(pos, target).normalize()
+      pos.add(dir.multiplyScalar(0.1))
+      return pos
+    }
+    return null
+  }, [targetToLookAt])
+
+  useFrame((state) => {
+    if (cameraPosition) {
+      state.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+      controlsRef.current.update()
+      setTargetToLookAt(null)
+    }
+  })
+
+  return null
+}
+
 export default function ThreeCanvas() {
+
+  const canvasRef = useRef()
+  const keyRef = useRef({})
 
   const config = useSelector(state => state.config)
   const scenes = useSelector(state => state.scenes)
@@ -168,15 +260,29 @@ export default function ThreeCanvas() {
 
   const [enableRotate, setEnableRotate] = useState(true)
 
+  // const currentScene = scenes.data[scenes.currentLayer == 0 ? scenes.layer0Id : scenes.layer1Id]
+
+  // useEffect(() => {
+  //   canvasRef.current.setAttribute('tabIndex', 0)
+  //   canvasRef.current.setAttribute("role", "img")
+  // }, [])
+
+  // useEffect(() => {
+  //   canvasRef.current.setAttribute('aria-label', currentScene?.name ?? '')
+  // }, [currentScene])
+
+  const [targetToLookAt, setTargetToLookAt] = useState(null)
+
   return (
     <>
-      <ThreeLoader/>      
+      <ThreeLoader/>   
       <Canvas
         gl={{ alpha: true, antialias: true }}
         camera={{ position: [0, 0, 0.1], fov: 55 }}
         resize={{ polyfill: ResizeObserver }}
+        ref={canvasRef}
       >
-        <Setup setEnableRotate={setEnableRotate} />
+        <Setup controlsRef={controlsRef} keyRef={keyRef} setEnableRotate={setEnableRotate} />
         {scenes.layer0Id != null && 
           <Scene 
             id={scenes.layer0Id} 
@@ -196,9 +302,11 @@ export default function ThreeCanvas() {
           />
         }
         <Effects scenes={scenes} controlsRef={controlsRef} />
-        {config.mode == 'admin' && !scenes.isTransitioning && !isSetTargetOn && <Menu/>}
         <OrbitControls ref={controlsRef} enableRotate={enableRotate && !scenes.isTransitioning} enableZoom={false} enablePan={false} enableDamping dampingFactor={0.2} autoRotate={false} rotateSpeed={-0.2} /> 
+        {config.mode == 'admin' && !scenes.isTransitioning && !isSetTargetOn && <Menu/>}
+        {config.mode != 'admin' && <LookAtPosition targetToLookAt={targetToLookAt} setTargetToLookAt={setTargetToLookAt} controlsRef={controlsRef} />}
       </Canvas>
+      {config.mode != 'admin' && <Locations setTargetToLookAt={setTargetToLookAt} />}
     </>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useLayoutEffect } from 'react'
 import { Provider, useSelector } from 'react-redux'
 import store from './store'
 
@@ -10,26 +10,28 @@ import Loader from '@/components/Loader'
 import ControlBar from '@/components/ControlBar'
 import SetTarget from '@/components/SetTarget'
 import Info from '@/components/Info'
+import SceneInfo from '@/components/SceneInfo'
 
 const App = () => {
 
   useEffect(() => {
-    store.dispatch({ 
-      type: 'SET_CONFIG', 
-      payload: {
-        mode: window.mode,
-        functions: JSON.parse(window.allowed_function)
-      } 
-    })
+    if (window.mode) {
+      store.dispatch({ 
+        type: 'SET_CONFIG', 
+        payload: {
+          mode: window.mode,
+          functions: JSON.parse(window.allowed_function)
+        } 
+      })
 
-    const data = window.data
-    if (data?.scenes) {
-      store.dispatch({ type: 'INIT_SCENES', data: data.scenes })
+      const data = window.data
+      if (data?.scenes) {
+        store.dispatch({ type: 'INIT_SCENES', data: data.scenes })
+      }
+      if (data?.threeDItems) {
+        store.dispatch({ type: 'INIT_THREE_D_ITEMS', data: data.threeDItems })
+      }
     }
-    if (data?.threeDItems) {
-      store.dispatch({ type: 'INIT_THREE_D_ITEMS', data: data.threeDItems })
-    }
-
   }, [])
 
   return (
@@ -48,7 +50,8 @@ const Components = () => {
       <ThreeCanvas/>
       <Popup/>
       <Info/>
-      {config.mode == 'admin' && 
+      {/* <SceneInfo/> */}
+      {config.mode == 'admin' &&
         <>
           <ControlBar/>
           <Loader/>

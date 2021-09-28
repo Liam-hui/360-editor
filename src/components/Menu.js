@@ -52,7 +52,7 @@ const Menu = () => {
 
   return (
     <mesh position={position} layers={currentLayer}>
-      <boxGeometry args={[1, 1, 1]} />
+      <planeBufferGeometry args={[0.1, 0.1]}/>
       <meshBasicMaterial transparent opacity={0} />
       {isShown &&
         <Html>
@@ -91,6 +91,38 @@ const Menu = () => {
                         position: position,
                       }
                     }) 
+                  }}
+                />
+              }
+              {config.functions.findIndex(x => x == 'add-location') != -1 &&
+                <Option
+                  label='Add Location'
+                  onClick={() => {
+                    setIsShown(false)
+                    store.dispatch({
+                      type: 'ADD_THREE_D_ITEM',
+                      data: {
+                        type: 'location',
+                        scene: sceneId,
+                        position: position,
+                      }
+                    })
+                  }}
+                />
+              }
+              {config.functions.findIndex(x => x == 'add-info') != -1 &&
+                <Option
+                  label='Add Info'
+                  onClick={() => {
+                    setIsShown(false)
+                    store.dispatch({
+                      type: 'ADD_THREE_D_ITEM',
+                      data: {
+                        type: 'info',
+                        scene: sceneId,
+                        position: position,
+                      }
+                    })
                   }}
                 />
               }

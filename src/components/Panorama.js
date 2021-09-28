@@ -5,6 +5,7 @@ import { useTexture } from '@react-three/drei'
 const Panorama = ({ layer, baseImage }) => {
 
   const texture = useTexture(window.cdn + baseImage)
+  // const texture = useTexture(process.env.PUBLIC_URL + 'pano_background.jpg')
 
   return (
     <mesh name='panorama' layers={layer} scale={[-1, 1, 1]} >

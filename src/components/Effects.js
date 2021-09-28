@@ -46,7 +46,7 @@ const Effects = ({ scenes, controlsRef }) => {
       set({ isTransitioning: true })
     }
     else {
-      set({ isTransitioning: false, currentLayer: scenes.currentLayer, sceneId: scenes.currentLayer == 0 ? scenes.layer0Id : scenes.layer1Id })
+      set({ isTransitionRequested: false, isTransitioning: false, currentLayer: scenes.currentLayer, sceneId: scenes.currentLayer == 0 ? scenes.layer0Id : scenes.layer1Id })
 
       const position = scenes.cameraPosition ?? prevPosition
       if (position) camera.position.set(position[0], position[1], position[2])

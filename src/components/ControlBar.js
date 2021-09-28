@@ -13,19 +13,26 @@ const ControlBar = () => {
 
   const sceneId = scenes.currentLayer == 0 ? scenes.layer0Id : scenes.layer1Id
 
-  const setFirstScene = () => { 
+  const editScene = () => { 
     store.dispatch({
       type: 'SHOW_POPUP' ,
-      mode: 'showWarning',
+      mode: 'uploadImage',
       data: {
-        text: 'Do you want to set this scene as the first scene, and current camera angle as the default angle？',
-        confirm: () => store.dispatch({
-          type: 'SET_FIRST_SCENE',
-          id: sceneId,
-          cameraPosition: camera.position.toArray()
-        }) 
+        action: 'editScene', 
       }
-    })  
+    }) 
+    // store.dispatch({
+    //   type: 'SHOW_POPUP' ,
+    //   mode: 'showWarning',
+    //   data: {
+    //     text: 'Do you want to set this scene as the first scene, and current camera angle as the default angle？',
+    //     confirm: () => store.dispatch({
+    //       type: 'SET_FIRST_SCENE',
+    //       id: sceneId,
+    //       cameraPosition: camera.position.toArray()
+    //     }) 
+    //   }
+    // })  
   }
 
   const goToScene = (id) => {
@@ -130,8 +137,8 @@ const ControlBar = () => {
         )
       }
 
-      <div className='control-bar-button' style={{ '--tipText': "'Set First Scene'" }} onClick={setFirstScene}>
-        <img alt="Set First Scene" src={imagePath('icon-camera.png')} />
+      <div className='control-bar-button' style={{ '--tipText': "'Edit Scene'" }} onClick={editScene}>
+        <img alt="Edit Scene" src={imagePath('icon-pencil.png')} />
       </div>
 
       <div className='control-bar-button' style={{ '--tipText': "'Delete Scene'", fontSize: 27 }} onClick={removeScene}>

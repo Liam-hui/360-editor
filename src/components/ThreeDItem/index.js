@@ -9,6 +9,8 @@ import store from '@/store'
 import Image from './Image'
 import Video from './Video'
 import Link from './Link'
+import Info from './Info'
+import Spot from './Spot'
 
 const TRANSLATION_MAX = 60
 const ROTATION_STEP = 100
@@ -265,7 +267,7 @@ const ThreeDItem = ({ id, type, data, layer, isAdmin }) => {
   const [isEditorShown, setIsEditorShown] = useState(false)
 
   useEffect(() => {
-    if (!rotation) {
+    if (!rotation && meshRef.current) {
       if (position[1] >= PANORAMA_SIZE) {
         meshRef.current.rotateX(Math.PI * 0.5)
       }
@@ -324,18 +326,26 @@ const ThreeDItem = ({ id, type, data, layer, isAdmin }) => {
   return (
     <>
       {type == 'image' &&
-        <Image meshProps={meshProps} data={data} isHover={isHover} />
+        <Image meshProps={meshProps} data={data} isAdmin={isAdmin} isHover={isHover} />
       }
 
       {type == 'video' &&
-        <Video meshProps={meshProps} data={data} isHover={isHover} />
+        <Video meshProps={meshProps} data={data} isAdmin={isAdmin} isHover={isHover} />
+      }
+
+      {type == 'location' &&
+        <Spot meshProps={meshProps} data={data} isAdmin={isAdmin} type="location" />
+      }
+
+      {type == 'info' &&
+        <Info meshProps={meshProps} data={data} isAdmin={isAdmin} />
       }
 
       {type == 'link' &&
-        <Link meshProps={meshProps} data={data} />
+        <Link meshProps={meshProps} data={data} isAdmin={isAdmin} />
       }
 
-      {isAdmin &&
+      {isAdmin && type != 'location' && type != 'info' &&
         <mesh ref={editorRef} position={position} layers={layer}>
           <planeBufferGeometry args={[0.1, 0.1]}/>
           <meshBasicMaterial transparent opacity={0} />
