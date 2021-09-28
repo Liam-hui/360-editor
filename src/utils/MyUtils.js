@@ -26,8 +26,8 @@ export const uploadFile = async (file) => {
 }
 
 export const imagePath = (path) => {
-  // return window.cdn + '/editor/static/media/' + path;
-  return require('@/assets/media/' + path).default
+  return window.cdn + '/editor/static/media/' + path;
+  // return require('@/assets/media/' + path).default
 }
 
 export const PANORAMA_SIZE = 600

@@ -203,7 +203,7 @@ button {
   }
 }
 
-.info-container {
+.company-info {
   background-color: rgba(0, 0, 0, 0.4);
   position: absolute;
   // border-radius: 15px;
@@ -699,8 +699,8 @@ button {
 }
 
 .item-label {
-  width: 20px;
-  height: 20px;
+  width: 1px;
+  height: 1px;
 }
 
 .arrows-container {
@@ -893,16 +893,13 @@ button {
 
 }
 
-.locations-container {
+.location-button {
   position: absolute;
   bottom: 0;
   right: 0;
   z-index: -10;
-  button {
-    width: 1px;
-    height: 1px;
-    background-color: red;
-  }
+  width: 1px;
+  height: 1px;
 }
 
 @keyframes fade-in {

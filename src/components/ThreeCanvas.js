@@ -178,9 +178,9 @@ const Locations = ({ setTargetToLookAt }) => {
   const LocationButton = ({ location }) => {
 
     const label = location.type == 'link' ? 
-      store.getState().scenes.data[location.target].name 
+      '前往' + store.getState().scenes.data[location.target].name 
     : location.type == 'location' ? 
-        location.text
+      '移動至' + location.text
       :
         ''
 
@@ -192,14 +192,14 @@ const Locations = ({ setTargetToLookAt }) => {
       }
 
     return (
-      <button tabIndex={1} aria-label={`前往${label}`} onClick={goToLocation}/>
+      <button className="location-button" tabIndex={1} aria-label={label} onClick={goToLocation}/>
     )
   }
 
   return (
-    <div className="locations-container">
+    <>
       {locations.map(location => <LocationButton location={location} />)}
-    </div>
+    </>
   )
 }
 

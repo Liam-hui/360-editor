@@ -199,14 +199,14 @@ button {
   opacity: 0;
 }
 
-.info-container {
+.company-info {
   background-color: rgba(0, 0, 0, 0.4);
   position: absolute;
   color: white;
   padding: 3px 10px;
   font-size: 14px;
 }
-.info-container p {
+.company-info p {
   margin: 8px 0;
 }
 
@@ -680,8 +680,8 @@ button {
 }
 
 .item-label {
-  width: 20px;
-  height: 20px;
+  width: 1px;
+  height: 1px;
 }
 
 .arrows-container {
@@ -859,16 +859,13 @@ button {
   padding: 12px;
 }
 
-.locations-container {
+.location-button {
   position: absolute;
   bottom: 0;
   right: 0;
   z-index: -10;
-}
-.locations-container button {
   width: 1px;
   height: 1px;
-  background-color: red;
 }
 
 @keyframes fade-in {

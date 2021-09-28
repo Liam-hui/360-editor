@@ -29,7 +29,7 @@ const Info = () => {
     <>
       {isShown &&
         <div 
-          className="info-container"
+          className="company-info"
           style={{
             top: pos.y,
             left: pos.x

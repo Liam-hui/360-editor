@@ -116,7 +116,7 @@ const ControlBar = () => {
   }
 
   return (
-    <div className={`control-bar ${setTarget.isOn ? 'is-hidden' : ''}`}>
+    <div className={`control-bar${setTarget.isOn ? ' is-hidden' : ''}`}>
 
       {
         Object.keys(scenes.data).map( 
