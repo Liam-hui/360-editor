@@ -61,6 +61,14 @@ const Effects = ({ scenes, controlsRef }) => {
     }
   }, [scenes.isTransitioning])
 
+  // change scene without transition
+  useEffect(() => {
+    if (scenes.newCameraPosition) {
+      camera.position.set(scenes.newCameraPosition[0], scenes.newCameraPosition[1], scenes.newCameraPosition[2])
+      controlsRef.current.update()
+    }
+  }, [scenes.newCameraPosition])
+
   useFrame(() => {
     if (isTransitioning) {
 

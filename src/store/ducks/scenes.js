@@ -7,11 +7,13 @@ const { Types, Creators } = createActions({
   initScenes: ['data'],
   addScene: ['baseImage'],
   removeScene: ['id'],
-  setFirstScene: ['id', 'cameraPosition'],
+  setFirstScene: ['cameraPosition'],
+  updateScene: ['id', 'data'],
   changeSceneRequest: ['id'],
   changeSceneStart: [],
   changeSceneFinish: [],
   changeSceneWithoutTransition: ['id'],
+  changeSceneWithoutTransitionFinish: []
 })
 
 export const ScenesTypes = Types
@@ -83,10 +85,25 @@ const removeScene = ( state, { id } ) => {
   }
 }
 
-const setFirstScene = ( state, { id, cameraPosition } ) => {
+const setFirstScene = ( state, { cameraPosition } ) => {
+  const id = state.currentLayer == 0 ? state.layer0Id : state.layer1Id
   return {
     ...state,
     firstScene: { id: id, cameraPosition: cameraPosition },
+  }
+}
+
+const updateScene = ( state, { data } ) => {
+  const id = state.currentLayer == 0 ? state.layer0Id : state.layer1Id
+  return {
+    ...state,
+    data: {
+      ...state.data,
+      [id]: {
+        ...state.data[id],
+        ...data,
+      }
+    },
   }
 }
 
@@ -128,13 +145,22 @@ const changeSceneFinish = ( state ) => {
   }
 }
 
-const changeSceneWithoutTransition = ( state, { id } ) => {
+const changeSceneWithoutTransition = ( state, { id, cameraPosition } ) => {
+  console.log(id, 'asdfasdf', cameraPosition)
   return {
     ...state,
     layer0Id: state.currentLayer == 0 ? id : null,
     layer1Id: state.currentLayer == 1 ? id : null,
     isTransitioning: false,
-    transitionCenter: null
+    transitionCenter: null,
+    newCameraPosition: cameraPosition
+  }
+}
+
+const changeSceneWithoutTransitionFinish = ( state ) => {
+  return {
+    ...state,
+    newCameraPosition: null
   }
 }
 
@@ -145,8 +171,10 @@ export const reducer = createReducer(INITIAL_STATE, {
   [Types.ADD_SCENE]: addScene,
   [Types.REMOVE_SCENE]: removeScene,
   [Types.SET_FIRST_SCENE]: setFirstScene,
+  [Types.UPDATE_SCENE]: updateScene,
   [Types.CHANGE_SCENE_REQUEST]: changeSceneRequest,
   [Types.CHANGE_SCENE_START]: changeSceneStart,
   [Types.CHANGE_SCENE_FINISH]: changeSceneFinish,
-  [Types.CHANGE_SCENE_WITHOUT_TRANSITION]: changeSceneWithoutTransition
+  [Types.CHANGE_SCENE_WITHOUT_TRANSITION]: changeSceneWithoutTransition,
+  [Types.CHANGE_SCENE_WITHOUT_TRANSITION_FINISH]: changeSceneWithoutTransitionFinish
 })

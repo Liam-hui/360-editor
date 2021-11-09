@@ -6,7 +6,6 @@ import { imagePath } from '@/utils/MyUtils'
 
 const ControlBar = () => {
 
-  const camera = useSelector(state => state.camera)
   const scenes = useSelector(state => state.scenes)
   const threeDItems = useSelector(state => state.threeDItems.data)
   const setTarget = useSelector(state => state.setTarget)
@@ -21,18 +20,6 @@ const ControlBar = () => {
         action: 'editScene', 
       }
     }) 
-    // store.dispatch({
-    //   type: 'SHOW_POPUP' ,
-    //   mode: 'showWarning',
-    //   data: {
-    //     text: 'Do you want to set this scene as the first scene, and current camera angle as the default angle？',
-    //     confirm: () => store.dispatch({
-    //       type: 'SET_FIRST_SCENE',
-    //       id: sceneId,
-    //       cameraPosition: camera.position.toArray()
-    //     }) 
-    //   }
-    // })  
   }
 
   const goToScene = (id) => {
@@ -66,9 +53,9 @@ const ControlBar = () => {
 
     if (scenes.data) {
       const scenes_ = { ...scenes.data }
-      if (scenes_[scenes_.firstScene?.id]) {
-        scenes_[scenes_.firstScene.id].isFirst = true
-        scenes_[scenes_.firstScene.id].cameraPosition = scenes_.firstScene.cameraPosition
+      if (scenes_[scenes.firstScene?.id]) {
+        scenes_[scenes.firstScene.id].isFirst = true
+        scenes_[scenes.firstScene.id].cameraPosition = scenes.firstScene.cameraPosition
       }
       data.scenes = scenes_
     }

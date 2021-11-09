@@ -18,33 +18,36 @@ const Slides = ({ images, openImage }) => {
 
   const [swiper, setSwiper] = useState(null)
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
+  const [activeIndex, setActiveIndex] = useState(0)
  
-  const slides = []
-  images.map(image => (
-    slides.push(
+  const slides = (isLabel) => {
+    return images.map(image => (
       <SwiperSlide>
         <img 
-          tabIndex={0} 
-          aria-label={image.description} 
-          alt={image.description} 
+          tabIndex={isLabel ? 0 : -1} 
+          aria-hidden={!isLabel}
+          aria-label={image.text} 
+          alt={image.text} 
           src={window.cdn + image.url}
         />
       </SwiperSlide>
-    )
-  ))
+    ))
+  }
+
 
   return (
     <>
       {images.length > 1 ?
         <>
           <Swiper
-            onClick={() => openImage(swiper.activeIndex - (images.length > 4 ? 4 : 0) )}
+            // onClick={() => openImage(swiper.activeIndex - (images.length > 4 ? 4 : 0) )}
             controller={{ control: thumbsSwiper }}
+            onActiveIndexChange={(swiper) => setActiveIndex(swiper.activeIndex)}
             onSwiper={setSwiper}
-            loop={images.length > 4}
-            loopedSlides={4}
+            loop={false}
+            loopedSlides={false}
           >
-            {slides}
+            {slides(true)}
           </Swiper>
           <div className="thumbs" style={{ marginTop: 10, marginBottom: 15 }}>
             <Swiper
@@ -55,22 +58,26 @@ const Slides = ({ images, openImage }) => {
               touchRatio={0.2}
               centeredSlides
               slideToClickedSlide
-              loop={images.length > 4}
-              loopedSlides={4}
+              loop={false}
+              loopedSlides={false}
             >
-              {slides}
+              {slides(false)}
             </Swiper>
           </div>
-          <img style={{ left: -100 }} onClick={() => swiper.slidePrev(700)} className="slider-arrow pointer" src={imagePath('icon-arrow.png')}/>
-          <img style={{ right: -100, transform: `scaleX(-1)` }} onClick={() => swiper.slideNext(400)} className="slider-arrow pointer" src={imagePath('icon-arrow.png')}/>
+          {activeIndex > 0 &&
+            <img aria-hidden={true} style={{ left: -100 }} className="slider-arrow pointer" src={imagePath('icon-arrow.png')} onClick={() => swiper.slidePrev(700)} />
+          }
+          {activeIndex < (images.length - 1) &&
+            <img aria-hidden={true} style={{ right: -100, transform: `scaleX(-1)` }} onClick={() => swiper.slideNext(400)} className="slider-arrow pointer" src={imagePath('icon-arrow.png')}/>
+          }
         </>
       :
         <img 
           // onClick={() => openImage(0)} 
           style={{ width: '100%', height: 350, marginBottom: 15, cursor: 'pointer', objectFit: 'contain' }} 
           tabIndex={0}
-          aria-label={images[0].description} 
-          alt={images[0].description} 
+          aria-label={images[0].text} 
+          alt={images[0].text} 
           src={window.cdn + images[0].url}
         />
       }
@@ -102,7 +109,10 @@ const Detail = ({ data }) => {
         <Slides images={item.images} openImage={openImage}/>
 
         {item.title != '' &&
-          <span  tabIndex={0} style={{ fontSize: '1.1em' }}>{item.title}</span>
+          <>
+            <span tabIndex={0} style={{ fontSize: '1.1em' }}>{item.title}</span>
+            <br/>
+          </>
         }
 
         {item.description != '' &&

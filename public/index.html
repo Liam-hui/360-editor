@@ -23,343 +23,624 @@
     var company = '© 2021 Dialogue in the Dark (HK) Foundation Ltd';
     var user = 'User';
     var name = 'Test';
-    var mode = 'user';
+    var mode = 'admin';
     var allowed_function = `["add-photo", "add-video", "add-link", "add-location", "add-info"]`;
     var data = {
-      "scenes": {
-        "_tkmlqznfx1622532435398": {
-          "name": "場景一",
-          "baseImage": "/storage/scenes/files/XFTSzmwy7HGFgo815XW7MfibxN2oyNIU.jpg"
-        },
-        "_tbyfo0cbr1622532454928": {
-          "name": "場景二",
-          "baseImage": "/storage/scenes/files/lSjg7Pd3goISGGHb3SZRtH0lS4VLDfsR.jpg"
-        },
-        "_35fu06r671622533417983": {
-          "name": "場景三",
-          "baseImage": "/storage/scenes/files/OQUaSFSsxqqve3iSB2BLT6ZCj18PHtZT.jpg"
-        },
-        "_i10mauvw21622533484387": {
-          "name": "場景四",
-          "baseImage": "/storage/scenes/files/aybw94BzbAJeX5aq79Y6GZC1chZVN86b.jpg"
-        }
-      },
-      "threeDItems": {
-        "_q35q4a3cd1628756512039": {
-          "type": "link",
-          "scene": "_tkmlqznfx1622532435398",
-          "position": [
-            91.12131613369186,
-            -57.00948151384728,
-            -299.4663683935625
-          ],
-          "scale": 0.554770875,
-          "target": "_tbyfo0cbr1622532454928",
-          "cameraPosition": [
-            -0.0008716592366077742,
-            0.0006349753398712143,
-            -0.009941680768008582
-          ],
-          "rotation": [
-            -1.494537867799731,
-            -0.05654155119246174,
-            -0.7658109493806319
-          ]
-        },
-        "_kgjsai2xf1628756621003": {
-          "type": "image",
-          "scene": "_tkmlqznfx1622532435398",
-          "position": [
-            298.53930881230934,
-            -92.87171131690991,
-            -199.66860936042093
-          ],
-          "images": [
-            {
-              "width": 1300,
-              "height": 866,
-              "url": "/storage/scenes/files/VCQIaavxBQG5tTS2zNokOCi4OzkRkXcM.jpg",
-              "description": "測試圖片"
-            }
-          ],
-          "title": "",
-          "description": "",
-          "link": "",
-          "scale": 0.07692307692307693,
-          "rotation": [
-            -0.17328924752742023,
-            -0.9195985941537108,
-            -0.12078481816249777
-          ]
-        },
-        "_vamnlwsyu1628758342235": {
-          "type": "link",
-          "scene": "_tbyfo0cbr1622532454928",
-          "position": [
-            35.90877636205304,
-            -40.47261591588221,
-            299.6255985490652
-          ],
-          "scale": 0.435675,
-          "target": "_35fu06r671622533417983",
-          "rotation": [
-            -1.7808464050381618,
-            -0.06982378702430307,
-            -3.106733978218082
-          ],
-          "cameraPosition": null
-        },
-        "_tpoatiow71628832132167": {
-          "type": "video",
-          "scene": "_tkmlqznfx1622532435398",
-          "position": [
-            -112.38250268220297,
-            -32.58335737245818,
-            -298.70302559181226
-          ],
-          "url": "/storage/scenes/files/AgkGmnlksNp0SYU7amkdHcCfZvNpqLVG.mp4",
-          "title": "",
-          "description": "測試影片",
-          "link": "",
-          "scale": 0.13910099296275003,
-          "rotation": [
-            -0.06673145720118528,
-            0.6465414148441065,
-            0.04093132372555625
-          ]
-        },
-        "_jckdljros1628849887476": {
-          "type": "link",
-          "scene": "_i10mauvw21622533484387",
-          "position": [
-            293.0451280848286,
-            -132.36238176174916,
-            600
-          ],
-          "scale": 1.025,
-          "target": "_35fu06r671622533417983",
-          "rotation": [
-            -1.832728943172067,
-            -0.08721316699398812,
-            2.9640064275544473
-          ],
-          "cameraPosition": [
-            -0.00022821117825987846,
-            0.0009994162584068772,
-            0.009947315557503408
-          ]
-        },
-        "_jlz3kdggk1628849921091": {
-          "type": "link",
-          "scene": "_35fu06r671622533417983",
-          "position": [
-            -15.874131524507531,
-            -102.33008991704433,
-            -600
-          ],
-          "scale": 0.6699999999999999,
-          "target": "_tbyfo0cbr1622532454928",
-          "rotation": [
-            -1.3439035240356336,
-            0,
-            0
-          ],
-          "cameraPosition": null
-        },
-        "_18dzaozvb1628849958643": {
-          "type": "link",
-          "scene": "_35fu06r671622533417983",
-          "position": [
-            59.38314116034526,
-            -164.0576720671766,
-            600
-          ],
-          "scale": 0.885,
-          "target": "_i10mauvw21622533484387",
-          "rotation": [
-            -1.7104226669544431,
-            1.2070580006633932e-16,
-            3.141592653589793
-          ],
-          "cameraPosition": [
-            -1.0358053979044494e-120,
-            6.123233995736766e-19,
-            0.01
-          ]
-        },
-        "_4c64o4t9k1628850083354": {
-          "type": "link",
-          "scene": "_tbyfo0cbr1622532454928",
-          "position": [
-            -47.06416875063528,
-            -172.97778320080772,
-            -600
-          ],
-          "scale": 1,
-          "target": "_tkmlqznfx1622532435398",
-          "rotation": [
-            -1.4486232791552935,
-            -2.7755575615628914e-17,
-            0.3316125578789226
-          ],
-          "cameraPosition": [
-            0.0009594498734757492,
-            0.0008438955593137288,
-            0.009918028847773035
-          ]
-        },
-        "_pvpov893c1632810318131": {
-          "type": "location",
-          "scene": "_tkmlqznfx1622532435398",
-          "position": [
-            255.68185588565203,
-            -54.063657299631586,
-            -755.3223622661485
-          ],
-          "text": "走廊",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "_wbp9r1dge1632810357982": {
-          "type": "location",
-          "scene": "_tkmlqznfx1622532435398",
-          "position": [
-            620.1203087227856,
-            -1.723743711913271,
-            -503.57818942199174
-          ],
-          "text": "接待處",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "_kbnv1axd71632810410310": {
-          "type": "location",
-          "scene": "_tkmlqznfx1622532435398",
-          "position": [
-            -332.37486261620387,
-            -23.00889608544975,
-            726.2638314166065
-          ],
-          "text": "入口",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "_skn7oy7lc1632810541063": {
-          "type": "location",
-          "scene": "_tkmlqznfx1622532435398",
-          "position": [
-            -533.5555812573361,
-            7.13209849070994,
-            -595.5720317465563
-          ],
-          "text": "電視牆",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "_b78vjirzo1632814591500": {
-          "type": "location",
-          "scene": "_tbyfo0cbr1622532454928",
-          "position": [
-            -496.3081089364718,
-            -99.11587148861028,
-            617.3973060362495
-          ],
-          "text": "辦工室",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "_i3fmepfs31632818129085": {
-          "type": "location",
-          "scene": "_i10mauvw21622533484387",
-          "position": [
-            385.58452369930444,
-            -25.14971155103796,
-            -699.0578736955616
-          ],
-          "text": "出口",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "_dkal4jl1a1632818148457": {
-          "type": "location",
-          "scene": "_35fu06r671622533417983",
-          "position": [
-            -588.1719648843103,
-            -39.70245620928838,
-            539.4453484722196
-          ],
-          "text": "儲物櫃",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "_i2tlqoyke1632819010368": {
-          "type": "info",
-          "scene": "_tkmlqznfx1622532435398",
-          "position": [
-            -718.6451261941413,
-            74.0806247899324,
-            340.94587150736936
-          ],
-          "text": "電視",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "_yn2qynr211632819076161": {
-          "type": "info",
-          "scene": "_tkmlqznfx1622532435398",
-          "position": [
-            653.1951336364841,
-            26.52294059975728,
-            459.1067311451137
-          ],
-          "text": "牆",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "_yqwfxrzo71632819122378": {
-          "type": "info",
-          "scene": "_i10mauvw21622533484387",
-          "position": [
-            795.7664158302117,
-            -12.961870771293254,
-            -71.06377609156426
-          ],
-          "text": "門",
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        }
-      }
+  "scenes": {
+    "_tkmlqznfx1622532435398": {
+      "name": "場景一",
+      "baseImage": "/storage/scenes/files/XFTSzmwy7HGFgo815XW7MfibxN2oyNIU.jpg",
+      "isFirst": true,
+      "cameraPosition": [
+        -0.00225512609683898,
+        -0.00028589833410281294,
+        0.009738206633149279
+      ]
+    },
+    "_tbyfo0cbr1622532454928": {
+      "name": "場景二",
+      "baseImage": "/storage/scenes/files/lSjg7Pd3goISGGHb3SZRtH0lS4VLDfsR.jpg"
+    },
+    "_35fu06r671622533417983": {
+      "name": "場景三",
+      "baseImage": "/storage/scenes/files/OQUaSFSsxqqve3iSB2BLT6ZCj18PHtZT.jpg"
+    },
+    "_i10mauvw21622533484387": {
+      "name": "場景四",
+      "baseImage": "/storage/scenes/files/aybw94BzbAJeX5aq79Y6GZC1chZVN86b.jpg"
     }
+  },
+  "threeDItems": {
+    "_q35q4a3cd1628756512039": {
+      "type": "link",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        91.12131613369186,
+        -57.00948151384728,
+        -299.4663683935625
+      ],
+      "scale": 0.554770875,
+      "target": "_tbyfo0cbr1622532454928",
+      "cameraPosition": [
+        -0.0008716592366077742,
+        0.0006349753398712143,
+        -0.009941680768008582
+      ],
+      "rotation": [
+        -1.494537867799731,
+        -0.05654155119246174,
+        -0.7658109493806319
+      ]
+    },
+    "_kgjsai2xf1628756621003": {
+      "type": "image",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        295.35325320268043,
+        -104.06504720255315,
+        -199.27728898872567
+      ],
+      "images": [
+        {
+          "width": 5492,
+          "height": 6728,
+          "url": "/storage/scenes/files/gjmugIohRwLFTsWXA1forR72MxkvkdIv.jpg",
+          "text": "場景一圖片一"
+        }
+      ],
+      "title": "場景一圖片一",
+      "description": "",
+      "link": "https://unsplash.com/",
+      "scale": 0.02153846153846154,
+      "rotation": [
+        -0.2567684397730886,
+        -1.0005232946329388,
+        -0.1877180263651647
+      ]
+    },
+    "_vamnlwsyu1628758342235": {
+      "type": "link",
+      "scene": "_tbyfo0cbr1622532454928",
+      "position": [
+        35.90877636205304,
+        -40.47261591588221,
+        299.6255985490652
+      ],
+      "scale": 0.435675,
+      "target": "_35fu06r671622533417983",
+      "rotation": [
+        -1.7808464050381618,
+        -0.06982378702430307,
+        -3.106733978218082
+      ],
+      "cameraPosition": null
+    },
+    "_tpoatiow71628832132167": {
+      "type": "video",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        -112.38250268220297,
+        -32.58335737245818,
+        -298.70302559181226
+      ],
+      "url": "/storage/scenes/files/AgkGmnlksNp0SYU7amkdHcCfZvNpqLVG.mp4",
+      "title": "場景一影片一",
+      "description": "",
+      "link": "",
+      "scale": 0.13910099296275003,
+      "rotation": [
+        -0.06673145720118528,
+        0.6465414148441065,
+        0.04093132372555625
+      ]
+    },
+    "_jckdljros1628849887476": {
+      "type": "link",
+      "scene": "_i10mauvw21622533484387",
+      "position": [
+        293.0451280848286,
+        -132.36238176174916,
+        600
+      ],
+      "scale": 1.025,
+      "target": "_35fu06r671622533417983",
+      "rotation": [
+        -1.832728943172067,
+        -0.08721316699398812,
+        2.9640064275544473
+      ],
+      "cameraPosition": [
+        -0.00022821117825987846,
+        0.0009994162584068772,
+        0.009947315557503408
+      ]
+    },
+    "_jlz3kdggk1628849921091": {
+      "type": "link",
+      "scene": "_35fu06r671622533417983",
+      "position": [
+        -15.874131524507531,
+        -102.33008991704433,
+        -600
+      ],
+      "scale": 0.6699999999999999,
+      "target": "_tbyfo0cbr1622532454928",
+      "rotation": [
+        -1.3439035240356336,
+        0,
+        0
+      ],
+      "cameraPosition": null
+    },
+    "_18dzaozvb1628849958643": {
+      "type": "link",
+      "scene": "_35fu06r671622533417983",
+      "position": [
+        59.38314116034526,
+        -164.0576720671766,
+        600
+      ],
+      "scale": 0.885,
+      "target": "_i10mauvw21622533484387",
+      "rotation": [
+        -1.7104226669544431,
+        1.2070580006633932e-16,
+        3.141592653589793
+      ],
+      "cameraPosition": [
+        -1.0358053979044494e-120,
+        6.123233995736766e-19,
+        0.01
+      ]
+    },
+    "_4c64o4t9k1628850083354": {
+      "type": "link",
+      "scene": "_tbyfo0cbr1622532454928",
+      "position": [
+        -47.06416875063528,
+        -172.97778320080772,
+        -600
+      ],
+      "scale": 1,
+      "target": "_tkmlqznfx1622532435398",
+      "rotation": [
+        -1.4486232791552935,
+        -2.7755575615628914e-17,
+        0.3316125578789226
+      ],
+      "cameraPosition": [
+        0.0009594498734757492,
+        0.0008438955593137288,
+        0.009918028847773035
+      ]
+    },
+    "_pvpov893c1632810318131": {
+      "type": "location",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        255.68185588565203,
+        -54.063657299631586,
+        -755.3223622661485
+      ],
+      "text": "走廊",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_wbp9r1dge1632810357982": {
+      "type": "location",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        620.1203087227856,
+        -1.723743711913271,
+        -503.57818942199174
+      ],
+      "text": "接待處",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_skn7oy7lc1632810541063": {
+      "type": "location",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        -533.5555812573361,
+        7.13209849070994,
+        -595.5720317465563
+      ],
+      "text": "電視牆",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_b78vjirzo1632814591500": {
+      "type": "location",
+      "scene": "_tbyfo0cbr1622532454928",
+      "position": [
+        -496.3081089364718,
+        -99.11587148861028,
+        617.3973060362495
+      ],
+      "text": "辦工室",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_i3fmepfs31632818129085": {
+      "type": "location",
+      "scene": "_i10mauvw21622533484387",
+      "position": [
+        385.58452369930444,
+        -25.14971155103796,
+        -699.0578736955616
+      ],
+      "text": "出口",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_dkal4jl1a1632818148457": {
+      "type": "location",
+      "scene": "_35fu06r671622533417983",
+      "position": [
+        -588.1719648843103,
+        -39.70245620928838,
+        539.4453484722196
+      ],
+      "text": "儲物櫃",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_i2tlqoyke1632819010368": {
+      "type": "info",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        -718.6451261941413,
+        74.0806247899324,
+        340.94587150736936
+      ],
+      "text": "電視",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_yn2qynr211632819076161": {
+      "type": "info",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        653.1951336364841,
+        26.52294059975728,
+        459.1067311451137
+      ],
+      "text": "牆",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_yqwfxrzo71632819122378": {
+      "type": "info",
+      "scene": "_i10mauvw21622533484387",
+      "position": [
+        795.7664158302117,
+        -12.961870771293254,
+        -71.06377609156426
+      ],
+      "text": "門",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_pvhsr58uc1633667399336": {
+      "type": "image",
+      "scene": "_i10mauvw21622533484387",
+      "position": [
+        54.24248114062362,
+        -26.17138423158873,
+        -600
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 1600,
+          "url": "/storage/scenes/files/Pw4Q0dk93aqYoMcih0sRxB1cg4JG1WG2.jpg",
+          "text": "場景四圖片一"
+        }
+      ],
+      "title": "場景四圖片一",
+      "description": "",
+      "link": "",
+      "scale": 0.12257578124999999,
+      "rotation": [
+        0,
+        0,
+        0.03490658503988659
+      ]
+    },
+    "_w62xzdxr41633667576422": {
+      "type": "image",
+      "scene": "_35fu06r671622533417983",
+      "position": [
+        314.3685293513328,
+        -33.71477464238533,
+        438.29889945534575
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 3200,
+          "url": "/storage/scenes/files/XtPJCUXcIOtf9yheeRfKgJcRjt3YsJ28.jpg",
+          "text": "場景三圖片一"
+        }
+      ],
+      "title": "場景三圖片一",
+      "description": "",
+      "link": "",
+      "scale": 0.18100234835815432,
+      "rotation": [
+        3.0618497167724112,
+        -1.501365010059075,
+        3.0607836882624233
+      ]
+    },
+    "_t0n9felua1633667817917": {
+      "type": "image",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        -551.0459779473807,
+        -213.77494010567918,
+        212.21106298281813
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 2940,
+          "url": "/storage/scenes/files/S4rEREfTwouPiNP6y8C8aifLiY5uI0c0.jpg",
+          "text": "場景一圖片二"
+        }
+      ],
+      "title": "場景一圖片二",
+      "description": "",
+      "link": "",
+      "scale": 0.0831976530612245,
+      "rotation": [
+        3.1355256508542175,
+        0.9251110248932682,
+        3.0942057511621748
+      ]
+    },
+    "_zqdvk574z1633667984852": {
+      "type": "image",
+      "scene": "_tbyfo0cbr1622532454928",
+      "position": [
+        -77.84081589978,
+        -158.05814004826937,
+        594.0345959829309
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 1602,
+          "url": "/storage/scenes/files/YSWiWQFREI9fRiUWHBvAJYGNgqqZxRee.jpg",
+          "text": "場景二圖片一"
+        }
+      ],
+      "title": "場景二圖片一",
+      "description": "",
+      "link": "",
+      "scale": 0.09375,
+      "rotation": [
+        -2.4447036813869545,
+        1.4345840270974013,
+        2.4318267269986675
+      ]
+    },
+    "_jsc0lg83a1633668070732": {
+      "type": "image",
+      "scene": "_tbyfo0cbr1622532454928",
+      "position": [
+        -148.167677729269,
+        -240.62123024347974,
+        594.590953524786
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 1602,
+          "url": "/storage/scenes/files/TTa7UFYDaqM47gwMrA0rxUwMt84eYRtD.jpg",
+          "text": "場景二圖片二"
+        }
+      ],
+      "title": "場景二圖片二",
+      "description": "",
+      "link": "",
+      "scale": 0.13554843749999998,
+      "rotation": [
+        0.3237202481073263,
+        -1.353896763604058,
+        0.42322209650731374
+      ]
+    },
+    "_afi5ttoha1633668609456": {
+      "type": "image",
+      "scene": "_i10mauvw21622533484387",
+      "position": [
+        476.53674118194465,
+        3.8834646157586192,
+        486.6430558661756
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 3403,
+          "url": "/storage/scenes/files/MICOlOu2vsXb59IBgjBeoLV7mosPAbw3.jpg",
+          "text": "場景四圖片三"
+        }
+      ],
+      "title": "場景四圖片三",
+      "description": "",
+      "link": "",
+      "scale": 0.08776132801939468,
+      "rotation": [
+        0.0008462873425735432,
+        1.5200372175413641,
+        -0.011029319044523983
+      ]
+    },
+    "_ot3e30l7g1633669261478": {
+      "type": "image",
+      "scene": "_i10mauvw21622533484387",
+      "position": [
+        -400.4294671266687,
+        -17.73910182865687,
+        598.9528334854986
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 1600,
+          "url": "/storage/scenes/files/iceJ6T4v73JZGYxceaH70vBLGR7jRy9w.jpg",
+          "text": "場景四圖片二"
+        }
+      ],
+      "title": "場景四圖片二",
+      "description": "",
+      "link": "",
+      "scale": 0.05708333333333333,
+      "rotation": [
+        -1.8990912486215556,
+        1.516774082272049,
+        0.31038570776306645
+      ]
+    },
+    "_b14ssmdv71633669408980": {
+      "type": "image",
+      "scene": "_35fu06r671622533417983",
+      "position": [
+        -158.32074483168532,
+        -207.7765424364259,
+        -572.8645279657229
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 1602,
+          "url": "/storage/scenes/files/sL4zPIooMlgfYVl7A8I7TyvK9pZ6V5rb.jpg",
+          "text": "場景三圖片二"
+        }
+      ],
+      "title": "場景三圖片二",
+      "description": "",
+      "link": "",
+      "scale": 0.10312500000000001,
+      "rotation": [
+        -0.4103910508658295,
+        1.5324981946910592,
+        0.4489848173925099
+      ]
+    },
+    "_xu7gels1n1633669601227": {
+      "type": "image",
+      "scene": "_35fu06r671622533417983",
+      "position": [
+        -112.30423028577096,
+        -147.16429295271777,
+        -575.4037466991527
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 1602,
+          "url": "/storage/scenes/files/DjJDSf56ttqCW7yTxTU1xuCuuqbBVfr1.jpg",
+          "text": "場景三圖片三"
+        }
+      ],
+      "title": "場景三圖片三",
+      "description": "",
+      "link": "",
+      "scale": 0.07813771875,
+      "rotation": [
+        -1.1073315095890024,
+        -1.531771163579257,
+        -1.1070268535035432
+      ]
+    },
+    "_w516uccb51633670241281": {
+      "type": "image",
+      "scene": "_tbyfo0cbr1622532454928",
+      "position": [
+        142.2232504389309,
+        29.82034793676813,
+        600
+      ],
+      "images": [
+        {
+          "width": 2400,
+          "height": 3200,
+          "url": "/storage/scenes/files/cYrBZxXeQP28efA2KBPziLLQclTPV1q9.jpg",
+          "text": "場景二圖片三"
+        }
+      ],
+      "title": "場景二圖片三",
+      "description": "",
+      "link": "",
+      "scale": 0.03125,
+      "rotation": [
+        0.23770696397658653,
+        -1.427495768320013,
+        0.226988335940831
+      ]
+    },
+    "_k64nkcme71633921290516": {
+      "type": "location",
+      "scene": "_tkmlqznfx1622532435398",
+      "position": [
+        -790.7685932262813,
+        -77.8350258570221,
+        -87.11015675768913
+      ],
+      "text": "入口",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "_s0u8sm8xd1633921371683": {
+      "type": "location",
+      "scene": "_i10mauvw21622533484387",
+      "position": [
+        -111.94037070243296,
+        -2.97936549532641,
+        791.014072728726
+      ],
+      "text": "房間前方",
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    }
+  }
+}
   </script>
 
 </html>

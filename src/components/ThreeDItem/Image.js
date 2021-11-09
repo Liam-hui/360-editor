@@ -8,7 +8,9 @@ import Label from './Label'
 
 export default function Image({ meshProps, data, isHover, isAdmin }) {
 
-  const { url, width, height, description } = data.images[0]
+  const { title } = data
+  const { url, width, height } = data.images[0]
+
   
   const texture = useTexture(window.cdn + url)
   // const texture = useTexture(process.env.PUBLIC_URL + 'pano_background.jpg')
@@ -32,7 +34,7 @@ export default function Image({ meshProps, data, isHover, isAdmin }) {
       </mesh>
 
       {!isAdmin &&
-        <Label position={meshProps.position} labelText={description} onClick={onClick} role='img' />
+        <Label position={meshProps.position} labelText={title} onClick={onClick} role='img' />
       }
     </>
   )

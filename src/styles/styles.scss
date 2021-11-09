@@ -302,11 +302,25 @@ button {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    .image-wrapper {
+    .image-item {
       position: relative;
       width: calc(33.333% - 10px);
-      height: 115px;
       margin: 5px 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      input {
+        margin-top: 5px;
+        width: 90%;
+        height: 25px;
+        padding: 15px;
+        border-radius: 8px;
+      }
+    }
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 115px;
       img {
         width: 100%;
         height: 100%;
@@ -900,6 +914,10 @@ button {
   z-index: -10;
   width: 1px;
   height: 1px;
+}
+
+.popup-shown .tab-item {
+  display: none;
 }
 
 @keyframes fade-in {

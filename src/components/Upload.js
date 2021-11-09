@@ -79,6 +79,7 @@ const Upload = ({ mode, data }) => {
                 base64: src,
                 width: this.width,
                 height: this.height,
+                text: '圖片標題'
               });
             };
             image.onerror = () => reject()
@@ -87,12 +88,15 @@ const Upload = ({ mode, data }) => {
         }
         
       };
-  
-      if (index != undefined) {
-        setImages( images.slice(0, index).concat(newImages).concat(images.slice(index, images.length)) )
+
+      if (action == 'editScene') {
+        setImages(newImages)
+      }
+      else if (index != undefined) {
+        setImages(images.slice(0, index).concat(newImages).concat(images.slice(index, images.length)) )
       }
       else
-        setImages( images.concat(newImages) )
+        setImages(images.concat(newImages))
   
     } catch (error) {
       alert(error);
@@ -199,6 +203,14 @@ const Upload = ({ mode, data }) => {
             baseImage: imagesData[0].url,
           })
         break
+        case 'editScene':
+          store.dispatch({
+            type: 'UPDATE_SCENE',
+            data: {
+              baseImage: imagesData[0].url,
+            }
+          })
+        break
       }
         
       store.dispatch({ type: 'HIDE_LOADER' })
@@ -260,19 +272,25 @@ const Upload = ({ mode, data }) => {
     }
   }
 
-  const handleUplaod = mode == 'image' ? handleUploadImages : handleUploadVideo  
+  const handleUpload = mode == 'image' ? handleUploadImages : handleUploadVideo  
   const confirmUpload =  mode == 'image' ? confirmUploadImages : confirmUploadVideo
 
   const [isDragOver, setIsDragOver] = useState(false)
   const onDrop = (e) => {
     e.preventDefault();
-    handleUplaod(e.dataTransfer.files);
+    handleUpload(e.dataTransfer.files);
     setIsDragOver(false)
   }
 
   const onDragOver = (e) => {
     e.stopPropagation();
     e.preventDefault();
+  }
+
+  const updateImageText = (index, text) => {
+    const images_ = images.slice();
+    images[index].text = text;
+    setImages(images_);
   }
 
   return (
@@ -294,7 +312,7 @@ const Upload = ({ mode, data }) => {
             <span style={{ fontSize: '0.95em' }}>or</span>
             <label className="border-box-small">
               Browse files
-              <input onChange={(e) => handleUplaod(e.target.files)} type="file" id="upload-image" accept={accept} multiple={multiple}/>
+              <input onChange={(e) => handleUpload(e.target.files)} type="file" id="upload-image" accept={accept} multiple={multiple}/>
             </label>
             <div className="overlay" style={{ opacity: isDragOver ? 0.6 : 0 }}/>
           </div>
@@ -303,23 +321,26 @@ const Upload = ({ mode, data }) => {
         {mode == 'image' && images.length > 0 && action != 'addScene' && action != 'editScene' &&
           <div className="images-container">
             {images.map( (image, index) => 
-              <div className="image-wrapper">
-                <img src={image.base64 ?? (window.cdn + image.url)}/>
-                <div className='overlay'/>
-                <div className='center-absolute center-flex'>
-                  <label className='image-button'>
-                    <img style={{ width: '100%', height: '100%' }} src={imagePath('icon-add.svg')}/>
-                    <input onChange={(e) => handleUplaod(e.target.files, index)} type="file" id="upload-image" accept={accept} multiple={multiple}/>
-                  </label>
-                  <img onClick={() => removeImage(index)} className='image-button' src={imagePath('icon-delete.svg')}/>
+              <div className="image-item">
+                <div className="image-wrapper">
+                  <img src={image.base64 ?? (window.cdn + image.url)}/>
+                  <div className='overlay'/>
+                  <div className='center-absolute center-flex'>
+                    <label className='image-button'>
+                      <img style={{ width: '100%', height: '100%' }} src={imagePath('icon-add.svg')}/>
+                      <input onChange={(e) => handleUpload(e.target.files, index)} type="file" id="upload-image" accept={accept} multiple={multiple}/>
+                    </label>
+                    <img onClick={() => removeImage(index)} className='image-button' src={imagePath('icon-delete.svg')}/>
+                  </div>
                 </div>
+                <input type="text" className="border-box" value={image.text} onChange={(e) => updateImageText(index, e.target.value)}/>
               </div>
             )}
             {/* <div className="image-wrapper" style={{ justifySelf: 'flex-end' }}>
               <label className="border-box-small column center-flex" style={{ width: '100%', height: '100%', padding: 10}}>
                 <img style={{ width: 40, height: 'auto', marginBottom: 12 }} src={require('@/assets/icons/icon-upload-file.svg').default}/>
                 Upload more
-                <input onChange={(e) => handleUplaod(e.target.files)} type="file" id="upload-image" accept="image/*" multiple/>
+                <input onChange={(e) => handleUpload(e.target.files)} type="file" id="upload-image" accept="image/*" multiple/>
               </label>
             </div> */}
           </div>
@@ -338,7 +359,7 @@ const Upload = ({ mode, data }) => {
                 style={{ margin: 10, pointerEvents: 'auto' }}
               >
                 Select another image
-                <input onChange={(e) => handleUplaod(e.target.files)} type="file" id="upload-image" accept={accept}/>
+                <input onChange={(e) => handleUpload(e.target.files)} type="file" id="upload-image" accept={accept}/>
               </label>
             </div>
           </div>
@@ -353,7 +374,7 @@ const Upload = ({ mode, data }) => {
                 style={{ margin: 10, pointerEvents: 'auto' }}
               >
                 Select another video
-                <input onChange={(e) => handleUplaod(e.target.files)} type="file" id="upload-image" accept={accept}/>
+                <input onChange={(e) => handleUpload(e.target.files)} type="file" id="upload-image" accept={accept}/>
               </label>
               {/* <div 
                 className="border-box-small pointer" 
@@ -399,7 +420,19 @@ const Upload = ({ mode, data }) => {
           <div 
             className="border-box-small pointer" 
             style={{ alignSelf: 'center', marginTop: 20 }}
-            // onClick={confirmUpload}
+            onClick={() => 
+              store.dispatch({
+                type: 'SHOW_POPUP' ,
+                mode: 'showWarning',
+                data: {
+                  text: 'Do you want to set this scene as the first scene, and current camera angle as the default angle？',
+                  confirm: () => store.dispatch({
+                    type: 'SET_FIRST_SCENE',
+                    cameraPosition: store.getState().camera.position.toArray()
+                  }) 
+                }
+              })  
+            }
           >
             {'Set as first scene'}
           </div>

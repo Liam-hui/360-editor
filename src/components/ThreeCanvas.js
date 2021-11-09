@@ -109,8 +109,10 @@ const Setup = ({ controlsRef, keyRef, setEnableRotate }) => {
   }, [])
 
   const onWheel = useCallback(({ deltaY }) => {
-    camera.fov = Math.max(23, Math.min(camera.fov + deltaY * 0.005, 100))
-    camera.updateProjectionMatrix()
+    if (!document.getElementById('root').classList.contains('popup-shown')) {
+      camera.fov = Math.max(23, Math.min(camera.fov + deltaY * 0.005, 100))
+      camera.updateProjectionMatrix()
+    }
   }, [])
 
   // touch events on mobile
@@ -167,6 +169,7 @@ const Locations = ({ setTargetToLookAt }) => {
   const scenes = useSelector(state => state.scenes)
   const currentSceneId = scenes.currentLayer == 0 ? scenes.layer0Id : scenes.layer1Id
   const threeDItems = useSelector(state => state.threeDItems.data)
+
   const locations = Object.entries(threeDItems).map(
     ([id, data]) => ({ id, ...data })).filter(x => x.scene == currentSceneId && (x.type == 'location' || (x.type == 'link' && x.target) ) 
   ).sort(function(a, b) {
@@ -175,7 +178,9 @@ const Locations = ({ setTargetToLookAt }) => {
     return 0
   })
 
-  const LocationButton = ({ location }) => {
+  const [currentIndex, setCurrentIndex] = useState(null)
+
+  const LocationButton = ({ index, location }) => {
 
     const label = location.type == 'link' ? 
       '前往' + store.getState().scenes.data[location.target].name 
@@ -185,20 +190,27 @@ const Locations = ({ setTargetToLookAt }) => {
         ''
 
     const goToLocation = () => {
-      if (location.type == 'link')
-        store.dispatch({ type: 'CHANGE_SCENE_WITHOUT_TRANSITION', id: location.target })
-      if (location.type == 'location')
+      if (location.type == 'link') {
+        setCurrentIndex(null);
+        store.dispatch({ type: 'CHANGE_SCENE_WITHOUT_TRANSITION', id: location.target, cameraPosition: location.cameraPosition ?? null  })
+      }
+      if (location.type == 'location') {
+        setCurrentIndex(index);
         setTargetToLookAt(location.position)
       }
+    }
 
     return (
-      <button className="location-button" tabIndex={1} aria-label={label} onClick={goToLocation}/>
+      <button className="location-button tab-item" tabIndex={2} aria-label={label} onClick={goToLocation}/>
     )
   }
 
   return (
     <>
-      {locations.map(location => <LocationButton location={location} />)}
+      {locations
+        .map((location, index) => <LocationButton location={location} index={index} />)
+        .filter((_, index) => index != currentIndex)
+      }
     </>
   )
 }

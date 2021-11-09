@@ -19,6 +19,7 @@ export const INITIAL_STATE = {
 /* Reducers */
 
 const showPopup = ( state, { mode, data } ) => {
+  document.getElementById('root').classList.add('popup-shown');
   return {
     isShown: true,
     mode: mode,
@@ -27,6 +28,7 @@ const showPopup = ( state, { mode, data } ) => {
 }
 
 const hidePopup = ( state ) => {
+  document.getElementById('root').classList.remove('popup-shown');
   return {
    isShown: false
   }

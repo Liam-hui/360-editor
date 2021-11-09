@@ -7,7 +7,7 @@ import Label from './Label'
 
 export default function Video({ meshProps, data, isHover, isAdmin }) {
 
-  const { url, description } = data
+  const { url, title } = data
   const [video, setVideo] = useState(null)
 
   useEffect(async() => {
@@ -64,7 +64,7 @@ export default function Video({ meshProps, data, isHover, isAdmin }) {
         <shaderMaterial args={[shader]} uniforms-tex-value={texture} uniforms-isHover-value={isHover} transparent side={THREE.DoubleSide}/>
       </mesh>
       {!isAdmin &&
-        <Label position={meshProps.position} labelText={description} onClick={onClick} role='img' />
+        <Label position={meshProps.position} labelText={title} onClick={onClick} role='img' />
       }
     </>
   )
