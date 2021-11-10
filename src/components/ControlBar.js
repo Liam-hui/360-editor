@@ -78,8 +78,8 @@ const ControlBar = () => {
       'scenes/save', 
       body
     )
-      .then( (response) => {
-        // console.log(response.data);
+      .then((response) => {
+        console.log(response.data);
         store.dispatch({
           type: 'SHOW_POPUP' ,
           mode: 'showMessage',

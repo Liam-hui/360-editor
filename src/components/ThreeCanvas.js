@@ -21,7 +21,7 @@ const ThreeLoader = () => {
 
   // init
   useEffect(() => {
-    if (!active && !isInited) {
+    if (scenes.firstScene && !active && !isInited) {
 
       if (timeoutRef.current != null) 
         clearTimeout(timeoutRef.current)
@@ -31,10 +31,10 @@ const ThreeLoader = () => {
           document.getElementById("root").classList.remove("not-ready");
           setIsInited(true)
         }
-      ,700)
+      , 700)
 
     }
-  }, [active])
+  }, [active, scenes.firstScene])
 
   // change scenes
   useEffect(() => {
@@ -290,7 +290,7 @@ export default function ThreeCanvas() {
       <ThreeLoader/>   
       <Canvas
         gl={{ alpha: true, antialias: true }}
-        camera={{ position: [0, 0, 0.1], fov: 55 }}
+        camera={{ position: [0, 0, 0.1], fov: 72 }}
         resize={{ polyfill: ResizeObserver }}
         ref={canvasRef}
       >

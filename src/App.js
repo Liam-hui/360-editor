@@ -10,12 +10,16 @@ import Loader from '@/components/Loader'
 import ControlBar from '@/components/ControlBar'
 import SetTarget from '@/components/SetTarget'
 import Info from '@/components/Info'
-import SceneInfo from '@/components/SceneInfo'
+// import SceneInfo from '@/components/SceneInfo'
 
 const App = () => {
 
-  useEffect(() => {
-    if (window.mode) {
+  useLayoutEffect(() => {
+    init()
+  }, [])
+
+  const init = () => {
+    if (window.mode && window.data && window.allowed_function && window.host_url && window.cdn) {
       store.dispatch({ 
         type: 'SET_CONFIG', 
         payload: {
@@ -24,15 +28,17 @@ const App = () => {
         } 
       })
 
-      const data = window.data
-      if (data?.scenes) {
-        store.dispatch({ type: 'INIT_SCENES', data: data.scenes })
+      if (window.data.scenes) {
+        store.dispatch({ type: 'INIT_SCENES', data: window.data.scenes })
       }
-      if (data?.threeDItems) {
-        store.dispatch({ type: 'INIT_THREE_D_ITEMS', data: data.threeDItems })
+      if (window.data.threeDItems) {
+        store.dispatch({ type: 'INIT_THREE_D_ITEMS', data: window.data.threeDItems })
       }
     }
-  }, [])
+    else {
+      setTimeout(init, 200);
+    }
+  }
 
   return (
     <Provider store={store}>

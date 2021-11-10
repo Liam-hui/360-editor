@@ -55,7 +55,7 @@ const Menu = () => {
       <planeBufferGeometry args={[0.1, 0.1]}/>
       <meshBasicMaterial transparent opacity={0} />
       {isShown &&
-        <Html>
+        <Html zIndexRange={[99999999, 99999998]}>
           <div className="menu-wrapper">
             <img 
               src={imagePath('icon-dot.svg')}

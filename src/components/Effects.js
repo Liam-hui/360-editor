@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import store from '@/store'
 import * as THREE from 'three'
 import { useSpring } from 'react-spring'
@@ -22,6 +22,15 @@ const Effects = ({ scenes, controlsRef }) => {
   const transitionComposer = useRef()
   const transitionRenderTarget = useMemo(() => new THREE.WebGLRenderTarget(), [])
   const mixRef = useRef()
+
+  const [isInited, setIsInited] = useState(false)
+  useEffect(() => {
+    if (!isInited && scenes.firstScene?.cameraPosition) {
+      const position = scenes.firstScene.cameraPosition
+      camera.position.set(position[0], position[1], position[2])
+      setIsInited(true)
+    }
+  }, [scenes.firstScene])
 
   useEffect(() => {
     composer.current.setSize(size.width, size.height)
