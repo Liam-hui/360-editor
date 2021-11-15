@@ -471,6 +471,7 @@ button {
   width: 50px;
   height: 50px;
   transform: translate(-50%, -50%);
+  pointer-events: none;
   .is-transitioning & {
     display: none !important;
   }
@@ -821,6 +822,7 @@ button {
   background-color: rgba(215, 214, 214, 0.8);
   transition: width 0.6s ease-in-out, height 0.6s ease-in-out, opacity 0.6s ease-in-out;
   overflow: hidden;
+  z-index: 99999999999;
   .not-ready &, .is-transitioning & {
     display: none;
   }

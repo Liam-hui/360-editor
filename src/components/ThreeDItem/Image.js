@@ -6,7 +6,7 @@ import ItemShader from '@/shaders/ItemShader'
 
 import Label from './Label'
 
-export default function Image({ meshProps, data, isHover, isAdmin }) {
+export default function Image({ meshProps, data, isHover, isAdmin, showEditor }) {
 
   const { title } = data
   const { url, width, height } = data.images[0]
@@ -18,11 +18,14 @@ export default function Image({ meshProps, data, isHover, isAdmin }) {
 
   const onClick = (e) => {
     if (e.which == 1 || e.button == 0) {
-      store.dispatch({
-        type: 'SHOW_POPUP',
-        mode: 'showItem',
-        data: data
-      })
+      isAdmin ? 
+        showEditor()
+      :
+        store.dispatch({
+          type: 'SHOW_POPUP',
+          mode: 'showItem',
+          data: data
+        })
     }
   }
 

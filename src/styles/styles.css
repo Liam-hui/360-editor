@@ -563,6 +563,7 @@ button {
   height: 50px;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
 .is-transitioning .three-d-editor-wrapper {
@@ -1011,6 +1012,7 @@ button {
   -webkit-transition: width 0.6s ease-in-out, height 0.6s ease-in-out, opacity 0.6s ease-in-out;
   transition: width 0.6s ease-in-out, height 0.6s ease-in-out, opacity 0.6s ease-in-out;
   overflow: hidden;
+  z-index: 99999999999;
 }
 
 .not-ready .spot, .is-transitioning .spot {

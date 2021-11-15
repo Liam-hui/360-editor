@@ -5,10 +5,7 @@ import { useThree } from '@react-three/fiber'
 import { cursorVideo, setCursorVideo } from '@/utils/MyUtils'
 import ItemShader from '@/shaders/ItemShader'
 
-import HtmlElement from './HtmlElement'
-import Label from './Label'
-
-export default function Link({ meshProps, data, isAdmin }) {
+export default function Link({ meshProps, data }) {
 
   const { target, cameraPosition } = data
   const materialRef = useRef()

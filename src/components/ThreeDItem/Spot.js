@@ -71,6 +71,7 @@ export default function Spot(props) {
 
   return (
     <HtmlElement
+      zIndexRange={[99999996, 99999997]}
       position={props.meshProps.position}
       element={<SpotElement {...props} />}
     />

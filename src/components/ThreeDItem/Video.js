@@ -5,7 +5,7 @@ import ItemShader from '@/shaders/ItemShader'
 
 import Label from './Label'
 
-export default function Video({ meshProps, data, isHover, isAdmin }) {
+export default function Video({ meshProps, data, isHover, isAdmin, showEditor }) {
 
   const { url, title } = data
   const [video, setVideo] = useState(null)
@@ -49,11 +49,14 @@ export default function Video({ meshProps, data, isHover, isAdmin }) {
 
   const onClick = (e) => {
     if (e.which == 1 || e.button == 0) {
-      store.dispatch({
-        type: 'SHOW_POPUP',
-        mode: 'showItem',
-        data: data
-      })
+      isAdmin ? 
+        showEditor()
+      :
+        store.dispatch({
+          type: 'SHOW_POPUP',
+          mode: 'showItem',
+          data: data
+        })
     }
   }
 

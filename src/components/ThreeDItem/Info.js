@@ -11,7 +11,7 @@ export default function Info(props) {
     <Spot meshProps={meshProps} data={data} type="info" />
   )
   else return (
-    <Label position={meshProps.position} labelText={data.text} />
+    <Label position={meshProps.position} labelText={data.text} role="button" />
   )
 }
 

@@ -252,6 +252,7 @@ const ThreeDItem = ({ id, type, data, layer, isAdmin }) => {
 
   const { camera, hovered, isTransitioning } = useThree()
   const isHover = hovered == id && !isTransitioning
+  // const isHover = true
 
   const { position, rotation, scale } = useMemo(() => {
     const data = store.getState().threeDItems.data[id]
@@ -326,11 +327,11 @@ const ThreeDItem = ({ id, type, data, layer, isAdmin }) => {
   return (
     <>
       {type == 'image' &&
-        <Image meshProps={meshProps} data={data} isAdmin={isAdmin} isHover={isHover} />
+        <Image meshProps={meshProps} data={data} isAdmin={isAdmin} isHover={isHover} showEditor={() => setIsEditorShown(true)} />
       }
 
       {type == 'video' &&
-        <Video meshProps={meshProps} data={data} isAdmin={isAdmin} isHover={isHover} />
+        <Video meshProps={meshProps} data={data} isAdmin={isAdmin} isHover={isHover} showEditor={() => setIsEditorShown(true)} />
       }
 
       {type == 'location' &&
@@ -391,6 +392,13 @@ const ThreeDItem = ({ id, type, data, layer, isAdmin }) => {
                   {type == 'link' && 
                     <SelectScene id={id} data={data} camera={camera} />
                   }
+                  <div 
+                      className="border-box-small pointer"
+                      style={{ margin: '5px 0' }}
+                      onClick={removeItem} 
+                    >
+                      Delete Item
+                    </div>
                 </Editor>
               }
             </div>

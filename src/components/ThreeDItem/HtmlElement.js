@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Html } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 
-export default function HtmlElement({ position, element }) {
+export default function HtmlElement({ position, element, zIndexRange }) {
 
   const htmlRef = useRef()
   const [isVisible, setIsVisible] = useState(false)
@@ -22,7 +22,10 @@ export default function HtmlElement({ position, element }) {
     <mesh position={position} >
       <planeBufferGeometry args={[0.1, 0.1]}/>
       <meshBasicMaterial transparent opacity={0} />
-      <Html ref={htmlRef}>
+      <Html 
+        ref={htmlRef} 
+        {...zIndexRange && { zIndexRange }}
+      >
         {React.cloneElement(element, { isVisible })}
       </Html>
     </mesh>
