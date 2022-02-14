@@ -28,6 +28,8 @@ const ItemShader = {
             if (isHover) mixValue = 0.4;
 
             vec3 c = color.rgb * ( 1.0 - mixValue ) + white * mixValue;
+            float gamma = 2.2;
+            c.rgb = pow(c.rgb, vec3(gamma)); // reverse
             gl_FragColor = vec4(c.rgb, color.a);
         }
     `,

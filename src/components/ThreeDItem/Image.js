@@ -11,7 +11,6 @@ export default function Image({ meshProps, data, isHover, isAdmin, showEditor })
   const { title } = data
   const { url, width, height } = data.images[0]
 
-  
   const texture = useTexture(window.cdn + url)
   // const texture = useTexture(process.env.PUBLIC_URL + 'pano_background.jpg')
   const shader = useMemo(() => { return JSON.parse(JSON.stringify(ItemShader)) }, [])

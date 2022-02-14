@@ -291,6 +291,7 @@ export default function ThreeCanvas() {
       <Canvas
         gl={{ alpha: true, antialias: true }}
         camera={{ position: [0, 0, 0.1], fov: 72 }}
+        pixelRatio={window.devicePixelRatio}
         resize={{ polyfill: ResizeObserver }}
         ref={canvasRef}
       >
