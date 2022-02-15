@@ -65,10 +65,10 @@ const Slides = ({ images, openImage }) => {
             </Swiper>
           </div>
           {activeIndex > 0 &&
-            <img aria-hidden={true} style={{ left: -100 }} className="slider-arrow pointer" src={imagePath('icon-arrow.png')} onClick={() => swiper.slidePrev(700)} />
+            <img tabindex={0} alt="上一張" aria-label="上一張" role="button" style={{ left: -100 }} className="slider-arrow pointer" src={imagePath('icon-arrow.png')} onClick={() => swiper.slidePrev(700)} />
           }
           {activeIndex < (images.length - 1) &&
-            <img aria-hidden={true} style={{ right: -100, transform: `scaleX(-1)` }} onClick={() => swiper.slideNext(400)} className="slider-arrow pointer" src={imagePath('icon-arrow.png')}/>
+            <img tabindex={0} alt="下一張" aria-label="下一張" role="button" style={{ right: -100, transform: `scaleX(-1)` }} onClick={() => swiper.slideNext(400)} className="slider-arrow pointer" src={imagePath('icon-arrow.png')}/>
           }
         </>
       :

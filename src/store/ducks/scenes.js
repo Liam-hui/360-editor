@@ -59,14 +59,14 @@ const initScenes = ( state, { data } ) => {
   }
 }
 
-const addScene = ( state, { baseImage } ) => {
+const addScene = ( state, { name, baseImage } ) => {
   const id = uniqueId()
 
   return {
     ...state,
     data: {
       ...state.data,
-      [id]: { baseImage: baseImage }
+      [id]: { name, baseImage }
     },
   }
 }
@@ -94,7 +94,7 @@ const setFirstScene = ( state, { cameraPosition } ) => {
 }
 
 const updateScene = ( state, { data } ) => {
-  const id = state.currentLayer == 0 ? state.layer0Id : state.layer1Id
+  const id = state.currentLayer == 0 ? state.layer0Id : state.layer1Id;
   return {
     ...state,
     data: {

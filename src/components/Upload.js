@@ -200,6 +200,7 @@ const Upload = ({ mode, data }) => {
         case 'addScene':
           store.dispatch({
             type: 'ADD_SCENE',
+            name: title,
             baseImage: imagesData[0].url,
           })
         break
@@ -207,7 +208,8 @@ const Upload = ({ mode, data }) => {
           store.dispatch({
             type: 'UPDATE_SCENE',
             data: {
-              baseImage: imagesData[0].url,
+              name: title,
+              baseImage: imagesData[0],
             }
           })
         break
