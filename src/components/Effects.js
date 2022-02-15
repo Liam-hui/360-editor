@@ -29,6 +29,7 @@ const Effects = ({ scenes, controlsRef }) => {
       const position = scenes.firstScene.cameraPosition
       camera.position.set(position[0], position[1], position[2])
       setIsInited(true)
+      set({ currentLayer: scenes.currentLayer, sceneId: scenes.currentLayer == 0 ? scenes.layer0Id : scenes.layer1Id })
     }
   }, [scenes.firstScene])
 

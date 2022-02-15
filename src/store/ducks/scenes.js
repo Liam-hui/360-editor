@@ -146,7 +146,6 @@ const changeSceneFinish = ( state ) => {
 }
 
 const changeSceneWithoutTransition = ( state, { id, cameraPosition } ) => {
-  console.log(id, 'asdfasdf', cameraPosition)
   return {
     ...state,
     layer0Id: state.currentLayer == 0 ? id : null,
